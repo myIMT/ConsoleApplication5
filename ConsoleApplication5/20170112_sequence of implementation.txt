@@ -1,0 +1,15 @@
+sequence of implementation:
+1)read in src image
+2)filter src image
+3)convert filtered src image to gray-scale
+4)convert grayscale image to binary
+5)calculate connectedComponentStats of filtered gray-scale image.
+	-- connectedComponentStats accepts 	a 8-bit single-channel image to be labeled
+	-- accepts a binary image as input
+	-- outputs matrix containing all components and count of components
+	-- -- can use use count to iterate through components matrix to extract each component
+	-- -- -- generate mask to obtain each component , save that component but also calculate contour from component
+6)use findContours to calculate contours
+	-- findContours take as input, component (mask),contour mode and contour approximation
+	-- -- contour mode = RETR_EXTERNAL = return all boundary contours (level 0 contours)
+	-- -- contour approximation = CHAIN_APPROX_NONE = return all points inside calculated contours

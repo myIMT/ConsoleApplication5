@@ -1,0 +1,8 @@
+minRect[0].angle = -45
+minRect[0].boundingRect = [14 x 13 from (101, -2)]
+minRect[0].center = [107.25, 4.25]
+minEllipse[0].angle = 134.829
+minEllipse[0].boundingRect = [13 x 13 from (101, -2)]
+minEllipse[0].center = [107.184, 4.46341]
+
+

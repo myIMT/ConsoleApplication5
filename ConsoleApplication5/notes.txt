@@ -1,0 +1,7 @@
+		//is this gray or binary?
+		//cast to binary since original connectCJPG suppose to be binary
+
+		//use neighbourhopod of original image to calculate angle from binary
+		//walk through binary get equivalent neihbourhood form orignal and claculate Angle
+
+		//read image, filter (denoise), connectedComponent (binary), contouring (single pixel think contour = edge), walk along edge get neigh from orihinal and calculate angle, mag of edge point
