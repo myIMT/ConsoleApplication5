@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
 
 				}
 				ContourHierarchyMatrixFile.close();
-			//}
+			////}
 
 
 			ofstream ContourMatrixFile;	
