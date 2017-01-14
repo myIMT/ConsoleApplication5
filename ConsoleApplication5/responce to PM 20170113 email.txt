@@ -1,0 +1,29 @@
+1)
+PM:Are you computing connected components on *dark/shadow values*?
+JW: Yes- I am trying too :)
+
+PM:I suspect the default is too look for brighter blobs and connect pixels into these. That would explain why you have a huge blue component on the right of the image (if I am reading the colour coding correctly).
+JW: I went back and discovered, specifically connectedComponents works on a binary image; black background and white foreground (objects).
+So, yes you are right. I just assumed huge blue component is due to noise in image. I am bust re-looking at my binary image I feed into connectedComponents algorithm- checking to see is it white on black or black on white.
+See attached binary image of source image, that I feed into connectedComponents algorithm - its clear, the shadows are black. If I want the shadows to be extracted as components, then they should be white with highlights black. Thus I need to flip my binary image (colours) and then feed it to connectedComponents algorithm.
+
+PM:Or am I reading this wrong, and you are extracting 'shadow blobs'?
+JW: No, you are right - the data I sent you extracts the highlights and not the shadows.
+Which is not what I want.
+
+PM:If the algorithm automatically assumed you want brighter regions connected - you can invert pixels values: I = 255-I, assuming 8-bit grey-scale image, before running the algorithm
+JW: connectedComponent algorithm expects a binary image with background black and objects white.
+
+PM: Yes, that is what we discussed and agreed.
+JW: That got lost in my mind. I get so involved in the code (code sometimes forces me to only focus on specific detail directly relating to implementation at hand. I sometimes loose focus of some obejctives.
+
+2)
+PM:Also, you still seem to have pairs of angles next to each other, so double edge still?
+JW:I was unsure what exactly these images meant. Displaying a contour via drawContour algorithm vs saving contour to disk via imwrite command produces two different visuals. "contour_1.bmp" is produced with imwrite, and ContourMatrixFile_1 is suppose to be its equivalent matrix file (in CSV format) - looking at CSV file, it is clear there is a double contour, but BMP file does not show that. I cannot explain that. I almost want to say, let me apply Canny to contour to double check if it really has double contour. But we said applying Canny involves filtering which changes the data before edge is calculated - and this will not help in this situation.
+What am I missing?
+
+PM: Also, many seem to be the same values (142 or 229) or does these numbers mean something else. I would expect the right hand side of the contour to be between 0 and 90 degrees.
+JW: Those values are intensity values and not angles - they are intensity values from contour image.
+I am not sure if findContours is suppose to produce a binary image as contours result or greyscale. With those intensity values, its clear its not a binary image. Will double check findContours input and output parameters. OpenCv's documentation dies always make sense to me - I mostly get better OpenCV algorith explanations from forum discussions - but how relaible can these forum discussion be?
+
+3) I understand. I was just trying to see if I can't use a built-in algorithm before writing code from basic principles. I want to save as much time as possible.

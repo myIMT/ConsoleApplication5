@@ -1,0 +1,9 @@
+-- binary image
+-- -- data file (CSV) "BinaryImageMatrixFile.csv" reflects binary -- only 0 & 255 values
+-- -- image file (BMP) "binaryImage.bmp" reflects shadows are white and everything else is black
+-- -- also see "20170113 23.30_391.jpg" for source and binary side-by-side
+-- 
+
+
+still getting double contours with findContours.
+Canny produces single edge.

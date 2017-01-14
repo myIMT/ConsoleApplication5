@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	else if (file == "contours") {
 		file = parser.get<std::string>("contours");
 	}
-	srcImg = cv::imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED);
+	srcImg = cv::imread("connectedComponentImage03.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	if (srcImg.empty()) {
 		return -1;
 	}
@@ -89,8 +89,9 @@ int main(int argc, char *argv[])
 		cv::Mat FltrLabelImage;
 		cv::Mat FltrStats, FltrCentroids;
 		int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 4, CV_32S);
+		std::string nFltrLabelsString = std::to_string(nFltrLabels);
 		//normalize(nFltrLabels, FltrLabelImage, 0, 255, NORM_MINMAX, CV_8U);
-		cv::Mat FltrLabelImage2=FltrLabelImage;
+		cv::Mat FltrLabelImage2;
 		normalize(FltrLabelImage, FltrLabelImage2, 0, 255, NORM_MINMAX, CV_8U);
 		//imshow("Labels", FltrLabelImage);
 		//myConnectedComponents03file << "nFltrLabels= " << nFltrLabels << std::endl;
@@ -120,30 +121,54 @@ int main(int argc, char *argv[])
 			if (FltrLabel==1)
 			{
 			imshow("mask_i_" + s, mask_i);
+			imwrite("mask_i_" + s + ".bmp", mask_i);
 			}
 
 			//=======================================================================
+			// apply your filter
+			Canny(mask_i, mask_i, 100, 200);
+			imshow("Canny mask_i_" + s, mask_i);
+			imwrite("Cannymask_i_" + s + ".bmp", mask_i);
+			ofstream CannyMask_MatrixFile;
+			CannyMask_MatrixFile.open("CannyMask_" + s + "_MatrixFile.csv");
+			CannyMask_MatrixFile << mask_i << "\n";
+			CannyMask_MatrixFile.close();
+
 			findContours(mask_i.clone(), contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 			
+			cout << "hierarchy size= " << hierarchy.size() << "\n";
+
 			/// Draw contours
 			RNG rng(12345);
 			Mat drawing = Mat::zeros(fltrGrayImg.size(), CV_8UC3);
 
 			///Find the rotated rectangles and ellipses for each contour
 			//vector<RotatedRect> minRect(contours.size());
-			vector<RotatedRect> minEllipse(contours.size());
-			ofstream ContourMinEllipseMatrixFile;
-			ContourMinEllipseMatrixFile.open("Contour_" + s + "MinEllipseMatrixFile.csv");
+			//vector<RotatedRect> minEllipse(contours.size());
+			//ofstream ContourMinEllipseMatrixFile;
+			//ContourMinEllipseMatrixFile.open("Contour_" + s + "MinEllipseMatrixFile.csv");
+			cout << "contours size= " << contours.size() << "\n";
 			for (int i = 0; i < contours.size(); i++)
 			{
 				//random colour for contour
 				Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
 				// contour
 				drawContours(drawing, contours, i, color, 1, 8, hierarchy, 0, Point());
-				Mat test = Mat(contours[i]);
-				minEllipse[i] = minAreaRect(test);
 
-				ContourMinEllipseMatrixFile << minEllipse[i].angle << "\n";
+				if (FltrLabel == 1)
+				{
+					imshow("mask_i Contour_" + s + " Image", drawing);
+					imwrite("mask_i Contour_" + s + " Image" + ".bmp", drawing);
+					ofstream mask_iContourMatrixFile;
+					mask_iContourMatrixFile.open("mask_i Contour_" + s + " Image"+".csv");
+					mask_iContourMatrixFile << drawing << "\n";
+					mask_iContourMatrixFile.close();
+				}
+				//imshow("mask_i Contour_" + s + " Image", drawing);
+				//Mat test = Mat(contours[i]);
+				//minEllipse[i] = minAreaRect(test);
+
+				//ContourMinEllipseMatrixFile << minEllipse[i].angle << "\n";
 				//minRect[i] = minAreaRect(Mat(contours[i]));
 				/*minEllipse[i] = fitEllipse(drawing);*/
 				//// ellipse
@@ -154,7 +179,7 @@ int main(int argc, char *argv[])
 				//	line(drawing, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
 				//(x, y), (MA, ma), angle = cv2.fitEllipse(cnt);
 			}
-			ContourMinEllipseMatrixFile.close();
+			//ContourMinEllipseMatrixFile.close();
 			//ofstream fitEllipseContourMatrixFile;
 			//fitEllipseContourMatrixFile.open("fitEllipseContour_" + s + "MatrixFile.txt");
 			//for (int i = 0; i < minRect.size(); i++)
@@ -178,31 +203,31 @@ int main(int argc, char *argv[])
 			//}
 			//fitEllipseContourMatrixFile.close();
 
-			imwrite("contour_" + s + ".bmp", drawing);
+			//imwrite("contour_" + s + ".bmp", drawing);
 
 			//(x, y), (MA, ma), angle = cv2.fitEllipse(cnt);
 
 			//if (FltrLabel==1)
 			//{
-				//imshow("mask_i Contour_"+s+" Image", drawing);
+			//	imshow("mask_i Contour_"+s+" Image", drawing);
+			//	ofstream ContourMatrixFile;
+			//	ContourMatrixFile.open("ContourMatrixFile_" + s + ".csv");
+			//	ContourMatrixFile << drawing << "\n";
+			//	ContourMatrixFile.close();
+			//	//cout << "hierarchy size= " << hierarchy.size() << "\n";
+			//	//ofstream ContourHierarchyMatrixFile;
+			//	//ContourHierarchyMatrixFile.open("Contour_"+s+"HierarchyMatrixFile.txt");
+			//	//ContourHierarchyMatrixFile << "[Next, Previous, First_Child, Parent]" << endl;
+			//	//for (int k = 0; k<hierarchy.size(); k++)
+			//	//{
+			//	//	ContourHierarchyMatrixFile << hierarchy[k] << endl;
 
-				cout << "hierarchy size= " << hierarchy.size() << "\n";
-				ofstream ContourHierarchyMatrixFile;
-				ContourHierarchyMatrixFile.open("Contour_"+s+"HierarchyMatrixFile.txt");
-				ContourHierarchyMatrixFile << "[Next, Previous, First_Child, Parent]" << endl;
-				for (int k = 0; k<hierarchy.size(); k++)
-				{
-					ContourHierarchyMatrixFile << hierarchy[k] << endl;
-
-				}
-				ContourHierarchyMatrixFile.close();
-			////}
+			//	//}
+			//	//ContourHierarchyMatrixFile.close();
+			//}
 
 
-			ofstream ContourMatrixFile;	
-			ContourMatrixFile.open("ContourMatrixFile_" + s + ".csv");
-			ContourMatrixFile << drawing << "\n";
-			ContourMatrixFile.close();
+
 			//======================================
 			myConnectedComponents03file << "mask_i_" + s << "\n";
 			//imwrite("mask_i_"+s+".png", mask_i);
@@ -222,7 +247,7 @@ int main(int argc, char *argv[])
 				FltrPixel = FltrColors[FltrLabel];
 			}
 		}
-		cv::imshow("Connected Components", FltrDst);
+		cv::imshow(nFltrLabelsString+"-Connected Components", FltrDst);
 		imwrite("Connected Components.bmp", FltrDst);
 
 
