@@ -19,7 +19,7 @@
 //using std::vector;
 //
 ////![variables]
-//Mat src, src_gray;
+//Mat src, src_gray,srcCopy;
 //Mat dst, detected_edges, angleHist, origHist,grayHist, pixelsBin;
 //int edgeThresh = 1;
 //int lowThreshold;
@@ -80,11 +80,13 @@
 //		Scalar(255, 0, 0),
 //		thickness,
 //		lineType);
-//	imshow("GrayScale Image", img);
+//	imshow("Original Image", img);
 //}
 //
 //void CallBackFunc(int event, int x, int y, int flags, void* userdata)
-//{
+//{			
+//	Mat newSrc = src;
+//
 //	if (event == EVENT_LBUTTONDOWN)
 //	{
 //		system("cls");
@@ -104,13 +106,21 @@
 //			pt2.y = y;
 //			cout << "Left button of the mouse is clicked - position (" << pt2.x << ", " << pt2.y << ")" << endl;
 //
-//			MyLine(src_gray, pt1, pt2);
-//
+//			imshow("before", src);
+//			MyLine(src, pt1, pt2);
+//			imshow("after", src);Mat NuSrc = imread("connectedComponentImage05.bmp");
+//			imshow("New Src", NuSrc);
 //			// grabs pixels along the line (pt1, pt2)
 //			// from 8-bit 3-channel image to the buffer
-//			LineIterator it(src_gray, pt1, pt2, 8);
+//			
+//			LineIterator it(NuSrc, pt1, pt2, 8);
 //			LineIterator it2 = it;
 //			vector<double> buf(it.count);
+//			ofstream MatMatrixFile;
+//			MatMatrixFile.open("MatMatrixFile.csv");
+//			MatMatrixFile << src << "\n";
+//			MatMatrixFile.close();
+//
 //
 //			//for (int i = 0; i < it.count; i++, ++it)
 //			//{
@@ -123,7 +133,7 @@
 //			for (int i = 0; i < it2.count; i++, ++it2)
 //			{
 //				cout << "it2.pos()= " << it2.pos() << "\n";
-//				double val = (double)src.at<uchar>(it2.pos());
+//				double val = (double)NuSrc.at<uchar>(it2.pos());
 //				//Vec3b val = src.at<Vec3b>(it2.pos());
 //				cout << "val = " << val << "\n";
 //				//cout << "gray image= "<< (double)src_gray.at<uchar>(it2.pos()
@@ -310,10 +320,10 @@
 //
 //	//![load]
 //	//src = imread(argv[1], IMREAD_COLOR); // Load an image
-//	src = imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED); //read the image data in the file "MyPic.JPG" and store it in 'img'
+//	src = imread("connectedComponentImage05.bmp", CV_LOAD_IMAGE_UNCHANGED); //read the image data in the file "MyPic.JPG" and store it in 'img'
 //	IplImage* img = cvLoadImage("20161215 02.33_368L.jpg");
 //	imshow("Original Image", src);
-//
+//	srcCopy = src;
 //
 //	if (src.empty())
 //	{
@@ -323,35 +333,35 @@
 //
 //	myEdgeDetectorFile << "\n";    myEdgeDetectorFile << "\n";
 //	//![convert_to_gray]
-//	cvtColor(src, src_gray, COLOR_BGR2GRAY);
+//	//cvtColor(src, src_gray, COLOR_BGR2GRAY);
 //	//![convert_to_gray]
 //	myEdgeDetectorFile << "src_gray= "<<src_gray << "\n";
 //	myEdgeDetectorFile << "src_gray size= " << src_gray.size() << "\n";
 //	myEdgeDetectorFile << "\n";    myEdgeDetectorFile << "\n";
 //	//grayHist = getHistogram(src_gray,"GrayScaleImageHist");
-//	imshow("GrayScale Image", src_gray);
+//	//imshow("GrayScale Image", src_gray);
 //	//set the callback function for any mouse event
-//	setMouseCallback("GrayScale Image", CallBackFunc, NULL);
+//	setMouseCallback("Original Image", CallBackFunc, NULL);
 //	//![reduce_noise]
 //	//Reduce noise with a kernel 3x3
-//	blur(src_gray, detected_edges, Size(3, 3));
+//	//blur(src_gray, detected_edges, Size(3, 3));
 //	//![reduce_noise]
 //	//cout << "src_gray = " << (double)src_gray.at<uchar>(2, 24) << "\n";
 //	//imshow("Blurred Image", detected_edges);
 //	//![canny]
 //
 //	//Canny detector
-//	Canny(detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size);
+//	//Canny(detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size);
 //	//![canny]
 //	//imshow("Canny Image", detected_edges);
 //
 //	/// Gradient X
 //	//Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
-//	Sobel(src_gray, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+//	//Sobel(src_gray, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
 //
 //	/// Gradient Y
 //	//Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
-//	Sobel(src_gray, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+//	//Sobel(src_gray, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
 //	//![sobel]
 //
 //	//cv::Mat angle(src.size(), CV_64F);
@@ -381,9 +391,9 @@
 //
 //	double minM, maxM, minA, maxA;
 //
-//	cartToPolar(grad_x, grad_y, Mag, Angle, true);
+//	//cartToPolar(grad_x, grad_y, Mag, Angle, true);
 //
-//	angleHist = getHistogram(Angle,"AngleMatrixHist");
+//	//angleHist = getHistogram(Angle,"AngleMatrixHist");
 //	//cv::minMaxLoc(Mag, &minM, &maxM);
 //	//cv::minMaxLoc(Angle, &minA, &maxA);
 //	myEdgeDetectorFile << "angleHist size(w,h)= "<< angleHist.size().width << ", "<< angleHist.size().height << "\n";
@@ -397,84 +407,84 @@
 //	//PixelsInBinFile.open("PixelsInBinFile.txt");
 //	std::array<std::vector<int>, 72> vvv{ {} };
 //	cout << "gray scale image type= " << type2str(src_gray.type()) << "\n";
-//	for (size_t i = 0; i < Angle.rows; i++)
-//	{
-//		//myHistogramFile << i << "\n";
-//		const float* Row_i = Angle.ptr<float>(i);
-//		//const float* RowSG_i = src_gray.ptr<float>(i);
-//		//float RowSG2_i = src_gray.at<float>(i);
-//		//cout << "i" << i << "\n";
-//		
-//		for (size_t j = 0; j < Angle.cols; j++)
-//		{
-//			/// Establish the number of bins
-//			//int intensity = src_gray.at<int>(j,i);
-//			int histSize = 256;
-//			myEdgeDetectorFile << "(i,j)= (" << i << ", " << j << ")= " << Row_i[j] << "\n";
-//			//myEdgeDetectorFile << "(i,j)= (" << i << ", " << j << ")= " << Row_i[j] << "\n";
-//			myEdgeDetectorFile << "Row_i[j]/binSize= (" << Row_i[j] << ", " << binSize << ")= " << int(Row_i[j]/binSize) << "\n";
-//			//myEdgeDetectorFile << "src_gray[i=" << i << ",j=" <<  j << "]=" << RowSG_i[j] << "\n";
-//			myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << (double)src_gray.at<uchar>(i,j) << "\n";
-//			
-//			//vvv[i].at(j) = RowSG_i[j];
-//			//vvv[int(Row_i[j] / binSize)].push_back(RowSG_i[j]);
-//			vvv[int(Row_i[j] / binSize)].push_back((double)src_gray.at<uchar>(i, j));
-//			//if (int(Row_i[j] / binSize)==53)
-//			//{
-//			//	myEdgeDetectorFile << "----------------------------------"<<"\n";
-//			//	myEdgeDetectorFile << "Row_i[j]/binSize= (" << Row_i[j] << "/ " << binSize << ")= " << int(Row_i[j] / binSize) << "\n";
-//			//	//myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << RowSG_i[j] << "\n";
-//			//	myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << (double)src_gray.at<uchar>(i,j) << "\n";
-//			//}
-//			myEdgeDetectorFile << "\n";
-//			myEdgeDetectorFile << "\n";
-//			myEdgeDetectorFile << "\n";
-//			//myEdgeDetectorFile << Row_i[j] << "\n";
+//	//for (size_t i = 0; i < Angle.rows; i++)
+//	//{
+//	//	//myHistogramFile << i << "\n";
+//	//	const float* Row_i = Angle.ptr<float>(i);
+//	//	//const float* RowSG_i = src_gray.ptr<float>(i);
+//	//	//float RowSG2_i = src_gray.at<float>(i);
+//	//	//cout << "i" << i << "\n";
+//	//	
+//	//	for (size_t j = 0; j < Angle.cols; j++)
+//	//	{
+//	//		/// Establish the number of bins
+//	//		//int intensity = src_gray.at<int>(j,i);
+//	//		int histSize = 256;
+//	//		myEdgeDetectorFile << "(i,j)= (" << i << ", " << j << ")= " << Row_i[j] << "\n";
+//	//		//myEdgeDetectorFile << "(i,j)= (" << i << ", " << j << ")= " << Row_i[j] << "\n";
+//	//		myEdgeDetectorFile << "Row_i[j]/binSize= (" << Row_i[j] << ", " << binSize << ")= " << int(Row_i[j]/binSize) << "\n";
+//	//		//myEdgeDetectorFile << "src_gray[i=" << i << ",j=" <<  j << "]=" << RowSG_i[j] << "\n";
+//	//		myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << (double)src_gray.at<uchar>(i,j) << "\n";
+//	//		
+//	//		//vvv[i].at(j) = RowSG_i[j];
+//	//		//vvv[int(Row_i[j] / binSize)].push_back(RowSG_i[j]);
+//	//		vvv[int(Row_i[j] / binSize)].push_back((double)src_gray.at<uchar>(i, j));
+//	//		//if (int(Row_i[j] / binSize)==53)
+//	//		//{
+//	//		//	myEdgeDetectorFile << "----------------------------------"<<"\n";
+//	//		//	myEdgeDetectorFile << "Row_i[j]/binSize= (" << Row_i[j] << "/ " << binSize << ")= " << int(Row_i[j] / binSize) << "\n";
+//	//		//	//myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << RowSG_i[j] << "\n";
+//	//		//	myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << (double)src_gray.at<uchar>(i,j) << "\n";
+//	//		//}
+//	//		myEdgeDetectorFile << "\n";
+//	//		myEdgeDetectorFile << "\n";
+//	//		myEdgeDetectorFile << "\n";
+//	//		//myEdgeDetectorFile << Row_i[j] << "\n";
 //
-//			//if (i==6 && j==274)
-//			//{
-//			//	cout << "src_gray[i=" << i <<",j=" << j <<"]="<<RowSG_i[j]<<"\n";
-//			//}
-//			//for (size_t k = 1; k < angleHist.rows; k++)
-//			//{
-//			//	binID = angleHist[k];
-//			//	pixelsBin = PixelsInBin(src_gray, angleHist, i,j,k);
-//			//}
-//		}
-//	}
+//	//		//if (i==6 && j==274)
+//	//		//{
+//	//		//	cout << "src_gray[i=" << i <<",j=" << j <<"]="<<RowSG_i[j]<<"\n";
+//	//		//}
+//	//		//for (size_t k = 1; k < angleHist.rows; k++)
+//	//		//{
+//	//		//	binID = angleHist[k];
+//	//		//	pixelsBin = PixelsInBin(src_gray, angleHist, i,j,k);
+//	//		//}
+//	//	}
+//	//}
 //
 //	ofstream ArrayVectorFile;
 //	ArrayVectorFile.open("ArrayVectorFile.txt");
 //	ArrayVectorFile << "vvv size= " << vvv.size() << "\n";
 //	int mySum, myMean, mySD;
-//	for (int i = 0; i<vvv.size(); i++)
-//	{
-//		mySum, mySD, myMean = 0;
-//		//std::ArrayVectorFile << "v.size()= " << vvv.size() << "\n";
-//		ArrayVectorFile << "vvv[" << i << "].size()" << vvv[i].size() << "\n";
-//		for (int j = 0; j<vvv[i].size(); j++)
-//		{
-//			//ArrayVectorFile << "vvv size= " << vvv.size() << "\n";
-//			//ArrayVectorFile << "vvv[" << i<< "].size()" << vvv[i].size() << "\n";
-//			//if (!vvv[i].empty())
-//			//{
-//				ArrayVectorFile << "i= " << i << ", j= " << j << ", value= " << vvv[i].at(j) << "\n";
-//				mySum += vvv[i].at(j);
-//				//myMean = mean(vvv[i],NULL);
-//			//}
-//			//if (i==53)
-//			//{
-//			//	ArrayVectorFile << "\n";
-//			//	ArrayVectorFile << "\n";
-//			//	ArrayVectorFile << "\n";
-//			//	ArrayVectorFile << "i= " << i << ", j= " << j << ", value= " << vvv[i].at(j) << "\n";
-//			//}
-//			//std::cout << "2- i= "<<i<<"\n";
-//		}
-//		cout << "sum= " << mySum << "\n";
-//		//cout << "i= " << i << ", j= " << j << ", value= " << v[i].at(j)<< "\n";
-//		//std::cout << "3- i= "<<i<<"\n";
-//	}
+//	//for (int i = 0; i<vvv.size(); i++)
+//	//{
+//	//	mySum, mySD, myMean = 0;
+//	//	//std::ArrayVectorFile << "v.size()= " << vvv.size() << "\n";
+//	//	ArrayVectorFile << "vvv[" << i << "].size()" << vvv[i].size() << "\n";
+//	//	for (int j = 0; j<vvv[i].size(); j++)
+//	//	{
+//	//		//ArrayVectorFile << "vvv size= " << vvv.size() << "\n";
+//	//		//ArrayVectorFile << "vvv[" << i<< "].size()" << vvv[i].size() << "\n";
+//	//		//if (!vvv[i].empty())
+//	//		//{
+//	//			ArrayVectorFile << "i= " << i << ", j= " << j << ", value= " << vvv[i].at(j) << "\n";
+//	//			mySum += vvv[i].at(j);
+//	//			//myMean = mean(vvv[i],NULL);
+//	//		//}
+//	//		//if (i==53)
+//	//		//{
+//	//		//	ArrayVectorFile << "\n";
+//	//		//	ArrayVectorFile << "\n";
+//	//		//	ArrayVectorFile << "\n";
+//	//		//	ArrayVectorFile << "i= " << i << ", j= " << j << ", value= " << vvv[i].at(j) << "\n";
+//	//		//}
+//	//		//std::cout << "2- i= "<<i<<"\n";
+//	//	}
+//	//	cout << "sum= " << mySum << "\n";
+//	//	//cout << "i= " << i << ", j= " << j << ", value= " << v[i].at(j)<< "\n";
+//	//	//std::cout << "3- i= "<<i<<"\n";
+//	//}
 //	ArrayVectorFile.close();
 //	//myEdgeDetectorFile << "vvv= " << vvv << "\n";
 //	myEdgeDetectorFile.close();

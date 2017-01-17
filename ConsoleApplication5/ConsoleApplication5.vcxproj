@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoundingBoxContours.cpp" />
+    <ClCompile Include="CircleEdgeMagAngleExample.cpp" />
     <ClCompile Include="ConnectedComponents03.cpp" />
     <ClCompile Include="ContourRectEllipse.cpp" />
     <ClCompile Include="contours.cpp" />
