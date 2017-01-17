@@ -6,6 +6,6 @@ src_gray size= [0 x 0]
 
 angleHist size(w,h)= 0, 0
 Original Image size= [300 x 300]
-Angle size= [0 x 0]
+Angle size= [300 x 300]
 
 angleHist= []

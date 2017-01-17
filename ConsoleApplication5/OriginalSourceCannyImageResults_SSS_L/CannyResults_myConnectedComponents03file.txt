@@ -1,0 +1,6 @@
+(Filter) Number of connected components = 1441
+
+mask_i_1
+mask_i_2
+mask_i_3
+mask_i_4

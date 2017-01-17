@@ -1,0 +1,14 @@
+1)read source image
+2)convert source image to gray-scale
+3)threshhold gray-scale image to generate binary image
+4)calculate connectedComponents
+5)normalize (all) connectedComponents image
+6)extract each components (mask)
+7)perform Canny detection on each component (mask)
+8)calculate angles of each Canny-component
+9)generate contours
+10)extract each contour
+--------------------------------------------------------
+6)extract each components (mask)
+  -- 
+  -- 
