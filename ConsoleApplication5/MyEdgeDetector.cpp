@@ -59,6 +59,9 @@ int mouseX, mouseY;
 Point pt1, pt2;
 int clickCounter = 0,lineCounter=0, pixelCounter=0;
 std::vector<int> allObjPixelsCount;
+//std::vector<double> buf;
+vector<Point> points1;
+vector<Point> points2;
 
 //LineIterator it;
 //LineIterator it2;
@@ -68,7 +71,7 @@ std::vector<int> allObjPixelsCount;
 void MyLine(Mat img, Point start, Point end)
 {
 	
-	if (clickCounter==2)
+	if (clickCounter==/*1*/2)
 	{
 		clickCounter = 0;
 	}
@@ -99,16 +102,43 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 		//cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
 		if (clickCounter==1)
 		{
+			double theta = 90;
+			int length = 150;
 			cout << "clickCounter= " << clickCounter << "\n";
 			pt1.x = x;
 			pt1.y = y;
 			cout << "Left button of the mouse is clicked - position (" << pt1.x << ", " << pt1.y << ")" << endl;
+
+			/////Draw line based pnone point (pt1, angle(theta) and length of line
+			//pt2.x = (int)round(x + length * cos(theta * CV_PI / 180.0));
+			//pt2.y = (int)round(y + length * sin(theta * CV_PI / 180.0));
+			//MyLine(src, pt1, pt2);
 		}
 		else if (clickCounter==2)
 		{
-			cout << "clickCounter= " << clickCounter << "\n";
-			pt2.x = x;
-			pt2.y = y;
+			pixelCounter = 0
+
+			int tempX = pt2.x - pt1.x;
+			int tempY = pt2.y - pt1.y;
+			if (tempX <tempY)
+			{
+				pt2.x = pt1.x;
+				pt2.y = y;
+			}
+			else if (tempX >tempY)
+			{
+				pt2.x = x;
+				pt2.y = pt1.y;
+			}
+			else
+			{
+				pt2.x = x;
+				pt2.y = y;	
+			}
+
+			//cout << "clickCounter= " << clickCounter << "\n";
+			//pt2.x = x;
+			//pt2.y = y;
 			cout << "Left button of the mouse is clicked - position (" << pt2.x << ", " << pt2.y << ")" << endl;
 
 			MyLine(src, pt1, pt2);
@@ -116,7 +146,8 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 			cv::LineIterator it(src_gray, pt1, pt2, 8);
 			std::vector<double> buf(it.count);
 			std::vector<double> objPixelbuf(it.count);
-			std::vector<cv::Point> points(it.count);
+			//std::vector<cv::Point> points(it.count);
+			//points;
 			//imshow("image", BinaryImg);
 			cout << "line= " << lineCounter << " -- no. of pixels= " << it.count << "\n";
 			for (int i = 0; i < it.count; i++, ++it)
@@ -126,13 +157,15 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 				{
 					objPixelbuf[i] = val;
 					pixelCounter++;
+					points1.push_back(pt1);
+					points2.push_back(pt2);
 				}
 				buf[i] = val;
-				//cout << buf[i] << "\n";					
+				cout << buf[i] << "\n";					
 			}
 			cout << "line= " << lineCounter << " -- no. of pixels in object= " << pixelCounter << "\n";
 			allObjPixelsCount.push_back(pixelCounter);
-			cout << "object pixel count= " << Mat(allObjPixelsCount) << "\n";
+			//cout << "object pixel count= " << Mat(allObjPixelsCount) << "\n";
 
 			ofstream file;
 			file.open("buf.csv");
@@ -155,6 +188,20 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 		cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
 		cout << "object pixel count= "<<Mat(allObjPixelsCount) << "\n";
 		cout << "average of object-pixel-count= " << mean(allObjPixelsCount) << "\n";
+		vector<int> ans;
+		for (size_t i = 0; i < allObjPixelsCount.size(); i++)
+		{
+			cout << "i= " <<i<<"  ||  "<<allObjPixelsCount[i]<<"-"<< mean(allObjPixelsCount)[0]<<"= "<< allObjPixelsCount[i]-mean(allObjPixelsCount)[0] << "\n";
+			ans.push_back(abs(allObjPixelsCount[i] - mean(allObjPixelsCount)[0]));
+		}
+		double min, max;
+		Point min_loc, max_loc;
+		minMaxLoc(Mat(ans), &min, &max, &min_loc, &max_loc);
+		cout << "ANSWER= " << allObjPixelsCount[min_loc.y] << "\n";
+		//cout << "ANSWER line coordinates1= " << points1[min_loc.y] << "\n";
+		//cout << "ANSWER line coordinates2= " << points2[min_loc.y] << "\n";
+		//line(src, points1[min_loc.y], points2[min_loc.y], Scalar(0, 0, 255),2,8);
+		//imshow("Drawn Image", src);
 	}
 	else if (event == EVENT_MBUTTONDOWN)
 	{
@@ -163,6 +210,23 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 	else if (event == EVENT_MOUSEMOVE)
 	{
 		//cout << "position (" << x << ", " << y << ")" << "\n"<<endl;
+		if (clickCounter==1)
+		{
+			//if (x==pt1.x)
+			//{
+			//	cout << "pt1.x= " << pt1.x <<"\n" << endl;
+			//	cout << "x= " << x << "\n" << endl;
+			//}
+			//else if (y==pt1.y)
+			//{
+			//	cout << "pt1.y= " << pt1.y << "\n" << endl;
+			//	cout << "y= " << y << "\n" << endl;
+			//}
+			//else
+			//{
+			//	system("cls");
+			//}
+		}
 		//cout << "intensity= " << (double)src.at<uchar>(Point(x, y)) << "\n";
 
 	}
