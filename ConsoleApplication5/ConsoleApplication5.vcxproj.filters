@@ -42,9 +42,24 @@
     <ClCompile Include="CircleEdgeMagAngleExample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\wavelib\src\shared\wavelet2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectedComponents03.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Downloads\cvWiener2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wavelet2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fftw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

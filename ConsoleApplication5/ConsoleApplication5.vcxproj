@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\wavelib\src\shared\wavelet2d.cpp" />
     <ClCompile Include="BoundingBoxContours.cpp" />
     <ClCompile Include="CircleEdgeMagAngleExample.cpp" />
     <ClCompile Include="ConnectedComponents03.cpp" />
@@ -28,9 +29,13 @@
     <ClCompile Include="MyDrawLineOnImage.cpp" />
     <ClCompile Include="MyEdgeDetector.cpp" />
     <ClCompile Include="MyFloodFillZoom.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Downloads\cvWiener2.h" />
     <ClInclude Include="ConnectedComponents03.h" />
+    <ClInclude Include="fftw3.h" />
+    <ClInclude Include="wavelet2d.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DECF8E81-458E-495E-BF17-C34D0A315E41}</ProjectGuid>
