@@ -298,14 +298,29 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	ofstream CannyMagGradOrig_newAngle_MatrixFile;
 	CannyMagGradOrig_newAngle_MatrixFile.open("CannyMagGradOrig_newAngle_" + count + "MatrixFile.csv");
 
-	Mat newAngle = Mat(cannyResult.size().width, cannyResult.size().height, CV_64F, 0.0);;
+	ofstream CalcAngle_Container_MatrixFile;
+	CalcAngle_Container_MatrixFile.open("CalcAngle_Container_" + count + "_MatrixFile.txt");
 
-	///Walk edge
+	ofstream CalcAngle_Histogram_MatrixFile;
+	CalcAngle_Histogram_MatrixFile.open("CalcAngle_Histogram_" + count + "_MatrixFile.csv");
+
+	Mat newAngle = Mat(cannyResult.size().width, cannyResult.size().height, CV_64F, 0.0);;
+	struct element {
+		int bin;
+		int i;
+		int j;
+		int angle;
+		int value;
+	};
+	vector<element> container;
+	int containerCount = 0;
+#pragma region Extract Edge angles
+	///Walk Canny (edge)
 	for (size_t i = 0; i < cannyResult.rows; i++)
 	{
 		const float* aRow_i = Angle.ptr<float>(i);
 		const float* mRow_i = Mag.ptr<float>(i);
-//		const double* cRow_i = (double)cannyResult.at<uchar>(i);
+		//		const double* cRow_i = (double)cannyResult.at<uchar>(i);
 
 		for (size_t j = 0; j < cannyResult.cols; j++)
 		{
@@ -322,10 +337,23 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 			myEdgeDetectorFile << "\n";
 			myEdgeDetectorFile << "\n";
 			myEdgeDetectorFile << "\n";
-			//myEdgeDetectorFile << Row_i[j] << "\n";
+			/// For all non-zero edge pixels
 			if ((int)cannyResult.at<uchar>(i, j) != 0)
 			{
-				newAngle.at<double>(i,j) = (double)aRow_i[j];
+				///Get pixel from Angle at Canny-corresponding-coordinates
+				newAngle.at<double>(i, j) = (double)aRow_i[j];
+				///Storing angle information ([x,y],bin,angle-value,Canny-value)
+				CalcAngle_Histogram_MatrixFile << "newAngle(i,j)= (" << i << ", " << j << ")= " << newAngle.at<double>(i, j) << "\n";
+				container.push_back(element());
+				container[containerCount].bin = int(newAngle.at<double>(i, j) / binSize);
+				container[containerCount].i = i;
+				container[containerCount].j = j;
+				container[containerCount].angle = newAngle.at<double>(i, j);
+				container[containerCount].value = (int)cannyResult.at<uchar>(i, j);
+				CalcAngle_Container_MatrixFile << containerCount << "," << container[containerCount].bin << "," << container[containerCount].i << "," << container[containerCount].j << "," << container[containerCount].angle << "," << container[containerCount].value << "\n";
+				containerCount++; ///To index into container
+				vvv[int(newAngle.at<double>(i, j) / binSize)].push_back(newAngle.at<double>(i, j));
+
 				CannyMagGradOrig_Canny_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << (int)cannyResult.at<uchar>(i, j) << "\n";
 				CannyMagGradOrig_Angle_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << aRow_i[j] << "\n";
 				CannyMagGradOrig_Mag_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << mRow_i[j] << "\n";
@@ -338,7 +366,10 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 			}
 		}
 	}
+#pragma endregion
 
+
+#pragma region For Testing Purposes ONLY
 	CannyMagGradOrig_newAngle_MatrixFile << newAngle << "\n";
 	CannyMagGradOrig_Canny_MatrixFile.close();
 	CannyMagGradOrig_newAngle_MatrixFile.close();
@@ -347,6 +378,8 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	CannyMagGradOrig_0M_MatrixFile.close();
 	CannyMagGradOrig_0A_MatrixFile.close();
 	CannyMagGradOrig_0C_MatrixFile.close();
+	CalcAngle_Container_MatrixFile.close();
+	CalcAngle_Histogram_MatrixFile.close();
 
 	cout << "newAngle.size()= " << newAngle.size() << "\n";
 	cout << "Angle.size()= " << Angle.size() << "\n";
@@ -354,58 +387,51 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	cout << "src.size()= " << orig.size() << "\n";
 	cout << "Mask.size()= " << mask.size() << "\n";
 
-	ofstream CalcAngle_Histogram_MatrixFile;
-	CalcAngle_Histogram_MatrixFile.open("CalcAngle_Histogram_" + count + "_MatrixFile.csv");
+	//ofstream CalcAngle_Histogram_MatrixFile;
+	//CalcAngle_Histogram_MatrixFile.open("CalcAngle_Histogram_" + count + "_MatrixFile.csv");
 
-	ofstream CalcAngle_Container_MatrixFile;
-	CalcAngle_Container_MatrixFile.open("CalcAngle_Container_" + count + "_MatrixFile.txt");
-	//for (size_t i = 0; i < 72; i++)
+	//ofstream CalcAngle_Container_MatrixFile;
+	//CalcAngle_Container_MatrixFile.open("CalcAngle_Container_" + count + "_MatrixFile.txt");
+#pragma endregion
+
+	//struct element {
+	//	int bin;
+	//	int i;
+	//	int j;
+	//	int angle;
+	//	int value;
+	//};
+	//vector<element> container;
+	//int containerCount = 0;
+	/////Sort Angle according to histogram
+	//for (size_t i = 0; i < newAngle.rows; i++)
 	//{
-	//	vvv[i].push_back(0);
-	//}
-	//std::array<std::vector<int>, 72> vvvCounts{ {} };
-	//std::vector<int> element1(3);
-	struct element {
-		int bin;
-		int i;
-		int j;
-		int angle;
-		int value;
-	};
-	vector<element> container;
-	int containerCount = 0;
-	///Sort Angle according to histogram
-	for (size_t i = 0; i < newAngle.rows; i++)
-	{
-		for (size_t j = 0; j < newAngle.cols; j++)
-		{				
-			double newAngle2Row_ij = newAngle.at<double>(i, j);
-			if (newAngle2Row_ij !=0)
-			{
-				//if (vvv[int(newAngle2Row_ij / binSize)].at(0)==0 && vvv[int(newAngle2Row_ij / binSize)].capacity()==1)
-				//{
-				//	vvv[int(newAngle2Row_ij / binSize)].pop_back();
-				//}
-				CalcAngle_Histogram_MatrixFile << "newAngle(i,j)= (" << i << ", " << j << ")= " << newAngle2Row_ij << "\n";
-				container.push_back(element());
-				container[containerCount].bin = int(newAngle2Row_ij / binSize);
-				container[containerCount].i = i;
-				container[containerCount].j = j;
-				container[containerCount].angle = newAngle2Row_ij;
-				container[containerCount].value = (int)cannyResult.at<uchar>(i, j);
-				
-				CalcAngle_Container_MatrixFile << containerCount<<","<< container[containerCount].bin <<","  << container[containerCount].i << "," << container[containerCount].j << "," << container[containerCount].angle << "," << container[containerCount].value<<"\n";
-				containerCount++;
+	//	for (size_t j = 0; j < newAngle.cols; j++)
+	//	{				
+	//		double newAngle2Row_ij = newAngle.at<double>(i, j);
+	//		if (newAngle2Row_ij !=0)
+	//		{
+	//			CalcAngle_Histogram_MatrixFile << "newAngle(i,j)= (" << i << ", " << j << ")= " << newAngle2Row_ij << "\n";
+	//			container.push_back(element());
+	//			container[containerCount].bin = int(newAngle2Row_ij / binSize);
+	//			container[containerCount].i = i;
+	//			container[containerCount].j = j;
+	//			container[containerCount].angle = newAngle2Row_ij;
+	//			container[containerCount].value = (int)cannyResult.at<uchar>(i, j);
+	//			
+	//			CalcAngle_Container_MatrixFile << containerCount<<","<< container[containerCount].bin <<","  << container[containerCount].i << "," << container[containerCount].j << "," << container[containerCount].angle << "," << container[containerCount].value<<"\n";
+	//			containerCount++;
 
-				vvv[int(newAngle2Row_ij / binSize)].push_back(newAngle2Row_ij);
-			}
-		}
-	}
+	//			vvv[int(newAngle2Row_ij / binSize)].push_back(newAngle2Row_ij);
+	//		}
+	//	}
+	//}
 	//std::copy(container.begin(), container.end(), std::ostream_iterator<element>(CalcAngle_Container_MatrixFile<< " "));
 	//CalcAngle_Container_MatrixFile << (Mat)container << "\n";
-	CalcAngle_Container_MatrixFile.close();
-	CalcAngle_Histogram_MatrixFile.close();
+	//CalcAngle_Container_MatrixFile.close();
+	//CalcAngle_Histogram_MatrixFile.close();
 
+#pragma region Store all angle frequencies
 	ofstream ArrayVectorFile;
 	ArrayVectorFile.open("ArrayVector" + count + "File.txt");
 	std::array<std::vector<int>, 72> vvvCounts{ {} };
@@ -414,46 +440,44 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	int temp = 0;
 	struct MaxElement {
 		int bin;
-		int value=0;
+		int value = 0;
 	};
-
 	MaxElement me;
-	for (int i = 0; i<vvv.size(); i++)
+	for (int i = 0; i < vvv.size(); i++)
 	{
-		for (int j = 0; j<vvv[i].size(); j++)
+		for (int j = 0; j < vvv[i].size(); j++)
 		{
 			ArrayVectorFile << "i= " << i << ", j= " << j << ", value= " << vvv[i].at(j) << "\n";
-			if (vvvCounts[i].empty())
-			{
-				vvvCounts[i].push_back(vvv[i].size());			
-				if (vvvCounts[i].at(0) > temp)
+			if (vvvCounts[i].empty())	///If it's the first one
+			{	///Store angle frequency
+				vvvCounts[i].push_back(vvv[i].size());	///vvv[i].size() = Number angle of occurences			
+				if (vvvCounts[i].at(0) > temp)	///Find bin with the most elements
 				{
 					temp = vvvCounts[i].at(0);
-					me.bin = i;
-					me.value = vvvCounts[i].at(0);
+					me.bin = i;	///Bin with most elements (bin ID)
+					me.value = vvvCounts[i].at(0);	///Frequency count
 				}
 				CalcAngle_vvvCounts_MatrixFile << "vvvCounts[" << i << "].at[" << j << "]= " << vvvCounts[i].at(j) << "\n";
 			}
-			
-
-
 		}
 	}
 	CalcAngle_vvvCounts_MatrixFile.close();
 	ArrayVectorFile.close();
-	cout << "The biggest number is: " << me.value<< " at bin "<<me.bin << endl;
+	cout << "The biggest number is: " << me.value << " at bin " << me.bin << endl;
+#pragma endregion
 
+
+#pragma region Plot Back to Canny
 	Mat tempCannyResult = cannyResult;
 	for (size_t i = 0; i < cannyResult.rows; i++)
 	{
 		for (size_t j = 0; j < cannyResult.cols; j++)
 		{
-			//(int)cannyResult.at<uchar>(i, j)
-			if ((int)cannyResult.at<uchar>(i, j) !=0)
+			if ((int)cannyResult.at<uchar>(i, j) != 0)
 			{
 				for (size_t cc = 0; cc < container.size(); cc++)
 				{
-					if (container[cc].i==i && container[cc].j ==j)
+					if (container[cc].i == i && container[cc].j == j)
 					{
 						tempCannyResult.at<uchar>(i, j) = 100;
 					}
@@ -464,6 +488,66 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	}
 	imshow("tempCannyResult", tempCannyResult);
 	imwrite("tempCannyResult.bmp", tempCannyResult);
+#pragma endregion
+
+
+#pragma region Plot Back to Mask
+	Mat tempMask = mask;
+	int similar = 0;
+	for (size_t i = 0; i < mask.rows; i++)
+	{
+		for (size_t j = 0; j < mask.cols; j++)
+		{
+			if ((int)mask.at<uchar>(i, j) != 0)
+			{
+				for (size_t cc = 0; cc < container.size(); cc++)
+				{
+					if (container[cc].i == i && container[cc].j == j)
+					{
+						tempMask.at<uchar>(i, j) = 100;
+						similar++;
+					}
+					else
+					{
+						similar--;
+						cout << "Not similar at i= " << i << ", j= " << j << "\n";
+					}
+				}
+
+			}
+		}
+	}
+	imshow("tempMask", tempMask);
+	imwrite("tempMask.bmp", tempMask);
+#pragma endregion
+
+#pragma region Plot Back onto Original
+	Mat tempOrig = orig;
+	for (size_t i = 0; i < orig.rows; i++)
+	{
+		for (size_t j = 0; j < orig.cols; j++)
+		{
+			if ((int)orig.at<uchar>(i, j) != 0)
+			{
+				for (size_t cc = 0; cc < container.size(); cc++)
+				{
+					if (container[cc].i == i && container[cc].j == j)
+					{
+						tempOrig.at<uchar>(i, j) = 255;
+					}
+					else
+					{
+
+					}
+				}
+
+			}
+		}
+	}
+	imshow("tempOrig", tempOrig);
+	imwrite("tempOrig.jpg", tempOrig);
+#pragma endregion
+
 
 	myEdgeDetectorFile.close();
 
