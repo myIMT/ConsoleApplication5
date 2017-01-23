@@ -1,0 +1,9 @@
+Image Profile - LineIterator:
+ -- plot image profile data with calcHist function:
+	-- data = image profile data (Mat)
+	-- range = (binary) 0-1 , (grayscale)0-255(range of our component angles values)
+	-- minimum range value = 0
+	-- maximum range value = 1 or 255 (binary or grayscale)
+	-- dims = 1 (number of parameters we want to collect data of - we only want to collect data of angles)
+	-- bin size = 1 (each bin is 1 unit wide)
+	-- bins (histSize)= 1/1 = 1 or 255/1=255 (binary or grayscale)(number of subdivisions in each dims) (size of histogram)

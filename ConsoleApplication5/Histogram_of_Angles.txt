@@ -1,0 +1,10 @@
+Histogram of Angles:
+ -- data = angles of component (Mat)
+ -- range = 0-360 (range of our component angles values)
+	-- minimum range value = 0
+	-- maximum range value = 360
+ -- dims = 1 (number of parameters we want to collect data of - we only want to collect data of angles)
+ -- bin size = 5 (each bin is 5 degrees wide)
+ -- bins (histSize)= 360/5 = 72 (number of subdivisions in each dims) (size of histogram)
+ 
+ 

@@ -9,7 +9,17 @@ sequence of implementation:
 	-- outputs matrix containing all components and count of components
 	-- -- can use use count to iterate through components matrix to extract each component
 	-- -- -- generate mask to obtain each component , save that component but also calculate contour from component
+	-- outpts binary image of components (all or one-by-one)
 6)use findContours to calculate contours
-	-- findContours take as input, component (mask),contour mode and contour approximation
-	-- -- contour mode = RETR_EXTERNAL = return all boundary contours (level 0 contours)
-	-- -- contour approximation = CHAIN_APPROX_NONE = return all points inside calculated contours
+	-- contours are a curve joining continious points on along the boundary that has the same colour or intensity
+	-- contours are very useful for shape analyis, obejct detection and recognition
+	-- findContours take as input, component (mask),contour mode and contour approximation (take binary image as input)
+	-- findContours work on black background with white foreground
+	-- 
+	-- -- contour retrieval mode = RETR_EXTERNAL = return all boundary contours (level 0 contours)
+	-- -- contour approximation method = CHAIN_APPROX_NONE = return all points inside calculated contours
+			-- contours are the boundary of a shape
+			-- contours store the (x,y) coordinates of the boundary of a shape
+				-- wheter it stores all the (x,y) coordinates or not, depends on this parameter:
+					-- CHAIN_APPROX_NONE = store allcoordinates
+					-- CHAIN_APPROX_SIMPLE = stores some coordinates. Remove all redundant coordinates and compressess the contour - saves memeory

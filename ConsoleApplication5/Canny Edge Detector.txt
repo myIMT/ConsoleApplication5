@@ -1,0 +1,21 @@
+Canny Edge Detector:
+  -- (1) Apply Gaussian filter to smooth the image (to remove noise) (smoothing step)
+  -- (2) Find the intensity gradients of the image (finding gradients step):
+		-- Calculate Gx, Gy, G, theta (0,45,90,135) and M using any of the gradient operators (Roberts, Sobel, Prewitt, etc.). Default Canny used Sobel.
+  -- (3) Apply non-maximum suppression to get rid of spurious response to edge detection (non-maximum suppresion step)
+		-- thinning of edges (single pixel think edge) 
+		-- (for every pixel [since we have magnitude and orientation for all pixel] we walk in direction of calculated orientation across magnitude and look for darkest pixel - this darkest pixel will be our edge at that point)
+		-- Check wheter each non-zero thresholded M(from step 3) is greater than its two neighbours along the gradient. If so, keep M unchanged, otherwise set it to 0.
+  -- (4) Apply double threshold to determine potential edges (double thresholding step)
+		-- threshold previous result by two different thresholds t1 and t2 (where t1 < t2) to obtain two binary images T1 and T2. T2 has less noise and fewer false edges but greater gas bewteen edge segments when compared to T1.
+		-- (after single pixel edges, we now have some edges that are really dark, some that are medium dark intensity, and some that are very light dark)
+		-- (we now detect all pixels that fall into these three categories: sure edges=dark(high intensity), (doubtful)medium intensity edges=(light dark)medium intensity and not edges=low intensity edges )
+		-- (now we remove low intensity edges and keep both high and medium intensity edges)
+		-- (So now our new images contains sure and doubtful edges)
+		-- (next step is to get rid of this doubt and confirm wheter medium intensity edges are sure edges or not)
+  -- (5) Track edge by hysteresis: Finalize the edges by suppressing all the other edges that are weak and not connected to strong  (edge tracking step)
+		-- Link edge segemnts in T2 to form continuous edges. 
+			-- (if medium intensity edges are connected to high intensity edges, then they are sure edges and we keep them)
+			-- (if medium intensity edges are not connected to sure edges, we drop them - now we have our final edge detected image)
+			-- This is done by tracing each segemnt in T2 to its end and then search its neighbours in T1 to find any edge segement in T1 to bridge the gap untill reaching another edge segment in T2.
+			-- (experimenting with these threshold values will yield different results)

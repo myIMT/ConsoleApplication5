@@ -29,15 +29,35 @@
 //	Vec3b cyan(255, 255, 0);
 //	Vec3b green(0, 255, 0);
 //	Vec3b yellow(0, 255, 255);
+//
+//	ofstream MatrixFile;
+//	MatrixFile.open("orientationMapMatrixFile.txt");
+//	//MatrixFile << ori << "\n";
+//	MatrixFile << "mag.rows*mag.cols= "<< mag.rows*mag.cols << "\n";
+//
 //	for (int i = 0; i < mag.rows*mag.cols; i++)
 //	{
+//		//MatrixFile << "i= "<<i << "\n";
 //		float* magPixel = reinterpret_cast<float*>(mag.data + i * sizeof(float));
+//		//MatrixFile << "magPixel= " << magPixel << "\n";
+//		//MatrixFile << "\n";
+//		//MatrixFile << "\n";
+//		//MatrixFile << "\n";
 //		if (*magPixel > thresh)
 //		{
+//			//MatrixFile << "i= " << i << "\n";
 //			float* oriPixel = reinterpret_cast<float*>(ori.data + i * sizeof(float));
+//			//MatrixFile << "ori.data= " << ori.data << "\n";
+//			//MatrixFile << "i * sizeof(float)= " << i * sizeof(float) << "\n";
+//			//MatrixFile << "oriPixel= " << oriPixel << "\n";
+//			//MatrixFile << "\n";
 //			Vec3b* mapPixel = reinterpret_cast<Vec3b*>(oriMap.data + i * 3 * sizeof(char));
+//			//MatrixFile << "oriMap.data= " << oriMap.data << "\n";
+//			//MatrixFile << "i  * 3* sizeof(float)= " << i * 3 * sizeof(float) << "\n";
+//			MatrixFile << "oriPixel= " << *oriPixel << "\n";
+//
 //			if (*oriPixel < 90.0)
-//				*mapPixel = red;
+//				*mapPixel = red; 
 //			else if (*oriPixel >= 90.0 && *oriPixel < 180.0)
 //				*mapPixel = cyan;
 //			else if (*oriPixel >= 180.0 && *oriPixel < 270.0)
@@ -46,7 +66,7 @@
 //				*mapPixel = yellow;
 //		}
 //	}
-//
+//	MatrixFile.close();
 //	return oriMap;
 //}
 //
