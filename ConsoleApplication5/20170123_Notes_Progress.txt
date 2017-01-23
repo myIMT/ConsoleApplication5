@@ -1,0 +1,1 @@
+WIP: Storing all pixel related to bins in bins - example store all pixels (from Canny Image) that relate to bin 0-5. Do this for all bins. Once done, count pixels in each bin and find maximum. plot pixels that belong to maximum bin with colour. If colour plotted pixels make up entire component, then that maximum bin is components angle. DO THIS FOR ALL COMPONENTS

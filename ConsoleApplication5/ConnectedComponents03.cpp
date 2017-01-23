@@ -355,12 +355,25 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	cout << "Mask.size()= " << mask.size() << "\n";
 
 	ofstream CalcAngle_Histogram_MatrixFile;
-	CalcAngle_Histogram_MatrixFile.open("CalcAngle_Histogram_" + count + "MatrixFile.csv");
+	CalcAngle_Histogram_MatrixFile.open("CalcAngle_Histogram_" + count + "_MatrixFile.csv");
+
+	ofstream CalcAngle_Container_MatrixFile;
+	CalcAngle_Container_MatrixFile.open("CalcAngle_Container_" + count + "_MatrixFile.txt");
 	//for (size_t i = 0; i < 72; i++)
 	//{
 	//	vvv[i].push_back(0);
 	//}
-	std::array<std::vector<int>, 72> vvvCounts{ {} };
+	//std::array<std::vector<int>, 72> vvvCounts{ {} };
+	//std::vector<int> element1(3);
+	struct element {
+		int bin;
+		int i;
+		int j;
+		int angle;
+		int value;
+	};
+	vector<element> container;
+	int containerCount = 0;
 	///Sort Angle according to histogram
 	for (size_t i = 0; i < newAngle.rows; i++)
 	{
@@ -374,11 +387,23 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 				//	vvv[int(newAngle2Row_ij / binSize)].pop_back();
 				//}
 				CalcAngle_Histogram_MatrixFile << "newAngle(i,j)= (" << i << ", " << j << ")= " << newAngle2Row_ij << "\n";
+				container.push_back(element());
+				container[containerCount].bin = int(newAngle2Row_ij / binSize);
+				container[containerCount].i = i;
+				container[containerCount].j = j;
+				container[containerCount].angle = newAngle2Row_ij;
+				container[containerCount].value = (int)cannyResult.at<uchar>(i, j);
 				
+				CalcAngle_Container_MatrixFile << containerCount<<","<< container[containerCount].bin <<","  << container[containerCount].i << "," << container[containerCount].j << "," << container[containerCount].angle << "," << container[containerCount].value<<"\n";
+				containerCount++;
+
 				vvv[int(newAngle2Row_ij / binSize)].push_back(newAngle2Row_ij);
 			}
 		}
 	}
+	//std::copy(container.begin(), container.end(), std::ostream_iterator<element>(CalcAngle_Container_MatrixFile<< " "));
+	//CalcAngle_Container_MatrixFile << (Mat)container << "\n";
+	CalcAngle_Container_MatrixFile.close();
 	CalcAngle_Histogram_MatrixFile.close();
 
 	ofstream ArrayVectorFile;
@@ -386,7 +411,13 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	std::array<std::vector<int>, 72> vvvCounts{ {} };
 	ofstream CalcAngle_vvvCounts_MatrixFile;
 	CalcAngle_vvvCounts_MatrixFile.open("CalcAngle_vvvCounts_" + count + "MatrixFile.csv");
+	int temp = 0;
+	struct MaxElement {
+		int bin;
+		int value=0;
+	};
 
+	MaxElement me;
 	for (int i = 0; i<vvv.size(); i++)
 	{
 		for (int j = 0; j<vvv[i].size(); j++)
@@ -395,6 +426,12 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 			if (vvvCounts[i].empty())
 			{
 				vvvCounts[i].push_back(vvv[i].size());			
+				if (vvvCounts[i].at(0) > temp)
+				{
+					temp = vvvCounts[i].at(0);
+					me.bin = i;
+					me.value = vvvCounts[i].at(0);
+				}
 				CalcAngle_vvvCounts_MatrixFile << "vvvCounts[" << i << "].at[" << j << "]= " << vvvCounts[i].at(j) << "\n";
 			}
 			
@@ -404,6 +441,29 @@ int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 	}
 	CalcAngle_vvvCounts_MatrixFile.close();
 	ArrayVectorFile.close();
+	cout << "The biggest number is: " << me.value<< " at bin "<<me.bin << endl;
+
+	Mat tempCannyResult = cannyResult;
+	for (size_t i = 0; i < cannyResult.rows; i++)
+	{
+		for (size_t j = 0; j < cannyResult.cols; j++)
+		{
+			//(int)cannyResult.at<uchar>(i, j)
+			if ((int)cannyResult.at<uchar>(i, j) !=0)
+			{
+				for (size_t cc = 0; cc < container.size(); cc++)
+				{
+					if (container[cc].i==i && container[cc].j ==j)
+					{
+						tempCannyResult.at<uchar>(i, j) = 100;
+					}
+				}
+
+			}
+		}
+	}
+	imshow("tempCannyResult", tempCannyResult);
+	imwrite("tempCannyResult.bmp", tempCannyResult);
 
 	myEdgeDetectorFile.close();
 
