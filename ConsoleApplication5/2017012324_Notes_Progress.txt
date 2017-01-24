@@ -1,0 +1,3 @@
+ConnectecComponent03:
+Angles of whole mask, Extract Canny angles from mask-Angles, 5 degree Bin angles, count angles, maximum angles count, plot pixel associated with maximum angles count back onto mask, does not cover whole mask edge
+Next Step: wided bin size-5degree bin on either side & recalculate
