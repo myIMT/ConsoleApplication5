@@ -48,6 +48,9 @@
     <ClCompile Include="..\..\wavelib\src\shared\wavelet2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HistogramTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectedComponents03.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fftw3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HistogramTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,13 @@
+INPUT(src,component,canny[component],componentCount)
+
+Calculate Dx from Mask
+Calculate Dy from Mask
+Use CartToPolar to calculate Magnitude and Angle matrix, using Dx & Dy
+Walk along Canny edge & for every coordinate that is not zero:
+	-- Extract Angle 
+	-- At the same time:
+		-- Extract & store 'Angle/binSize'
+		-- Extract & store coordinates (i,j)
+
+
+		

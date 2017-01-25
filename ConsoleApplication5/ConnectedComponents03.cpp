@@ -185,6 +185,7 @@
 //
 //int CalcAngle(Mat orig, Mat mask, Mat cannyResult,int componentCount)
 //{
+//#pragma region For Testing Purposes ONLY
 //	ofstream CalcAngle_OrigMatrixFile;
 //	CalcAngle_OrigMatrixFile.open("CalcAngle_OrigMatrixFile.csv");
 //	CalcAngle_OrigMatrixFile << orig << "\n";
@@ -199,6 +200,8 @@
 //	CalcAngle_CannyResultMatrixFile.open("CalcAngle_CannyResultMatrixFile.csv");
 //	CalcAngle_CannyResultMatrixFile << cannyResult << "\n";
 //	CalcAngle_CannyResultMatrixFile.close();
+//#pragma endregion
+//
 //
 //	std::string count = std::to_string(componentCount);
 //
@@ -206,6 +209,7 @@
 //	ofstream myEdgeDetectorFile;
 //	myEdgeDetectorFile.open("myEdgeDetectorFile.txt");
 //
+//#pragma region For Testing Purposes ONLY
 //	//![load]
 //	//src = imread(argv[1], IMREAD_COLOR); // Load an image
 //	//src = imread("contour_1.jpg", CV_LOAD_IMAGE_UNCHANGED); //read the image data in the file "MyPic.JPG" and store it in 'img'
@@ -230,7 +234,8 @@
 //	myEdgeDetectorFile << "\n";    myEdgeDetectorFile << "\n";
 //
 //	//detected_edges = angle_src_gray;
-//	
+//#pragma endregion
+//
 //#pragma region Original GrayScale
 //	Mat orig_gray;
 //	cvtColor(orig, orig_gray, CV_BGR2GRAY);
@@ -240,28 +245,33 @@
 //	/// Gradient X
 //	Sobel(mask, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
 //#pragma endregion
+//#pragma region Write Dx To File
 //	ofstream GradXMatrixFile;
-//	GradXMatrixFile.open("GradXMatrixFile_"+ count+".csv");
+//	GradXMatrixFile.open("GradXMatrixFile_" + count + ".csv");
 //	GradXMatrixFile << grad_x << "\n";
 //	GradXMatrixFile.close();
 //	convertScaleAbs(grad_x, abs_grad_x);
-//
-//
-//	/// Gradient Y
-//	//Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
-//#pragma region Sobel Dy
-//	Sobel(mask, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
 //#pragma endregion
 //
+//
+//#pragma region Sobel Dy
+//	/// Gradient Y
+//	//Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+//
+//	Sobel(mask, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+//#pragma endregion
+//#pragma region Write Dy To File
 //	ofstream GradYMatrixFile;
 //	GradYMatrixFile.open("GradYMatrixFile_"+ count+".csv");
 //	GradYMatrixFile << grad_y << "\n";
 //	GradYMatrixFile.close();
 //	convertScaleAbs(grad_y, abs_grad_y);
+//
 //	//![sobel]
 //	//convertScaleAbs(grad_x, abs_grad_x);
 //	//convertScaleAbs(grad_y, abs_grad_y);
 //	//cv::Mat angle(src.size(), CV_64F);
+//#pragma endregion
 //
 //	Mat Mag(mask.size(), CV_32FC1);
 //	Mat Angle(mask.size(), CV_32FC1);
@@ -366,7 +376,7 @@
 //				CalcAngle_Container_MatrixFile << containerCount << "," << container[containerCount].bin << "," << container[containerCount].i << "," << container[containerCount].j << "," << container[containerCount].angle << "," << container[containerCount].value << "\n";
 //				containerCount++; ///To index into container
 //				vvv[int(newAngle.at<double>(i, j) / binSize)].push_back(newAngle.at<double>(i, j));
-//
+//				cout << "vvv["<< int(newAngle.at<double>(i, j) / binSize) <<"] = "<< (int)newAngle.at<double>(i, j)<<"\n";
 //				CannyMagGradOrig_Canny_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << (int)cannyResult.at<uchar>(i, j) << "\n";
 //				CannyMagGradOrig_Angle_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << aRow_i[j] << "\n";
 //				CannyMagGradOrig_Mag_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << mRow_i[j] << "\n";
@@ -478,7 +488,9 @@
 //	cout << "The biggest number is: " << me.value << " at bin " << me.bin << endl;
 //#pragma endregion
 //
-//
+//Mat GraySrcImg;
+//cv::cvtColor(orig, GraySrcImg, cv::COLOR_BGR2GRAY);
+//Mat temp2Orig = GraySrcImg;
 //#pragma region Plot Back to Canny
 //	Mat tempCannyResult = cannyResult;
 //	for (size_t i = 0; i < cannyResult.rows; i++)
@@ -487,19 +499,22 @@
 //		{
 //			if ((int)cannyResult.at<uchar>(i, j) != 0)
 //			{
-//				for (size_t cc = 0; cc < container.size(); cc++)
-//				{
-//					if (container[cc].i == i && container[cc].j == j)
-//					{
-//						tempCannyResult.at<uchar>(i, j) = 100;
-//					}
-//				}
+//				//for (size_t cc = 0; cc < container.size(); cc++)
+//				//{
+//				//	if (container[cc].i == i && container[cc].j == j)
+//				//	{
+//						//tempCannyResult.at<uchar>(i, j) = 100;
+//						temp2Orig.at<uchar>(i, j) = 100;
+//				//	}
+//				//}
 //
 //			}
 //		}
 //	}
-//	imshow("tempCannyResult", tempCannyResult);
-//	imwrite("tempCannyResult.bmp", tempCannyResult);
+//	//imshow("tempCannyResult", tempCannyResult);
+//	//imwrite("tempCannyResult.bmp", tempCannyResult);
+//	imshow("temp2Orig", temp2Orig);
+//	imwrite("temp2Orig.bmp", temp2Orig);
 //#pragma endregion
 //
 //
@@ -522,7 +537,7 @@
 //					else
 //					{
 //						similar--;
-//						cout << "Not similar at i= " << i << ", j= " << j << "\n";
+//						//cout << "Not similar at i= " << i << ", j= " << j << "\n";
 //					}
 //				}
 //
@@ -533,18 +548,22 @@
 //	imwrite("tempMask.bmp", tempMask);
 //#pragma endregion
 //
+//
 //#pragma region Plot Back onto Original
-//	Mat tempOrig = orig;
-//	for (size_t i = 0; i < orig.rows; i++)
+//	Mat tempOrig = GraySrcImg;
+//	for (size_t i = 0; i < GraySrcImg.rows; i++)
 //	{
-//		for (size_t j = 0; j < orig.cols; j++)
+//		for (size_t j = 0; j < GraySrcImg.cols; j++)
 //		{
-//			if ((int)orig.at<uchar>(i, j) != 0)
+//			if ((int)GraySrcImg.at<uchar>(i, j) != 0)
 //			{
 //				for (size_t cc = 0; cc < container.size(); cc++)
 //				{
+//					
 //					if (container[cc].i == i && container[cc].j == j)
 //					{
+//						//cout << "cc= " << cc << "\n";
+//						//cout << "(i= " << i << " ,j= " << j << ")" << "\n";
 //						tempOrig.at<uchar>(i, j) = 255;
 //					}
 //					else
@@ -691,6 +710,33 @@
 //			Mask_MatrixFile << mask_i << "\n";
 //			Mask_MatrixFile.close();
 //			//}
+//#pragma region Test Plotting over grayScale Source Image
+//			//				//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//			//Mat tempSrcImg = fltrGrayImg;
+//			//Mat tempMask = mask_i;
+//			////cv::cvtColor(mask_i, tempMask, cv::COLOR_BGR2GRAY);
+//			//for (size_t i = 0; i < mask_i.rows; i++)
+//			//{
+//			//	for (size_t j = 0; j < mask_i.cols; j++)
+//			//	{
+//			//		//myEdgeDetectorFile << "Angle(i,j)= (" << i << ", " << j << ")= " << aRow_i[j] << "\n";
+//			//		if (mask_i.at<uchar>(i, j) != 0)
+//			//		{
+//			//			//container[containerCount].value = (int)cannyResult.at<uchar>(i, j);
+//			//			//if (srcImg[cc].i == i && container[cc].j == j)
+//			//			//{
+//			//			tempSrcImg.at<uchar>(i, j) = 100;
+//			//			tempMask.at<uchar>(i, j) = 100;
+//			//			//}
+//			//		}
+//			//	}
+//			//}
+//			//imshow("tempSrcImg", tempSrcImg);
+//			//imwrite("tempSrcImg.jpg", tempSrcImg);
+//			//imshow("tempMask", tempMask);
+//			//imwrite("tempMask.jpg", tempMask);
+//			////&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  
+//#pragma endregion
 //
 //			//=======================================================================
 //#pragma region Canny Edge Detection
@@ -740,11 +786,30 @@
 //				drawContours(drawing, contours, i, color, 1, 8, hierarchy, 0, Point());
 //			}*/
 //
+//			//std::array<std::vector<int>, 72> vvv{ {} };
+//			//for (size_t i = 0; i < vvv.size(); i++)
+//			//{
+//			//	vvv[i].push_back(0);
+//			//	//cout << "vvv[" << i << "] = " << vvv[i].at(0) << "\n";
+//			//}
 //
+//			//ofstream Test1MatrixFile;
+//			//Test1MatrixFile.open("Test1MatrixFile.csv");
+//			//for (size_t j = 0; j < 361; j++)
+//			//{
+//			//	Test1MatrixFile << "j= " << j << "\n";
+//			//	vvv[(int)j / 5].pop_back();
+//			//	vvv[(int)j / 5].push_back(j);
+//			//}
+//			//Test1MatrixFile.close();
 //
-//
-//
-//
+//			//ofstream Test2MatrixFile;
+//			//Test2MatrixFile.open("Test2MatrixFile.csv");
+//			//for (size_t j = 0; j < vvv.size(); j++)
+//			//{
+//			//	Test2MatrixFile << "vvv[ " << (int)j / 5 << "] = " << vvv[(int)j / 5].at(0) << "\n";
+//			//}
+//			//Test2MatrixFile.close();
 //
 //			myConnectedComponents03file << "mask_i_" + s << "\n";
 //			//imwrite("mask_i_"+s+".png", mask_i);

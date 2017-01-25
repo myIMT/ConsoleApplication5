@@ -26,6 +26,7 @@
     <ClCompile Include="ContourRectEllipse.cpp" />
     <ClCompile Include="contours.cpp" />
     <ClCompile Include="findContours.cpp" />
+    <ClCompile Include="HistogramTest.cpp" />
     <ClCompile Include="MyDrawLineOnImage.cpp" />
     <ClCompile Include="MyEdgeDetector.cpp" />
     <ClCompile Include="MyFloodFillZoom.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="..\..\..\..\..\Downloads\cvWiener2.h" />
     <ClInclude Include="ConnectedComponents03.h" />
     <ClInclude Include="fftw3.h" />
+    <ClInclude Include="HistogramTest.h" />
     <ClInclude Include="wavelet2d.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
