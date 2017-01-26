@@ -327,6 +327,7 @@
 //#pragma endregion
 //
 //#pragma region Extract Edge angles
+//
 //	Mat newAngle = Mat(cannyResult.size().width, cannyResult.size().height, CV_64F, 0.0);;
 //	struct element {
 //		int bin;
@@ -492,60 +493,60 @@
 //cv::cvtColor(orig, GraySrcImg, cv::COLOR_BGR2GRAY);
 //Mat temp2Orig = GraySrcImg;
 //#pragma region Plot Back to Canny
-//	Mat tempCannyResult = cannyResult;
-//	for (size_t i = 0; i < cannyResult.rows; i++)
-//	{
-//		for (size_t j = 0; j < cannyResult.cols; j++)
-//		{
-//			if ((int)cannyResult.at<uchar>(i, j) != 0)
-//			{
-//				//for (size_t cc = 0; cc < container.size(); cc++)
-//				//{
-//				//	if (container[cc].i == i && container[cc].j == j)
-//				//	{
-//						//tempCannyResult.at<uchar>(i, j) = 100;
-//						temp2Orig.at<uchar>(i, j) = 100;
-//				//	}
-//				//}
+//	//Mat tempCannyResult = cannyResult;
+//	//for (size_t i = 0; i < cannyResult.rows; i++)
+//	//{
+//	//	for (size_t j = 0; j < cannyResult.cols; j++)
+//	//	{
+//	//		if ((int)cannyResult.at<uchar>(i, j) != 0)
+//	//		{
+//	//			//for (size_t cc = 0; cc < container.size(); cc++)
+//	//			//{
+//	//			//	if (container[cc].i == i && container[cc].j == j)
+//	//			//	{
+//	//					//tempCannyResult.at<uchar>(i, j) = 100;
+//	//					temp2Orig.at<uchar>(i, j) = 100;
+//	//			//	}
+//	//			//}
 //
-//			}
-//		}
-//	}
-//	//imshow("tempCannyResult", tempCannyResult);
-//	//imwrite("tempCannyResult.bmp", tempCannyResult);
-//	imshow("temp2Orig", temp2Orig);
-//	imwrite("temp2Orig.bmp", temp2Orig);
+//	//		}
+//	//	}
+//	//}
+//	////imshow("tempCannyResult", tempCannyResult);
+//	////imwrite("tempCannyResult.bmp", tempCannyResult);
+//	//imshow("temp2Orig", temp2Orig);
+//	//imwrite("temp2Orig.bmp", temp2Orig);
 //#pragma endregion
 //
 //
 //#pragma region Plot Back to Mask
-//	Mat tempMask = mask;
-//	int similar = 0;
-//	for (size_t i = 0; i < mask.rows; i++)
-//	{
-//		for (size_t j = 0; j < mask.cols; j++)
-//		{
-//			if ((int)mask.at<uchar>(i, j) != 0)
-//			{
-//				for (size_t cc = 0; cc < container.size(); cc++)
-//				{
-//					if (container[cc].i == i && container[cc].j == j)
-//					{
-//						tempMask.at<uchar>(i, j) = 100;
-//						similar++;
-//					}
-//					else
-//					{
-//						similar--;
-//						//cout << "Not similar at i= " << i << ", j= " << j << "\n";
-//					}
-//				}
+//	//Mat tempMask = mask;
+//	//int similar = 0;
+//	//for (size_t i = 0; i < mask.rows; i++)
+//	//{
+//	//	for (size_t j = 0; j < mask.cols; j++)
+//	//	{
+//	//		if ((int)mask.at<uchar>(i, j) != 0)
+//	//		{
+//	//			for (size_t cc = 0; cc < container.size(); cc++)
+//	//			{
+//	//				if (container[cc].i == i && container[cc].j == j)
+//	//				{
+//	//					tempMask.at<uchar>(i, j) = 100;
+//	//					similar++;
+//	//				}
+//	//				else
+//	//				{
+//	//					similar--;
+//	//					//cout << "Not similar at i= " << i << ", j= " << j << "\n";
+//	//				}
+//	//			}
 //
-//			}
-//		}
-//	}
-//	imshow("tempMask", tempMask);
-//	imwrite("tempMask.bmp", tempMask);
+//	//		}
+//	//	}
+//	//}
+//	//imshow("tempMask", tempMask);
+//	//imwrite("tempMask.bmp", tempMask);
 //#pragma endregion
 //
 //

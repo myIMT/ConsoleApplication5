@@ -26,12 +26,7 @@ int threshval = 60;
 int bw_constant = 128;
 vector<Vec4i> hierarchy;
 Mat srcImg, GrayImg, hist, cannyEdge, detected_edges, angle_src_gray, grad_x, grad_y, abs_grad_x, abs_grad_y;
-//int edgeThresh = 1;
-//int lowThreshold;
-//int const max_lowThreshold = 100;
-//int ratio = 3;
-//int kernel_size = 3;
-//const char* window_name = "Edge Map";
+
 int ddepth = CV_32FC1;// CV_16S;
 int scale = 1;
 int delta = 0;
@@ -47,7 +42,7 @@ const float* histRange = { rangeA };
 Mat angle_hist;
 bool uniform = true;
 bool myAccumulate = false;
-int channels[1];
+int channels[] = { 0 };
 int binID;
 //----------------------------------------------------
 Mat GetConnectedComponent(Mat GrayScaleSrcImg)
@@ -93,10 +88,15 @@ int main(int argc, char *argv[])
 	srcImg = cv::imread("20161215 02.33_368L.jpg");
 
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
+
 	Mat component = GetConnectedComponent(GrayImg);
 	imshow("component", component);
-	Sobel(component, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+	ofstream ComponentFile;
+	ComponentFile.open("ComponentFile.csv");
+	ComponentFile << component;
+	ComponentFile.close();
 
+	Sobel(component, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
 	Sobel(component, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
 
 	Mat Mag(component.size(), CV_32FC1);
@@ -107,7 +107,23 @@ int main(int argc, char *argv[])
 	AngleFile << Angle;
 	AngleFile.close();
 
+	std::array<std::vector<int>, 72> vvv{ {} };
+	struct element {
+		int bin;
+		int i;
+		int j;
+		int angle;
+		int value;
+	};
+	vector<element> container;
+	int containerCount = 0;
+
 	Canny(component, cannyEdge, 100, 200);
+	ofstream CannyFile;
+	CannyFile.open("CannyFile.csv");
+	CannyFile << cannyEdge;
+	CannyFile.close();
+
 	Mat newAngle = Mat(cannyEdge.size().width, cannyEdge.size().height, CV_64F, 0.0);;
 	
 	for (size_t i = 0; i < cannyEdge.rows; i++)
@@ -119,6 +135,14 @@ int main(int argc, char *argv[])
 			if ((int)cannyEdge.at<uchar>(i, j) != 0)
 			{
 				newAngle.at<double>(i, j) = (double)aRow_i[j];
+
+				container.push_back(element());
+				container[containerCount].bin = int(newAngle.at<double>(i, j) / binSize);
+				container[containerCount].i = i;
+				container[containerCount].j = j;
+				container[containerCount].angle = newAngle.at<double>(i, j);
+				container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
+				containerCount++;
 			}
 		}
 	}
@@ -127,58 +151,28 @@ int main(int argc, char *argv[])
 	NewAngleFile << newAngle;
 	NewAngleFile.close();
 	//999999999999999999999999999999999999999999999999999999
-	ofstream Output01File;
-	Output01File.open("Output01File.txt");
-
-	// Compute histogram
-	//calcHist(&data, 1, 0, Mat(), angle_hist, 1, &histSize, &histRange, uniform, myAccumulate);
-	calcHist(&newAngle,
-		1, // histogram from 1 image only
-		channels, // the channel used
-		cv::Mat(), // no mask is used
-		hist, // the resulting histogram
-		1, // it is a 1D histogram
-		&histSize, // number of bins
-		&histRange, // pixel value range
-		uniform,
-		myAccumulate
-	);
-
-
-	// Plot the histogram
-	int hist_w = 512; int hist_h = 400;
-
-	Output01File << "hist_w= " << hist_w << "\n";
-	Output01File << "hist_h= " << hist_h << "\n";
-
-	int bin_w = cvRound((double)hist_w / histSize);
-		
-	Output01File << "bin_w= " << bin_w << "\n";
-
-	Mat histImage(hist_h, hist_w, CV_8UC1, Scalar(0, 0, 0));
-		
-	Output01File << "Black Image of size(h,w)= (" << hist_h << "," << hist_w << ")" << "\n";
-
-	normalize(hist, hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
-
-	for (int i = 1; i < histSize; i++)
+	ofstream ContainerFile;
+	ContainerFile.open("ContainerFile.txt");
+	for (int i = 0; i < container.size(); i++)
 	{
-		Output01File << "histSize(" << i - 1 << ")= " << hist.at<float>(i - 1) << "   ------   ";
-		Output01File << "Line(" << i - 1 << ")= (" << bin_w*(i - 1) << "," << hist_h - cvRound(hist.at<float>(i - 1)) << ") TO (" << bin_w*(i) << "," << hist_h - cvRound(hist.at<float>(i)) << ")" << "\n";
-
-
-
-		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
-			Point(bin_w*(i), hist_h - cvRound(hist.at<float>(i))),
-			Scalar(255, 0, 0), 2, 8, 0);
+		ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
+		ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
+		ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
+		ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
+		ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
+		ContainerFile << "\n";
+		ContainerFile << "\n";
 	}
-	Output01File.close();
-
-	namedWindow("Output01File", 1);
-	imshow("Output01File", histImage);
-
-
+	ContainerFile.close();
 	//999999999999999999999999999999999999999999999999999999
+	Mat tempGray4Plot = GrayImg;
+	for (size_t k = 0; k < container.size(); k++)
+	{
+		tempGray4Plot.at<uchar>(container[k].i, container[k].j) = 255;
+	}
+	imshow("tempGray4Plot", tempGray4Plot);
+	imwrite("tempGray4Plot.jpg", tempGray4Plot);
+
 	waitKey(0);
 	return 0;
 }
