@@ -25,7 +25,7 @@ const std::string keys =
 int threshval = 60;
 int bw_constant = 128;
 vector<Vec4i> hierarchy;
-Mat srcImg, GrayImg, hist, cannyEdge, detected_edges, angle_src_gray, grad_x, grad_y, abs_grad_x, abs_grad_y;
+Mat src,srcImg, GrayImg, hist, cannyEdge, detected_edges, angle_src_gray, grad_x, grad_y, abs_grad_x, abs_grad_y;
 
 int ddepth = CV_32FC1;// CV_16S;
 int scale = 1;
@@ -53,22 +53,23 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	cv::Mat FltrStats, FltrCentroids;
 
 	int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 8, CV_32S);
-
+	
 	std::string nFltrLabelsString = std::to_string(nFltrLabels);
 
 	cv::Mat FltrLabelImage2;
 
 	normalize(FltrLabelImage, FltrLabelImage2, 0, 255, NORM_MINMAX, CV_8U);
+	//imshow("FltrLabelImage2", FltrLabelImage2);
 
 	std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 	FltrColors[0] = cv::Vec3b(0, 0, 0);
 
-	for (int FltrLabel = 1; FltrLabel < 2/*nFltrLabels*/; ++FltrLabel) {
-		FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
-
+	for (int FltrLabel = 1; FltrLabel < nFltrLabels; ++FltrLabel) {
+		//FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+		FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
 		Mat mask_i = FltrLabelImage == FltrLabel;
 
-		return mask_i;
+		
 	}
 
 	cv::Mat FltrDst(GrayScaleSrcImg.size(), CV_8UC3);
@@ -79,28 +80,40 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 			FltrPixel = FltrColors[FltrLabel];
 		}
 	}
-	imshow(nFltrLabelsString + "-Connected Components", FltrDst);
-	imwrite("Connected Components.bmp", FltrDst);
+	//imshow(nFltrLabelsString + "-Connected Components", FltrDst);
+	//imwrite("Connected Components.bmp", FltrDst);
+
+	return FltrDst;
 }
 
 int main(int argc, char *argv[])
 {
-	srcImg = cv::imread("20161215 02.33_368L.jpg");
-
+	src = cv::imread("20161215 02.33_368L.jpg");
+	imshow("src", src);
+		bilateralFilter(src, srcImg, 15, 80, 80);
+		imshow("srcImg", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
 
-	Mat component = GetConnectedComponent(GrayImg);
-	imshow("component", component);
-	ofstream ComponentFile;
-	ComponentFile.open("ComponentFile.csv");
-	ComponentFile << component;
-	ComponentFile.close();
+	Mat components = GetConnectedComponent(GrayImg);
+	imshow("components", components);
+	ofstream ComponentsFile;
+	ComponentsFile.open("ComponentsFile.csv");
+	ComponentsFile << components;
+	ComponentsFile.close();
 
-	Sobel(component, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
-	Sobel(component, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+	Mat GrayComponents;
+	cvtColor(components, GrayComponents, COLOR_BGR2GRAY);
+	imshow("GrayComponents", GrayComponents);
+	ofstream GrayComponentsFile;
+	GrayComponentsFile.open("GrayComponentsFile.csv");
+	GrayComponentsFile << GrayComponents;
+	GrayComponentsFile.close();
 
-	Mat Mag(component.size(), CV_32FC1);
-	Mat Angle(component.size(), CV_32FC1);
+	Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+	Sobel(GrayComponents, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+
+	Mat Mag(GrayComponents.size(), CV_32FC1);
+	Mat Angle(GrayComponents.size(), CV_32FC1);
 	cartToPolar(grad_x, grad_y, Mag, Angle, true);
 	ofstream AngleFile;
 	AngleFile.open("AngleFile.csv");
@@ -118,14 +131,17 @@ int main(int argc, char *argv[])
 	vector<element> container;
 	int containerCount = 0;
 
-	Canny(component, cannyEdge, 100, 200);
+	Canny(GrayComponents, cannyEdge, 100, 200);
+	imshow("cannyEdge", cannyEdge);
 	ofstream CannyFile;
 	CannyFile.open("CannyFile.csv");
 	CannyFile << cannyEdge;
 	CannyFile.close();
 
-	Mat newAngle = Mat(cannyEdge.size().width, cannyEdge.size().height, CV_64F, 0.0);;
+	Mat newAngle = Mat(Angle.size().width, Angle.size().height,Angle.type(), Scalar(0, 0, 0));
 	
+	ofstream TestFile;
+	TestFile.open("TestFile.csv");
 	for (size_t i = 0; i < cannyEdge.rows; i++)
 	{
 		const float* aRow_i = Angle.ptr<float>(i);
@@ -134,23 +150,26 @@ int main(int argc, char *argv[])
 		{
 			if ((int)cannyEdge.at<uchar>(i, j) != 0)
 			{
-				newAngle.at<double>(i, j) = (double)aRow_i[j];
-
+				newAngle.ptr<float>(i)[j] = (double)aRow_i[j];
+				//newAngle.at<double>(i, j) = Angle.at<double>(i, j);
+				//TestFile << "Angle.at<double>(i, j)= " << Angle.at<double>(i, j) << "\n";
 				container.push_back(element());
-				container[containerCount].bin = int(newAngle.at<double>(i, j) / binSize);
+				container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);
 				container[containerCount].i = i;
 				container[containerCount].j = j;
-				container[containerCount].angle = newAngle.at<double>(i, j);
+				container[containerCount].angle = newAngle.ptr<float>(i)[j];
 				container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
 				containerCount++;
 			}
 		}
 	}
+	TestFile.close();
+
 	ofstream NewAngleFile;
 	NewAngleFile.open("NewAngleFile.csv");
 	NewAngleFile << newAngle;
 	NewAngleFile.close();
-	//999999999999999999999999999999999999999999999999999999
+	////999999999999999999999999999999999999999999999999999999
 	ofstream ContainerFile;
 	ContainerFile.open("ContainerFile.txt");
 	for (int i = 0; i < container.size(); i++)
@@ -164,14 +183,90 @@ int main(int argc, char *argv[])
 		ContainerFile << "\n";
 	}
 	ContainerFile.close();
-	//999999999999999999999999999999999999999999999999999999
-	Mat tempGray4Plot = GrayImg;
-	for (size_t k = 0; k < container.size(); k++)
+	////999999999999999999999999999999999999999999999999999999
+	int maxCount = 0;
+	struct maxCountStruct {
+		int bin;
+		int angle;
+		int size;
+	};
+	vector<maxCountStruct> maxCountContainer;
+	int temp = 0;
+	struct MaxElementStruct {
+		int bin;
+		int angle;
+		int size;
+	};
+	MaxElementStruct mes;
+	for (size_t l = 0; l < container.size(); l++)
 	{
-		tempGray4Plot.at<uchar>(container[k].i, container[k].j) = 255;
+		if (maxCountContainer.empty())
+		{
+			maxCountContainer.push_back(maxCountStruct());
+			maxCountContainer[l].bin = container[l].bin;
+			maxCountContainer[l].angle = container[l].angle;
+			maxCountContainer[l].size += 1;
+		}
+		else
+		{
+			for (size_t m = 0; m < maxCountContainer.size(); m++)
+			{
+				if (maxCountContainer[m].bin == container[l].bin)
+				{
+					maxCountContainer[m].size += 1;
+					break;
+				}
+				else if (m== maxCountContainer.size() - 1)
+				{
+					maxCountContainer.push_back(maxCountStruct());
+					maxCountContainer[maxCountContainer.size()-1].bin = container[l].bin;
+					maxCountContainer[maxCountContainer.size() - 1].angle = container[l].angle;
+					maxCountContainer[maxCountContainer.size() - 1].size += 1;
+					break;
+				}
+
+				if (maxCountContainer[m].size > temp)	///Find bin with the most elements
+				{
+					temp = maxCountContainer[m].size;
+					mes.bin = (int)maxCountContainer[m].bin;	///Bin with most elements (bin ID)
+					mes.angle = (int)maxCountContainer[m].angle;
+					mes.size = (int)maxCountContainer[m].size;
+					//me.value = vvvCounts[i].at(0);	///Frequency count
+				}
+			}
+		}
 	}
-	imshow("tempGray4Plot", tempGray4Plot);
-	imwrite("tempGray4Plot.jpg", tempGray4Plot);
+	cout << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl;
+
+	Mat tempGraySrc = GrayImg;
+	for (size_t n = 0; n < container.size(); n++)
+	{
+		if (container[n].bin == mes.bin)
+		{
+			tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
+		}
+	}
+	imshow("tempGraySrc", tempGraySrc);
+
+	ofstream maxCountContainerFile;
+	maxCountContainerFile.open("maxCountContainerFile.txt");
+	for (int i = 0; i < maxCountContainer.size(); i++)
+	{
+		maxCountContainerFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
+		maxCountContainerFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
+		maxCountContainerFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
+		maxCountContainerFile << "\n";
+		maxCountContainerFile << "\n";
+	}
+	//maxCountContainerFile << m << "," << maxCountContainer[m].bin << "," << maxCountContainer[m].angle << "," << maxCountContainer[m].size << "\n";
+	maxCountContainerFile.close();
+	//Mat tempGray4Plot = GrayImg;
+	//for (size_t k = 0; k < container.size(); k++)
+	//{
+	//	tempGray4Plot.at<uchar>(container[k].i, container[k].j) = 255;
+	//}
+	//imshow("tempGray4Plot", tempGray4Plot);
+	//imwrite("tempGray4Plot.jpg", tempGray4Plot);
 
 	waitKey(0);
 	return 0;

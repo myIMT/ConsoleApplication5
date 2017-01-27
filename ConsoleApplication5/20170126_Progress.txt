@@ -1,0 +1,13 @@
+HistogramTest:
+Just testing Src->Gray->Mask->Canny.
+Just testing Walk along CannyEdge- for every coordinate (i,j) of CannyEdge:
+ - get (i,j) pixel value from NewAngle
+ - call this pixel value A(i,j)
+ - calculate Bidx = A(i,j)/5 = x
+ - Bin(x) = Mask(i,j) pixel
+
+Then calculate Max ......
+
+This is done for one component ONLY.
+Need to now calculate Angles/NewAngles on all components , then:
+ - walk through each component & Sobel, Mag & Angle, Canny, NewAngle, container (global container for all components frequencies)
