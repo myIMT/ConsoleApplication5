@@ -88,38 +88,48 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 int main(int argc, char *argv[])
 {
-	src = cv::imread("20161215 02.33_368L.jpg");
+	src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
 	imshow("src", src);
-		/*bilateralFilter(src, srcImg, 15, 80, 80);*/
+	//srcImg = src;
+		//bilateralFilter(src, srcImg, 15, 80, 80);
 	blur(src, srcImg, Size(5, 5), Point(-1, -1));
 		imshow("srcImg", srcImg);
+	//	imwrite("BlurFilSrcImg.bmp", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
+	imshow("GrayImg", GrayImg);
+	//imwrite("GrayImg.bmp", GrayImg);
 
 	Mat components = GetConnectedComponent(GrayImg);
 	imshow("components", components);
-	ofstream ComponentsFile;
-	ComponentsFile.open("ComponentsFile.csv");
-	ComponentsFile << components;
-	ComponentsFile.close();
+	//imwrite("components.bmp", components);
+	//ofstream ComponentsFile;
+	//ComponentsFile.open("ComponentsFile.csv");
+	//ComponentsFile << components;
+	//ComponentsFile.close();
 
 	Mat GrayComponents;
 	cvtColor(components, GrayComponents, COLOR_BGR2GRAY);
 	imshow("GrayComponents", GrayComponents);
-	ofstream GrayComponentsFile;
-	GrayComponentsFile.open("GrayComponentsFile.csv");
-	GrayComponentsFile << GrayComponents;
-	GrayComponentsFile.close();
+	//imwrite("GrayComponents.bmp", GrayComponents);
+	//ofstream GrayComponentsFile;
+	//GrayComponentsFile.open("GrayComponentsFile.csv");
+	//GrayComponentsFile << GrayComponents;
+	//GrayComponentsFile.close();
 
 	Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+	//imwrite("grad_x.bmp", grad_x);
 	Sobel(GrayComponents, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+	//imwrite("grad_y.bmp", grad_y);
 
 	Mat Mag(GrayComponents.size(), CV_32FC1);
 	Mat Angle(GrayComponents.size(), CV_32FC1);
 	cartToPolar(grad_x, grad_y, Mag, Angle, true);
-	ofstream AngleFile;
-	AngleFile.open("AngleFile.csv");
-	AngleFile << Angle;
-	AngleFile.close();
+	//imwrite("Mag.bmp", Mag);
+	//imwrite("Angle.bmp", Angle);
+	//ofstream AngleFile;
+	//AngleFile.open("AngleFile.csv");
+	//AngleFile << Angle;
+	//AngleFile.close();
 
 	std::array<std::vector<int>, 72> vvv{ {} };
 	struct element {
@@ -134,24 +144,27 @@ int main(int argc, char *argv[])
 
 	Canny(GrayComponents, cannyEdge, 100, 200);
 	imshow("cannyEdge", cannyEdge);
-	ofstream CannyFile;
-	CannyFile.open("CannyFile.csv");
-	CannyFile << cannyEdge;
-	CannyFile.close();
+	//imwrite("cannyEdge.bmp", cannyEdge);
+	//ofstream CannyFile;
+	//CannyFile.open("CannyFile.csv");
+	//CannyFile << cannyEdge;
+	//CannyFile.close();
 
-	Mat newAngle = Mat(Angle.size().width, Angle.size().height,Angle.type(), Scalar(0, 0, 0));
-	
-	ofstream TestFile;
-	TestFile.open("TestFile.csv");
+	Mat newAngle = Mat(Angle.size().height, Angle.size().width,Angle.type(), Scalar(0, 0, 0));
+	//
+	//ofstream TestFile;
+	//TestFile.open("TestFile.csv");
 	for (size_t i = 0; i < cannyEdge.rows; i++)
 	{
-		const float* aRow_i = Angle.ptr<float>(i);
+		//const float* aRow_i = Angle.ptr<float>(i);
 
 		for (size_t j = 0; j < cannyEdge.cols; j++)
 		{
 			if ((int)cannyEdge.at<uchar>(i, j) != 0)
 			{
-				newAngle.ptr<float>(i)[j] = (double)aRow_i[j];
+				//newAngle.at<double>(i, j) = (double)aRow_i[j];
+				//newAngle.ptr<float>(i)[j] = (double)aRow_i[j];
+				newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];
 				//newAngle.at<double>(i, j) = Angle.at<double>(i, j);
 				//TestFile << "Angle.at<double>(i, j)= " << Angle.at<double>(i, j) << "\n";
 				container.push_back(element());
@@ -164,13 +177,14 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-	TestFile.close();
+	//TestFile.close();
 
-	ofstream NewAngleFile;
-	NewAngleFile.open("NewAngleFile.csv");
-	NewAngleFile << newAngle;
-	NewAngleFile.close();
-	////999999999999999999999999999999999999999999999999999999
+	//imwrite("newAngle.bmp", newAngle);
+	//ofstream NewAngleFile;
+	//NewAngleFile.open("NewAngleFile.csv");
+	//NewAngleFile << newAngle;
+	//NewAngleFile.close();
+	//////999999999999999999999999999999999999999999999999999999
 	ofstream ContainerFile;
 	ContainerFile.open("ContainerFile.txt");
 	for (int i = 0; i < container.size(); i++)
@@ -184,7 +198,7 @@ int main(int argc, char *argv[])
 		ContainerFile << "\n";
 	}
 	ContainerFile.close();
-	////999999999999999999999999999999999999999999999999999999
+	//////999999999999999999999999999999999999999999999999999999
 	int maxCount = 0;
 	struct maxCountStruct {
 		int bin;
@@ -248,26 +262,27 @@ int main(int argc, char *argv[])
 		}
 	}
 	imshow("tempGraySrc", tempGraySrc);
+	imwrite("tempGraySrc.bmp", tempGraySrc);
 
-	ofstream maxCountContainerFile;
-	maxCountContainerFile.open("maxCountContainerFile.txt");
-	for (int i = 0; i < maxCountContainer.size(); i++)
-	{
-		maxCountContainerFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
-		maxCountContainerFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
-		maxCountContainerFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
-		maxCountContainerFile << "\n";
-		maxCountContainerFile << "\n";
-	}
-	//maxCountContainerFile << m << "," << maxCountContainer[m].bin << "," << maxCountContainer[m].angle << "," << maxCountContainer[m].size << "\n";
-	maxCountContainerFile.close();
-	//Mat tempGray4Plot = GrayImg;
-	//for (size_t k = 0; k < container.size(); k++)
+	//ofstream maxCountContainerFile;
+	//maxCountContainerFile.open("maxCountContainerFile.txt");
+	//for (int i = 0; i < maxCountContainer.size(); i++)
 	//{
-	//	tempGray4Plot.at<uchar>(container[k].i, container[k].j) = 255;
+	//	maxCountContainerFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
+	//	maxCountContainerFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
+	//	maxCountContainerFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
+	//	maxCountContainerFile << "\n";
+	//	maxCountContainerFile << "\n";
 	//}
-	//imshow("tempGray4Plot", tempGray4Plot);
-	//imwrite("tempGray4Plot.jpg", tempGray4Plot);
+	////maxCountContainerFile << m << "," << maxCountContainer[m].bin << "," << maxCountContainer[m].angle << "," << maxCountContainer[m].size << "\n";
+	//maxCountContainerFile.close();
+	////Mat tempGray4Plot = GrayImg;
+	////for (size_t k = 0; k < container.size(); k++)
+	////{
+	////	tempGray4Plot.at<uchar>(container[k].i, container[k].j) = 255;
+	////}
+	////imshow("tempGray4Plot", tempGray4Plot);
+	////imwrite("tempGray4Plot.jpg", tempGray4Plot);
 
 	waitKey(0);
 	return 0;
