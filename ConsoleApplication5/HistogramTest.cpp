@@ -90,7 +90,8 @@ int main(int argc, char *argv[])
 {
 	src = cv::imread("20161215 02.33_368L.jpg");
 	imshow("src", src);
-		bilateralFilter(src, srcImg, 15, 80, 80);
+		/*bilateralFilter(src, srcImg, 15, 80, 80);*/
+	blur(src, srcImg, Size(5, 5), Point(-1, -1));
 		imshow("srcImg", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
 

@@ -1,0 +1,3 @@
+calculating Angles/NewAngles on all components , then:
+ - walking through each component & do Sobel, Mag & Angle, Canny, NewAngle, container (global container for all components frequencies).
+getting 0 bin all the time as maximum bin
