@@ -67,7 +67,7 @@ vector<Point> points1;
 vector<Point> points2;
 
 double angle_value_D = 45;
-int length = 10;
+int length = 4;
 Point firstLine_pt2;
 Point firstLine_pt1;
 Point pt4;
@@ -255,9 +255,9 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 					v.x = baseLine2.x - baseLine1.x;
 					v.y = baseLine2.y - baseLine1.y;
 					//normalize v
-			/*		int mag = sqrt(v.x*v.x + v.y*v.y);
+					int mag = sqrt(v.x*v.x + v.y*v.y);
 					v.x = v.x / mag;
-					v.y = v.y / mag;*/
+					v.y = v.y / mag;
 					//rotate and swap
 					int tempX = -v.x;
 					v.x = v.y;
@@ -289,10 +289,10 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 					v.y = pt1.y - baseLine1.y;
 					cout << "Direction vector going from 'start'-"<<pt1<<" to 'end'-"<<pt2 << "  = "<<v.x<<", "<<v.y<<"\n";
 					//normalize v
-					//int mag = sqrt(v.x*v.x + v.y*v.y);
-					//v.x = v.x / mag;
-					//v.y = v.y / mag;
-					//cout << "Normalizing v" << "\n";
+					int mag = sqrt(v.x*v.x + v.y*v.y);
+					v.x = v.x / mag;
+					v.y = v.y / mag;
+					cout << "Normalizing v" << "\n";
 					//rotate and swap
 					int tempX = -v.x;
 					v.x = v.y;
@@ -346,7 +346,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 int main()
 {
 	src = imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED); //read the image data in the file "MyPic.JPG" and store it in 'img'
-
+	Mat testSrc = src;
 	//Plotting graph with Shervin Emami library
 	uchar *dataMat = src.data;
 	showUCharGraph("Pixel Values", dataMat, src.size().height*src.size().width);
@@ -364,36 +364,46 @@ int main()
 		std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 		FltrColors[0] = cv::Vec3b(0, 0, 0);
 
-		for (int FltrLabel = 1; FltrLabel < 2/*nFltrLabels*/; ++FltrLabel)
+		for (int FltrLabel = 1; FltrLabel < 4/*nFltrLabels*/; ++FltrLabel)
 		{
 			FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+
+			cout << "Component " << FltrLabel << std::endl;
+			cout << "CC_STAT_LEFT -- The leftmost (x) coordinate which is the inclusive start of the bounding box in the horizontal direction.   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
+			cout << "CC_STAT_TOP -- The topmost (y) coordinate which is the inclusive start of the bounding box in the vertical direction.   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
+			cout << "CC_STAT_WIDTH --  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
+			cout << "CC_STAT_HEIGHT -- The vertical size of the bounding box. = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
+			cout << "CC_STAT_AREA -- The total area (in pixels) of the connected component.  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
+			cout << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
+
+			std::string s = std::to_string(FltrLabel);
 			// Get the mask for the i-th contour
+			if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) >= 300)
+			{
+				Mat mask2_i = FltrLabelImage == FltrLabel;
+				imwrite("mask2_i_" + s + ".bmp", mask2_i);
+			}
 			Mat mask_i = FltrLabelImage == FltrLabel;
 			string name = "mask_i_";
-			std::string s = std::to_string(FltrLabel);
-			//imwrite("mask_i_" + s + ".bmp", mask_i);
+			
+			imwrite("mask_i_" + s + ".bmp", mask_i);
 			Mat Points;
 			findNonZero(mask_i, Points);
-			//Rect Min_Rect = boundingRect(Points);
-			//rectangle(mask_i, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0);
-			/*rectangle(mask_i, Min_Rect.tl(), Min_Rect.br(), Scalar(0, 0, 255), 2);*/
-			// Find the minimum area enclosing bounding box
 			RotatedRect box = minAreaRect(Points);
 			Point2f vtx[4];
-
 			box.points(vtx);			
-			cout << "minAreaRect Angle= " << box.angle +180<< "\n";
+			//cout << "minAreaRect Angle= " << box.angle +180<< "\n";
 			for (size_t i = 0; i < 4; i++)
 			{
-				cout << "i= " << i << " -- " << vtx[i] << "\n";
+				/*cout << "i= " << i << " -- " << vtx[i] << "\n";
 				cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
-				cout << "\n";
+				cout << "\n";*/
 			}
+			Mat tempSrc1 = imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED);;
 			// Draw the bounding box
 			for (int i = 0; i < 4; i++)
-				line(src, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-
-			imshow("Result", src);
+				line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+			imwrite("boundingBox_" +s+".bmp", tempSrc1);
 		}
 
 	waitKey(0);
