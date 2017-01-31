@@ -42,6 +42,7 @@
     <ClInclude Include="..\..\..\..\..\Downloads\cvWiener2.h" />
     <ClInclude Include="ConnectedComponents03.h" />
     <ClInclude Include="cvplot.h" />
+    <ClInclude Include="DrawlinesFromPointOnLine1.h" />
     <ClInclude Include="fftw3.h" />
     <ClInclude Include="GraphUtils.h" />
     <ClInclude Include="HistogramTest.h" />

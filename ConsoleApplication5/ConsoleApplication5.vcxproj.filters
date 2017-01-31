@@ -92,5 +92,8 @@
     <ClInclude Include="cvplot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DrawlinesFromPointOnLine1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
