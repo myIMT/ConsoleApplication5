@@ -336,10 +336,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 	}
 	else if (event == EVENT_MOUSEMOVE)
 	{
-		if (clickCounter == 1)
-		{
-
-		}
+		cout << "x= " << x << " ,y= " << y << "\n";
 	}
 }
 
@@ -363,18 +360,20 @@ int main()
 	string nFltrLabelsString = std::to_string(nFltrLabels);
 		std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 		FltrColors[0] = cv::Vec3b(0, 0, 0);
+		ofstream connectedComponentsWithStats_MatrixFile;
+		connectedComponentsWithStats_MatrixFile.open("connectedComponentsWithStats_" + nFltrLabelsString + "_MatrixFile.txt");
 
-		for (int FltrLabel = 1; FltrLabel < 4/*nFltrLabels*/; ++FltrLabel)
+		for (int FltrLabel = 1; FltrLabel < 3/*nFltrLabels*/; ++FltrLabel)
 		{
 			FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
-
-			cout << "Component " << FltrLabel << std::endl;
-			cout << "CC_STAT_LEFT -- The leftmost (x) coordinate which is the inclusive start of the bounding box in the horizontal direction.   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
-			cout << "CC_STAT_TOP -- The topmost (y) coordinate which is the inclusive start of the bounding box in the vertical direction.   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
-			cout << "CC_STAT_WIDTH --  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
-			cout << "CC_STAT_HEIGHT -- The vertical size of the bounding box. = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
-			cout << "CC_STAT_AREA -- The total area (in pixels) of the connected component.  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
-			cout << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
+			
+			connectedComponentsWithStats_MatrixFile << "Component No. " << FltrLabel << std::endl;
+			connectedComponentsWithStats_MatrixFile << "CC_STAT_LEFT -- The leftmost (x) coordinate which is the inclusive start of the bounding box in the horizontal direction.   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
+			connectedComponentsWithStats_MatrixFile << "CC_STAT_TOP -- The topmost (y) coordinate which is the inclusive start of the bounding box in the vertical direction.   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
+			connectedComponentsWithStats_MatrixFile << "CC_STAT_WIDTH --  The horizontal size of the bounding box= " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
+			connectedComponentsWithStats_MatrixFile << "CC_STAT_HEIGHT -- The vertical size of the bounding box. = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
+			connectedComponentsWithStats_MatrixFile << "CC_STAT_AREA -- The total area (in pixels) of the connected component.  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
+			connectedComponentsWithStats_MatrixFile << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
 
 			std::string s = std::to_string(FltrLabel);
 			// Get the mask for the i-th contour
@@ -388,11 +387,39 @@ int main()
 			
 			imwrite("mask_i_" + s + ".bmp", mask_i);
 			Mat Points;
+			vector<Point> pts;
 			findNonZero(mask_i, Points);
+
+			//findNonZero(mask_i, pts);
+			//Point extLeft = *min_element(pts.begin(), pts.end(),[](const Point& lhs, const Point& rhs)
+			//{
+			//	return lhs.x < rhs.x;
+			//});
+			//cout << "extLeft= " << extLeft << "\n";
+			ofstream NonZeroMaskCoordinates_MatrixFile;
+			NonZeroMaskCoordinates_MatrixFile.open("NonZeroMaskCoordinates_MatrixFile.txt");
+
+			ofstream NonZeroMask_MatrixFile;
+			NonZeroMask_MatrixFile.open("NonZeroMask_MatrixFile.txt");
+			NonZeroMask_MatrixFile << Points<< "\n";
+			NonZeroMask_MatrixFile.close();
+			NonZeroMaskCoordinates_MatrixFile << "Points width= "<<Points.size().width << "\n";
+			NonZeroMaskCoordinates_MatrixFile << "Point height"<<Points.size().height << "\n";
+
+			for (size_t i = 0; i < Points.rows; i++)
+			{
+				NonZeroMaskCoordinates_MatrixFile << Points.at<Point>(i).y << "\n";
+
+			}
+
+			NonZeroMaskCoordinates_MatrixFile.close();
+
 			RotatedRect box = minAreaRect(Points);
 			Point2f vtx[4];
 			box.points(vtx);			
-			//cout << "minAreaRect Angle= " << box.angle +180<< "\n";
+			connectedComponentsWithStats_MatrixFile << "minAreaRect Angle= " << box.angle +180<< "\n";
+			//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
+			connectedComponentsWithStats_MatrixFile << "\n" << std::endl;
 			for (size_t i = 0; i < 4; i++)
 			{
 				/*cout << "i= " << i << " -- " << vtx[i] << "\n";
@@ -402,10 +429,30 @@ int main()
 			Mat tempSrc1 = imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED);;
 			// Draw the bounding box
 			for (int i = 0; i < 4; i++)
+			{
 				line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+				if (FltrLabel == 1)
+				{
+	/*				cout << "vtx[i]= " << vtx[i] << "\n";
+					cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
+					cout << "vtx[(i + 1)].y - vtx[i].y= " << vtx[(i + 1)].y - vtx[i].y << "\n";
+					cout << "vtx[(i + 1)].x - vtx[i].x= " << vtx[(i + 1)].x - vtx[i].x << "\n";*/
+					double lineAngle = atan2(vtx[(i + 1)].y - vtx[i].y, vtx[(i + 1)].x - vtx[i].x) * 180.0 / CV_PI;
+					//cout << "lineAngle= " << lineAngle << "\n";
+					//cout << "abs(lineAngle)"<< abs(lineAngle)<<"\n";
+					//cout << "(box.angle + 180) + 10= " << (box.angle + 180) + 10 << "\n";
+					//cout << "box.angle + 180) - 10= " << (box.angle + 180) - 10 << "\n";
+					if (abs(lineAngle)<= (box.angle + 180)+10 && abs(lineAngle) >= (box.angle + 180) - 10)
+					{
+							//cout << "COORDINATE:"<< "\n";
+					}
+		/*			cout << "COORDINATE: vtx[i].y= " << vtx[i].y << "\n";
+					cout << "\n" << std::endl;*/
+				}
+			}
 			imwrite("boundingBox_" +s+".bmp", tempSrc1);
 		}
-
+		connectedComponentsWithStats_MatrixFile.close();
 	waitKey(0);
 	return 0;
 }
