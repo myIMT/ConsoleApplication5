@@ -16,6 +16,8 @@
 #include "GraphUtils.h"
 #include "cvplot.h"
 #include "DrawlinesFromPointOnLine1.h"
+
+#include <algorithm>
 //#include <opencv2/legacy/compat.hpp>
 using namespace cv;
 using namespace std;
@@ -384,40 +386,86 @@ int main()
 			}
 			Mat mask_i = FltrLabelImage == FltrLabel;
 			string name = "mask_i_";
-			
+
+#pragma region centroid_of_mask
+			float sumx = 0, sumy = 0;
+			float num_pixel = 0;
+			for (size_t x = 0; x < mask_i.cols; x++)
+			{
+				for (size_t y = 0; y < mask_i.rows; y++)
+				{
+					int val = mask_i.at<uchar>(y, x);
+					if (val >= 255) {
+						sumx += x;
+						sumy += y;
+						num_pixel++;
+					}
+				}
+			}
+			Point p(sumx / num_pixel, sumy / num_pixel);
+			cout << Mat(p) << endl;
+#pragma endregion
+
+
 			imwrite("mask_i_" + s + ".bmp", mask_i);
 			Mat Points;
-			vector<Point> pts;
+
+			//vector<Point> pts;
 			findNonZero(mask_i, Points);
+			//ofstream NonZeroMaskCoordinates_MatrixFile;
+			//NonZeroMaskCoordinates_MatrixFile.open("NonZeroMaskCoordinates_MatrixFile.txt");
 
-			//findNonZero(mask_i, pts);
-			//Point extLeft = *min_element(pts.begin(), pts.end(),[](const Point& lhs, const Point& rhs)
+			//ofstream NonZeroMask_MatrixFile;
+			//NonZeroMask_MatrixFile.open("NonZeroMask_MatrixFile.txt");
+			//NonZeroMask_MatrixFile << Points<< "\n";
+			//NonZeroMask_MatrixFile.close();
+			//NonZeroMaskCoordinates_MatrixFile << "Points width= "<<Points.size().width << "\n";
+			//NonZeroMaskCoordinates_MatrixFile << "Point height"<<Points.size().height << "\n";
+
+			//for (size_t i = 0; i < Points.rows; i++)
 			//{
-			//	return lhs.x < rhs.x;
-			//});
-			//cout << "extLeft= " << extLeft << "\n";
-			ofstream NonZeroMaskCoordinates_MatrixFile;
-			NonZeroMaskCoordinates_MatrixFile.open("NonZeroMaskCoordinates_MatrixFile.txt");
+			//	NonZeroMaskCoordinates_MatrixFile << Points.at<Point>(i).y << "\n";
 
-			ofstream NonZeroMask_MatrixFile;
-			NonZeroMask_MatrixFile.open("NonZeroMask_MatrixFile.txt");
-			NonZeroMask_MatrixFile << Points<< "\n";
-			NonZeroMask_MatrixFile.close();
-			NonZeroMaskCoordinates_MatrixFile << "Points width= "<<Points.size().width << "\n";
-			NonZeroMaskCoordinates_MatrixFile << "Point height"<<Points.size().height << "\n";
+			//}
 
-			for (size_t i = 0; i < Points.rows; i++)
-			{
-				NonZeroMaskCoordinates_MatrixFile << Points.at<Point>(i).y << "\n";
-
-			}
-
-			NonZeroMaskCoordinates_MatrixFile.close();
+			//NonZeroMaskCoordinates_MatrixFile.close();
 
 			RotatedRect box = minAreaRect(Points);
+			
 			Point2f vtx[4];
 			box.points(vtx);			
 			connectedComponentsWithStats_MatrixFile << "minAreaRect Angle= " << box.angle +180<< "\n";
+
+			Point v;
+			v = Point(cos(box.angle + 180), sin(box.angle + 180));
+			//rotate and swap
+			int tempX = -v.x;
+			v.x = v.y;
+			v.y = tempX;
+#pragma region quadrants
+			//v.x = B.x - A.x; v.y = B.y - A.y;
+			if ((box.angle + 180) < 90.0)
+			{
+
+			}
+			else if ((box.angle + 180) >= 90.0 && (box.angle + 180) < 180.0)
+			{
+
+			}
+			else if ((box.angle + 180) >= 180.0 && (box.angle + 180) < 270.0)
+			{
+
+			}
+			else if ((box.angle + 180) >= 270.0 && (box.angle + 180) < 360.0)
+			{
+
+			}
+#pragma endregion
+			Point tempPoint;
+			tempPoint.x = (int)round(length * cos((box.angle + 180) * CV_PI / 180.0));
+			tempPoint.y = (int)round(length * sin((box.angle + 180) * CV_PI / 180.0));
+			cout << "tempPoint= " << tempPoint << "\n";
+
 			//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
 			connectedComponentsWithStats_MatrixFile << "\n" << std::endl;
 			for (size_t i = 0; i < 4; i++)
@@ -445,12 +493,14 @@ int main()
 					if (abs(lineAngle)<= (box.angle + 180)+10 && abs(lineAngle) >= (box.angle + 180) - 10)
 					{
 							//cout << "COORDINATE:"<< "\n";
+						line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 0, 255), 5, LINE_AA);
 					}
 		/*			cout << "COORDINATE: vtx[i].y= " << vtx[i].y << "\n";
 					cout << "\n" << std::endl;*/
 				}
 			}
 			imwrite("boundingBox_" +s+".bmp", tempSrc1);
+			imshow("boundingBox_" + s, tempSrc1);
 		}
 		connectedComponentsWithStats_MatrixFile.close();
 	waitKey(0);

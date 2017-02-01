@@ -147,7 +147,7 @@
 //			pt1.x = x;
 //			pt1.y = y;
 //			cout << "Left button of the mouse is clicked - position (" << pt1.x << ", " << pt1.y << ")" << endl;
-//
+//			
 //			///Draw line based pnone point (pt1, angle(theta) and length of line
 //			pt2.x = (int)round(x + length * cos(theta * CV_PI / 180.0));
 //			pt2.y = (int)round(y + length * sin(theta * CV_PI / 180.0));

@@ -25,6 +25,7 @@
     <ClCompile Include="ConnectedComponents03.cpp" />
     <ClCompile Include="ContourRectEllipse.cpp" />
     <ClCompile Include="contours.cpp" />
+    <ClCompile Include="convertTobw.cpp" />
     <ClCompile Include="cvplot.cpp" />
     <ClCompile Include="DrawlinesFromPointOnLine1.cpp" />
     <ClCompile Include="findContours.cpp" />
