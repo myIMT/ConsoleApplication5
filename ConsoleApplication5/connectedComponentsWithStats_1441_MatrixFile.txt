@@ -6,3 +6,6 @@ CC_STAT_HEIGHT -- The vertical size of the bounding box. = 33
 CC_STAT_AREA -- The total area (in pixels) of the connected component.  = 341
 CENTER   = (11.9648,18.2199)
 
+minAreaRect Angle= 138.814
+
+

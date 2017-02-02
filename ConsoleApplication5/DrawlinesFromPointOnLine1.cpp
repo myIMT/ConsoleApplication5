@@ -339,6 +339,8 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 	else if (event == EVENT_MOUSEMOVE)
 	{
 		cout << "x= " << x << " ,y= " << y << "\n";
+		circle(src, Point(x, y), 1, (0, 0, 255), 5, 8, 0);
+		imshow("Plot Dot on SRC Image", src);
 	}
 }
 
@@ -365,7 +367,7 @@ int main()
 		ofstream connectedComponentsWithStats_MatrixFile;
 		connectedComponentsWithStats_MatrixFile.open("connectedComponentsWithStats_" + nFltrLabelsString + "_MatrixFile.txt");
 
-		for (int FltrLabel = 1; FltrLabel < 3/*nFltrLabels*/; ++FltrLabel)
+		for (int FltrLabel = 1; FltrLabel < 2/*nFltrLabels*/; ++FltrLabel)
 		{
 			FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
 			
@@ -429,7 +431,9 @@ int main()
 
 			//for (size_t i = 0; i < Points.rows; i++)
 			//{
-			//	NonZeroMaskCoordinates_MatrixFile << Points.at<Point>(i).y << "\n";
+			//	cout << Points.at<Point>(i).y << "\n";
+			//	cout << Points.at<Point>(i).x << "\n";
+			//	cout << "\n";
 
 			//}
 
@@ -479,12 +483,12 @@ int main()
 			Point2d u;
 			//Point2d uu;
 			u = Point2d(cos(box.angle + 180), sin(box.angle + 180));
-			Point2d w = u-((CV_PI/2)*(180/CV_PI));
+			Point2d w; //= u-((CV_PI/2)*(180/CV_PI));
 			//rotate and swap
-			//double tempX = -u.x;
-			//u.x = u.y;
-			//u.y = tempX;
-			w = Point2d(u.x, u.y);
+	/*		double tempX = -u.x;
+			u.x = u.y;
+			u.y = tempX;*/
+			w = Point2d(u.y, -u.x);
 			//int length = norm()
 			vector<Point2d> Oxy(20);
 			double d = 0.1*rectSize_b;
@@ -494,17 +498,35 @@ int main()
 			//cout << pt.x << ", " << pt.y << endl;
 
 			Point2d centroid = maskCentroid;
-			for (size_t i = 0; i < 10; i++)
+			Point t = centroid;			
+			circle(mask_i, t, 1, (0, 0, 0), 0.25, 8, 0);
+			imshow("Plot Dot on SRC Image", src);
+			for (size_t j = 0; j < 10; j++)
 			{
 				Point2d ww;
 				double magW = sqrt(w.x*w.x + w.y*w.y);
 				w.x = w.x/magW;
 				w.y = w.y/magW;
 				Point2d temp = centroid +(d*w);
+				Point temp2 = temp;
+				for (size_t k = 0; k < Points.rows; k++)
+				{
+					// << Points.at<Point>(k).y << "\n";
+					//cout << Points.at<Point>(i).x << "\n";
+					//cout << "\n";
+					if ((temp2.x == Points.at<Point>(k).x) && (temp2.y == Points.at<Point>(k).y))
+					{
+						cout << "test: " << "x= "<<temp2.x<<"y= "<<temp2.y<<"\n";
+					}
+				}
+
 				cout << "Ray origin= " << temp << "\n";
+				circle(src, temp2, 1, (0, 0, 0), 0.125, 8, 0);
+				imshow("Plot Dot on SRC Image", mask_i);
 				Oxy.push_back(temp);
 				centroid = temp;
 			}
+			imwrite("PlotDotonSRCImage.png", mask_i);
 			
 #pragma region quadrants
 			//v.x = B.x - A.x; v.y = B.y - A.y;
