@@ -377,6 +377,8 @@ int main()
 			connectedComponentsWithStats_MatrixFile << "CC_STAT_AREA -- The total area (in pixels) of the connected component.  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
 			connectedComponentsWithStats_MatrixFile << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
 
+			//circle(src, Point(111, 10), 1, (0, 0, 255), 50, 8, 0);
+			//imshow("Plot Dot on SRC Image", src);
 			std::string s = std::to_string(FltrLabel);
 			// Get the mask for the i-th contour
 			if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) >= 300)
@@ -410,6 +412,9 @@ int main()
 			imwrite("mask_i_" + s + ".bmp", mask_i);
 			Mat Points;
 
+			double rectSize_b, rectSize_a;
+			Point maskCentroid;
+
 			//vector<Point> pts;
 			findNonZero(mask_i, Points);
 			//ofstream NonZeroMaskCoordinates_MatrixFile;
@@ -434,14 +439,73 @@ int main()
 			
 			Point2f vtx[4];
 			box.points(vtx);			
+			//box.angle returns angles in degrees
 			connectedComponentsWithStats_MatrixFile << "minAreaRect Angle= " << box.angle +180<< "\n";
 
-			Point v;
-			v = Point(cos(box.angle + 180), sin(box.angle + 180));
+			maskCentroid = Point(FltrCentroids.at<double>(FltrLabel, 0),FltrCentroids.at<double>(FltrLabel, 1));
+
+			// Draw the bounding box
+			Mat tempSrc1 = imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED);;
+			vector<double> lengths(4);
+			for (int i = 0; i < 4; i++)
+			{
+				line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+				//rectSize_b = max();
+				lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
+				cout << "component= " << FltrLabel << " -- " << "Line length= " << norm((vtx[(i + 1) % 4]) - (vtx[i])) << "\n";
+				if (FltrLabel == 1)
+				{
+					/*				cout << "vtx[i]= " << vtx[i] << "\n";
+					cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
+					cout << "vtx[(i + 1)].y - vtx[i].y= " << vtx[(i + 1)].y - vtx[i].y << "\n";
+					cout << "vtx[(i + 1)].x - vtx[i].x= " << vtx[(i + 1)].x - vtx[i].x << "\n";*/
+					double lineAngle = atan2(vtx[(i + 1)].y - vtx[i].y, vtx[(i + 1)].x - vtx[i].x) * 180.0 / CV_PI;
+					//cout << "lineAngle= " << lineAngle << "\n";
+					//cout << "abs(lineAngle)"<< abs(lineAngle)<<"\n";
+					//cout << "(box.angle + 180) + 10= " << (box.angle + 180) + 10 << "\n";
+					//cout << "box.angle + 180) - 10= " << (box.angle + 180) - 10 << "\n";
+					if (abs(lineAngle) <= (box.angle + 180) + 10 && abs(lineAngle) >= (box.angle + 180) - 10)
+					{
+						//cout << "COORDINATE:"<< "\n";
+						line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 0, 255), 5, LINE_AA);
+					}
+					/*			cout << "COORDINATE: vtx[i].y= " << vtx[i].y << "\n";
+					cout << "\n" << std::endl;*/
+				}
+			}
+			rectSize_b = *max_element(lengths.begin(), lengths.end());
+			//cout << "Max value: " << rectSize_b << endl;
+
+			Point2d u;
+			//Point2d uu;
+			u = Point2d(cos(box.angle + 180), sin(box.angle + 180));
+			Point2d w = u-((CV_PI/2)*(180/CV_PI));
 			//rotate and swap
-			int tempX = -v.x;
-			v.x = v.y;
-			v.y = tempX;
+			//double tempX = -u.x;
+			//u.x = u.y;
+			//u.y = tempX;
+			w = Point2d(u.x, u.y);
+			//int length = norm()
+			vector<Point2d> Oxy(20);
+			double d = 0.1*rectSize_b;
+
+			//Point2f a(0.3f, 0.f), b(0.f, 0.4f);
+			//Point pt = (a + b)*10.f;
+			//cout << pt.x << ", " << pt.y << endl;
+
+			Point2d centroid = maskCentroid;
+			for (size_t i = 0; i < 10; i++)
+			{
+				Point2d ww;
+				double magW = sqrt(w.x*w.x + w.y*w.y);
+				w.x = w.x/magW;
+				w.y = w.y/magW;
+				Point2d temp = centroid +(d*w);
+				cout << "Ray origin= " << temp << "\n";
+				Oxy.push_back(temp);
+				centroid = temp;
+			}
+			
 #pragma region quadrants
 			//v.x = B.x - A.x; v.y = B.y - A.y;
 			if ((box.angle + 180) < 90.0)
@@ -464,7 +528,7 @@ int main()
 			Point tempPoint;
 			tempPoint.x = (int)round(length * cos((box.angle + 180) * CV_PI / 180.0));
 			tempPoint.y = (int)round(length * sin((box.angle + 180) * CV_PI / 180.0));
-			cout << "tempPoint= " << tempPoint << "\n";
+			//cout << "tempPoint= " << tempPoint << "\n";
 
 			//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
 			connectedComponentsWithStats_MatrixFile << "\n" << std::endl;
@@ -474,33 +538,9 @@ int main()
 				cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
 				cout << "\n";*/
 			}
-			Mat tempSrc1 = imread("20161215 02.33_368L.jpg", CV_LOAD_IMAGE_UNCHANGED);;
-			// Draw the bounding box
-			for (int i = 0; i < 4; i++)
-			{
-				line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-				if (FltrLabel == 1)
-				{
-	/*				cout << "vtx[i]= " << vtx[i] << "\n";
-					cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
-					cout << "vtx[(i + 1)].y - vtx[i].y= " << vtx[(i + 1)].y - vtx[i].y << "\n";
-					cout << "vtx[(i + 1)].x - vtx[i].x= " << vtx[(i + 1)].x - vtx[i].x << "\n";*/
-					double lineAngle = atan2(vtx[(i + 1)].y - vtx[i].y, vtx[(i + 1)].x - vtx[i].x) * 180.0 / CV_PI;
-					//cout << "lineAngle= " << lineAngle << "\n";
-					//cout << "abs(lineAngle)"<< abs(lineAngle)<<"\n";
-					//cout << "(box.angle + 180) + 10= " << (box.angle + 180) + 10 << "\n";
-					//cout << "box.angle + 180) - 10= " << (box.angle + 180) - 10 << "\n";
-					if (abs(lineAngle)<= (box.angle + 180)+10 && abs(lineAngle) >= (box.angle + 180) - 10)
-					{
-							//cout << "COORDINATE:"<< "\n";
-						line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 0, 255), 5, LINE_AA);
-					}
-		/*			cout << "COORDINATE: vtx[i].y= " << vtx[i].y << "\n";
-					cout << "\n" << std::endl;*/
-				}
-			}
-			imwrite("boundingBox_" +s+".bmp", tempSrc1);
-			imshow("boundingBox_" + s, tempSrc1);
+
+			//imwrite("boundingBox_" +s+".bmp", tempSrc1);
+			//imshow("boundingBox_" + s, tempSrc1);
 		}
 		connectedComponentsWithStats_MatrixFile.close();
 	waitKey(0);
