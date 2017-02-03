@@ -87,14 +87,14 @@ RNG rng(12345);
 
 void MyLine(Mat img, Point start, Point end)
 {
-	cout << "baseLine1= " << baseLine1 << ",  baseLine2= " << baseLine2 << "\n";
+	//cout << "baseLine1= " << baseLine1 << ",  baseLine2= " << baseLine2 << "\n";
 
 	if (clickCounter ==/*1*/2)
 	{
 		clickCounter = 0;
 	}
 
-	cout << "Drawing line ([" << pt1.x << ", " << pt1.y << "], [" << pt2.x << ", " << pt2.y << "])" << endl;
+	//cout << "Drawing line ([" << pt1.x << ", " << pt1.y << "], [" << pt2.x << ", " << pt2.y << "])" << endl;
 
 	int thickness = 2;
 	int lineType = 8;
@@ -243,12 +243,12 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 			{	// For the very 1st line at baseline's 1st coordinate
 				if (i == 0)
 				{
-					cout << "1st LINE ON BASELINE:" << "\n";
+					//cout << "1st LINE ON BASELINE:" << "\n";
 #pragma region Line Length=4
 					j++;
 					pt1 = it2.pos();
 					pt2 = Point(it2.pos().x + 100, it2.pos().y + 100);
-					cout << "point from LineIterator= " << pt1 << "\n";
+					//cout << "point from LineIterator= " << pt1 << "\n";
 #pragma endregion
 
 #pragma region Plot Orthogonal Lines
@@ -282,34 +282,34 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 				{
 					pt1 = it2.pos();
 					pt2 = Point(it2.pos().x + 100, it2.pos().y + 100);
-					cout << "point from LineIterator= " << pt1 << "\n";
+					//cout << "point from LineIterator= " << pt1 << "\n";
 
 #pragma region Plot Orthogonal Lines
 					////Direction vector going from 'start' to 'end'
 					Point v;
 					v.x = pt1.x - baseLine1.x;
 					v.y = pt1.y - baseLine1.y;
-					cout << "Direction vector going from 'start'-"<<pt1<<" to 'end'-"<<pt2 << "  = "<<v.x<<", "<<v.y<<"\n";
+					//cout << "Direction vector going from 'start'-"<<pt1<<" to 'end'-"<<pt2 << "  = "<<v.x<<", "<<v.y<<"\n";
 					//normalize v
 					int mag = sqrt(v.x*v.x + v.y*v.y);
 					v.x = v.x / mag;
 					v.y = v.y / mag;
-					cout << "Normalizing v" << "\n";
+					//cout << "Normalizing v" << "\n";
 					//rotate and swap
 					int tempX = -v.x;
 					v.x = v.y;
 					v.y = tempX;
-					cout << "Rotating & swapping v" << "\n";
+					//cout << "Rotating & swapping v" << "\n";
 					//new line at 'end' pointing in v-direction
 					pt4.x = pt1.x + v.x * (length);
 					pt4.y = pt1.y + v.y * (length);  
-					cout << "New line:" << "\n";
-					cout << "at" <<pt2<<" and "<< pt4<< "\n";
+					//cout << "New line:" << "\n";
+					//cout << "at" <<pt2<<" and "<< pt4<< "\n";
 					//re-align to pt1 & pt2
 					//pt1 = pt2;
 					pt2 = pt4;
-					cout << "Re-Aligning to pt1 & pt2" << "\n";
-					cout << "\n";cout << "\n";
+					//cout << "Re-Aligning to pt1 & pt2" << "\n";
+					//cout << "\n";cout << "\n";
 #pragma endregion
 					MyLine(src, pt1, pt2);
 					j++;
@@ -330,17 +330,17 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 	}
 	else if (event == EVENT_RBUTTONDOWN)
 	{
-		cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+		//cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
 	}
 	else if (event == EVENT_MBUTTONDOWN)
 	{
-		cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+		//cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
 	}
 	else if (event == EVENT_MOUSEMOVE)
 	{
-		cout << "x= " << x << " ,y= " << y << "\n";
+		//cout << "x= " << x << " ,y= " << y << "\n";
 		circle(src, Point(x, y), 1, (0, 0, 255), 5, 8, 0);
-		imshow("Plot Dot on SRC Image", src);
+		imshow("Cont", src);
 	}
 }
 
@@ -391,26 +391,6 @@ int main()
 			Mat mask_i = FltrLabelImage == FltrLabel;
 			string name = "mask_i_";
 
-#pragma region centroid_of_mask
-			float sumx = 0, sumy = 0;
-			float num_pixel = 0;
-			for (size_t x = 0; x < mask_i.cols; x++)
-			{
-				for (size_t y = 0; y < mask_i.rows; y++)
-				{
-					int val = mask_i.at<uchar>(y, x);
-					if (val >= 255) {
-						sumx += x;
-						sumy += y;
-						num_pixel++;
-					}
-				}
-			}
-			Point p(sumx / num_pixel, sumy / num_pixel);
-			cout << Mat(p) << endl;
-#pragma endregion
-
-
 			imwrite("mask_i_" + s + ".bmp", mask_i);
 			Mat Points;
 
@@ -419,25 +399,6 @@ int main()
 
 			//vector<Point> pts;
 			findNonZero(mask_i, Points);
-			//ofstream NonZeroMaskCoordinates_MatrixFile;
-			//NonZeroMaskCoordinates_MatrixFile.open("NonZeroMaskCoordinates_MatrixFile.txt");
-
-			//ofstream NonZeroMask_MatrixFile;
-			//NonZeroMask_MatrixFile.open("NonZeroMask_MatrixFile.txt");
-			//NonZeroMask_MatrixFile << Points<< "\n";
-			//NonZeroMask_MatrixFile.close();
-			//NonZeroMaskCoordinates_MatrixFile << "Points width= "<<Points.size().width << "\n";
-			//NonZeroMaskCoordinates_MatrixFile << "Point height"<<Points.size().height << "\n";
-
-			//for (size_t i = 0; i < Points.rows; i++)
-			//{
-			//	cout << Points.at<Point>(i).y << "\n";
-			//	cout << Points.at<Point>(i).x << "\n";
-			//	cout << "\n";
-
-			//}
-
-			//NonZeroMaskCoordinates_MatrixFile.close();
 
 			RotatedRect box = minAreaRect(Points);
 			
@@ -454,115 +415,41 @@ int main()
 			for (int i = 0; i < 4; i++)
 			{
 				line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-				//rectSize_b = max();
 				lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
-				cout << "component= " << FltrLabel << " -- " << "Line length= " << norm((vtx[(i + 1) % 4]) - (vtx[i])) << "\n";
-				if (FltrLabel == 1)
-				{
-					/*				cout << "vtx[i]= " << vtx[i] << "\n";
-					cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
-					cout << "vtx[(i + 1)].y - vtx[i].y= " << vtx[(i + 1)].y - vtx[i].y << "\n";
-					cout << "vtx[(i + 1)].x - vtx[i].x= " << vtx[(i + 1)].x - vtx[i].x << "\n";*/
-					double lineAngle = atan2(vtx[(i + 1)].y - vtx[i].y, vtx[(i + 1)].x - vtx[i].x) * 180.0 / CV_PI;
-					//cout << "lineAngle= " << lineAngle << "\n";
-					//cout << "abs(lineAngle)"<< abs(lineAngle)<<"\n";
-					//cout << "(box.angle + 180) + 10= " << (box.angle + 180) + 10 << "\n";
-					//cout << "box.angle + 180) - 10= " << (box.angle + 180) - 10 << "\n";
-					if (abs(lineAngle) <= (box.angle + 180) + 10 && abs(lineAngle) >= (box.angle + 180) - 10)
-					{
-						//cout << "COORDINATE:"<< "\n";
-						line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 0, 255), 5, LINE_AA);
-					}
-					/*			cout << "COORDINATE: vtx[i].y= " << vtx[i].y << "\n";
-					cout << "\n" << std::endl;*/
-				}
 			}
 			rectSize_b = *max_element(lengths.begin(), lengths.end());
-			//cout << "Max value: " << rectSize_b << endl;
 
 			Point2d u;
-			//Point2d uu;
+
+			cout << "minAreaRect Angle= " << box.angle << "\n";
 			u = Point2d(cos(box.angle + 180), sin(box.angle + 180));
-			Point2d w; //= u-((CV_PI/2)*(180/CV_PI));
-			//rotate and swap
-	/*		double tempX = -u.x;
-			u.x = u.y;
-			u.y = tempX;*/
-			w = Point2d(u.y, -u.x);
-			//int length = norm()
+			Point2d u2 = u;
+			Point2d w;
 			vector<Point2d> Oxy(20);
 			double d = 0.1*rectSize_b;
-
-			//Point2f a(0.3f, 0.f), b(0.f, 0.4f);
-			//Point pt = (a + b)*10.f;
-			//cout << pt.x << ", " << pt.y << endl;
-
 			Point2d centroid = maskCentroid;
-			Point t = centroid;			
-			circle(mask_i, t, 1, (0, 0, 0), 0.25, 8, 0);
-			imshow("Plot Dot on SRC Image", src);
-			for (size_t j = 0; j < 10; j++)
+			Point t = centroid;
+			for (size_t i = 0; i < length; i++)
 			{
-				Point2d ww;
-				double magW = sqrt(w.x*w.x + w.y*w.y);
-				w.x = w.x/magW;
-				w.y = w.y/magW;
-				Point2d temp = centroid +(d*w);
-				Point temp2 = temp;
-				for (size_t k = 0; k < Points.rows; k++)
-				{
-					// << Points.at<Point>(k).y << "\n";
-					//cout << Points.at<Point>(i).x << "\n";
-					//cout << "\n";
-					if ((temp2.x == Points.at<Point>(k).x) && (temp2.y == Points.at<Point>(k).y))
-					{
-						cout << "test: " << "x= "<<temp2.x<<"y= "<<temp2.y<<"\n";
-					}
-				}
+				double magU = sqrt(u.x*u.x + u.y*u.y);
+				u.x = u.x / magU;
+				u.y = u.y / magU;
 
-				cout << "Ray origin= " << temp << "\n";
-				circle(src, temp2, 1, (0, 0, 0), 0.125, 8, 0);
-				imshow("Plot Dot on SRC Image", mask_i);
-				Oxy.push_back(temp);
-				centroid = temp;
+				//rotate and swap
+				double tempX = -u.x;
+				u.x = u.y;
+				u.y = tempX;
+
+				w.x = u2.x + u.x*d;
+				w.y = u2.y + u.y*d;
+
+				circle(src, w, 1, (255, 0, 0), 1, 8, 0);
+				u = w;
 			}
-			imwrite("PlotDotonSRCImage.png", mask_i);
-			
-#pragma region quadrants
-			//v.x = B.x - A.x; v.y = B.y - A.y;
-			if ((box.angle + 180) < 90.0)
-			{
+			imshow("Plot Image", src);
 
-			}
-			else if ((box.angle + 180) >= 90.0 && (box.angle + 180) < 180.0)
-			{
-
-			}
-			else if ((box.angle + 180) >= 180.0 && (box.angle + 180) < 270.0)
-			{
-
-			}
-			else if ((box.angle + 180) >= 270.0 && (box.angle + 180) < 360.0)
-			{
-
-			}
-#pragma endregion
-			Point tempPoint;
-			tempPoint.x = (int)round(length * cos((box.angle + 180) * CV_PI / 180.0));
-			tempPoint.y = (int)round(length * sin((box.angle + 180) * CV_PI / 180.0));
-			//cout << "tempPoint= " << tempPoint << "\n";
-
-			//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
 			connectedComponentsWithStats_MatrixFile << "\n" << std::endl;
-			for (size_t i = 0; i < 4; i++)
-			{
-				/*cout << "i= " << i << " -- " << vtx[i] << "\n";
-				cout << "vtx[(i + 1) % 4]= " << vtx[(i + 1) % 4] << "\n";
-				cout << "\n";*/
-			}
 
-			//imwrite("boundingBox_" +s+".bmp", tempSrc1);
-			//imshow("boundingBox_" + s, tempSrc1);
 		}
 		connectedComponentsWithStats_MatrixFile.close();
 	waitKey(0);

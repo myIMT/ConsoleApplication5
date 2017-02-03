@@ -32,6 +32,7 @@
     <ClCompile Include="GraphUtils.cpp" />
     <ClCompile Include="HistogramTest.cpp" />
     <ClCompile Include="minarea.cpp" />
+    <ClCompile Include="minAreaRectSample.cpp" />
     <ClCompile Include="MyDrawLineOnImage.cpp" />
     <ClCompile Include="MyEdgeDetector.cpp" />
     <ClCompile Include="MyFloodFillZoom.cpp" />

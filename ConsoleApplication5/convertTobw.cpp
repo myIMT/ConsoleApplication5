@@ -24,7 +24,7 @@
 //
 //int main()
 //{
-//	Mat src = imread("logo.jpg", CV_LOAD_IMAGE_UNCHANGED); //read the image data in the file "MyPic.JPG" and store it in 'img'
+//	Mat src = imread("thegodfather1.jpg", CV_LOAD_IMAGE_UNCHANGED); //read the image data in the file "MyPic.JPG" and store it in 'img'
 //	imshow("original image", src);
 //	Mat src_gray;
 //
