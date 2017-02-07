@@ -350,17 +350,6 @@
 //		{
 //			/// Establish the number of bins
 //			int histSize = 256;
-//			myEdgeDetectorFile << "Angle(i,j)= (" << i << ", " << j << ")= " << aRow_i[j] << "\n";
-//
-//			myEdgeDetectorFile << "Row_i[j]/binSize= (" << aRow_i[j] << ", " << binSize << ")= " << int(aRow_i[j] / binSize) << "\n";
-//
-//			myEdgeDetectorFile << "src_gray[i=" << i << ",j=" << j << "]=" << aRow_i[j] << "\n";
-//
-//			//vvv[int(aRow_i[j] / binSize)].push_back(aRow_i[j]);
-//
-//			myEdgeDetectorFile << "\n";
-//			myEdgeDetectorFile << "\n";
-//			myEdgeDetectorFile << "\n";
 //			/// For all non-zero edge pixels
 //			if ((int)cannyResult.at<uchar>(i, j) != 0)
 //			{
@@ -377,7 +366,7 @@
 //				CalcAngle_Container_MatrixFile << containerCount << "," << container[containerCount].bin << "," << container[containerCount].i << "," << container[containerCount].j << "," << container[containerCount].angle << "," << container[containerCount].value << "\n";
 //				containerCount++; ///To index into container
 //				vvv[int(newAngle.at<double>(i, j) / binSize)].push_back(newAngle.at<double>(i, j));
-//				cout << "vvv["<< int(newAngle.at<double>(i, j) / binSize) <<"] = "<< (int)newAngle.at<double>(i, j)<<"\n";
+//				//cout << "vvv["<< int(newAngle.at<double>(i, j) / binSize) <<"] = "<< (int)newAngle.at<double>(i, j)<<"\n";
 //				CannyMagGradOrig_Canny_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << (int)cannyResult.at<uchar>(i, j) << "\n";
 //				CannyMagGradOrig_Angle_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << aRow_i[j] << "\n";
 //				CannyMagGradOrig_Mag_MatrixFile << "(i;j)= (" << i << ";" << j << ")= " << "," << mRow_i[j] << "\n";
@@ -466,6 +455,7 @@
 //		int value = 0;
 //	};
 //	MaxElement me;
+//	int me2;
 //	for (int i = 0; i < vvv.size(); i++)
 //	{
 //		for (int j = 0; j < vvv[i].size(); j++)
@@ -479,6 +469,7 @@
 //					temp = vvvCounts[i].at(0);
 //					me.bin = i;	///Bin with most elements (bin ID)
 //					me.value = vvvCounts[i].at(0);	///Frequency count
+//					me2 = i-1;
 //				}
 //				CalcAngle_vvvCounts_MatrixFile << "vvvCounts[" << i << "].at[" << j << "]= " << vvvCounts[i].at(j) << "\n";
 //			}
@@ -487,10 +478,29 @@
 //	CalcAngle_vvvCounts_MatrixFile.close();
 //	ArrayVectorFile.close();
 //	cout << "The biggest number is: " << me.value << " at bin " << me.bin << endl;
+//	cout << "Average angle_" << count <<"= "<<(me.bin)*5 << endl;
+//	cout << "me2= " << (me2) * 5 << endl;
 //#pragma endregion
-//
-//Mat GraySrcImg;
-//cv::cvtColor(orig, GraySrcImg, cv::COLOR_BGR2GRAY);
+//	Mat GraySrcImg;
+//	cv::cvtColor(orig, GraySrcImg, cv::COLOR_BGR2GRAY);
+//	Mat binPixelsPlot = GraySrcImg;
+//	int binPixelsPlotCount = 0;
+//	for (size_t i = 0; i < container.size(); i++)
+//	{
+//		//if (container[i].bin ==me.bin)
+//		if (container[i].angle == 135)
+//		{
+//			binPixelsPlotCount++;
+//			binPixelsPlot.at<uchar>(container[i].i, container[i].j) = 255;
+//		}
+//		//cout << "container[" << i << "].bin" << container[i].bin << endl;
+//		//cout << "container[" << i << "].bin" << container[i].bin << endl;
+//		//cout << "container[" << i << "].bin" << container[i].bin << endl;
+//	}
+//	imshow("binPixelsPlot", binPixelsPlot);
+//	cout << "binPixelsPlotCount= " << binPixelsPlotCount<<"\n";
+////Mat GraySrcImg;
+////cv::cvtColor(orig, GraySrcImg, cv::COLOR_BGR2GRAY);
 //Mat temp2Orig = GraySrcImg;
 //#pragma region Plot Back to Canny
 //	//Mat tempCannyResult = cannyResult;
@@ -685,7 +695,7 @@
 //		myConnectedComponents03file << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
 //		vector<vector<Point>> contours;
 //		//vector<Vec4i> hierarchy;
-//		for (int FltrLabel = 1; FltrLabel < 2/*nFltrLabels*/; ++FltrLabel) {
+//		for (int FltrLabel = 1; FltrLabel < 3/*nFltrLabels*/; ++FltrLabel) {
 //			FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
 //			//myConnectedComponents03file << "Component " << FltrLabel << std::endl;
 //			//myConnectedComponents03file << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;

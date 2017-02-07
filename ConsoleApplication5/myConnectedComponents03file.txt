@@ -1,3 +1,2 @@
 (Filter) Number of connected components = 1441
 
-mask_i_1
