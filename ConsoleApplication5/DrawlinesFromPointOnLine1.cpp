@@ -423,8 +423,6 @@
 //
 //			Point2d u;
 //
-//			//cout << "minAreaRect Angle= " << box.angle << "\n";
-//			//cout << "minAreaRect Angle + 180= " << box.angle+180 << "\n";
 //			u = Point2d(cos((box.angle + 180)* CV_PI / 180.0), sin((box.angle + 180))* CV_PI / 180.0);
 //			circle(tempSrc1, u, 1, Scalar(100, 100, 100), 1, 8, 0);
 //			imshow("u", tempSrc1);
