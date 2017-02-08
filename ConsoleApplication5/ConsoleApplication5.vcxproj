@@ -31,6 +31,7 @@
     <ClCompile Include="findContours.cpp" />
     <ClCompile Include="GraphUtils.cpp" />
     <ClCompile Include="HistogramTest.cpp" />
+    <ClCompile Include="HistogramTestLines_PerComponentcpp.cpp" />
     <ClCompile Include="HistogramTest_Lines.cpp" />
     <ClCompile Include="minarea.cpp" />
     <ClCompile Include="minAreaRectSample.cpp" />
