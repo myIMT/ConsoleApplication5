@@ -97,7 +97,7 @@
 //
 //int main(int argc, char *argv[])
 //{
-//	src = cv::imread("20161215 02.33_368.jpg");
+//	src = cv::imread("20161215 02.33_368L2.jpg");
 //	imshow("src", src);
 //	//srcImg = src;
 //		//bilateralFilter(src, srcImg, 15, 80, 80);
@@ -288,7 +288,7 @@
 //		}
 //		cout << "i - " << i << "2-Plot here= " << w1 << ", " << w2 << "\n";
 //		circle(plotImage, w1, 1, Scalar(0, 0, 255), 1, 8, 0);
-//		circle(plotImage, w2, 1, Scalar(255, 0, 0), 1, 8, 0);
+//		//circle(plotImage, w2, 1, Scalar(255, 0, 0), 1, 8, 0);
 //		u2 = w1;
 //		u22 = w2;
 //	}
@@ -328,7 +328,7 @@
 //			}
 //			cout << "i - " << i << "1-Plot here= " << ww1 << ", " << ww2 << "\n";
 //			//circle(src, ww1, 1, Scalar(0, 255, 255), 1, 8, 0); //yellow
-//			circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
+//			//circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
 //			uu2 = ww1;
 //			uu22 = ww2;
 //		}
