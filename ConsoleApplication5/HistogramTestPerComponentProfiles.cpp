@@ -81,6 +81,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 		maskCentroid.push_back(Point(FltrCentroids.at<double>(FltrLabel, 0), FltrCentroids.at<double>(FltrLabel, 1)));
 	}
 
+	//
 	cv::Mat FltrDst(GrayScaleSrcImg.size(), CV_8UC3);
 	for (int r = 0; r < FltrDst.rows; ++r) {
 		for (int c = 0; c < FltrDst.cols; ++c) {
