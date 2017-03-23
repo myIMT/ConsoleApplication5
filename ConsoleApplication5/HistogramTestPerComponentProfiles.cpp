@@ -98,329 +98,363 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 int main(int argc, char *argv[])
 {
 	src = cv::imread("20161215 02.33_368L2.jpg");
-	imshow("src", src);
+	//imshow("src", src);
 	//srcImg = src;
 	//bilateralFilter(src, srcImg, 15, 80, 80);
 	blur(src, srcImg, Size(5, 5), Point(-1, -1));
-	imshow("srcImg", srcImg);
+	//imshow("srcImg", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-	imshow("GrayImg", GrayImg);
+	//imshow("GrayImg", GrayImg);
 
 	Mat components = GetConnectedComponent(GrayImg);
-	imshow("components", components);
+	//imshow("components", components);
 
 	//imshow("maskImages[0]", Mat(maskImages[0]));
 	Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 #pragma region MyRegion
 	for (size_t mi = 0; mi < 1/*maskImages.size()*/; mi++)
 	{
-		std::string smi = std::to_string(mi);
-		Mat tempComponent = Mat(maskImages[mi]);
-		//imshow("tempComponent", tempComponent);
-		Mat GrayComponents;
-		//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
-		//imshow("GrayComponents", GrayComponents);
-		GrayComponents = tempComponent;
-		Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
-		Sobel(GrayComponents, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
-
-		Mat Mag(GrayComponents.size(), CV_32FC1);
-		Mat Angle(GrayComponents.size(), CV_32FC1);
-		cartToPolar(grad_x, grad_y, Mag, Angle, true);
-
-		std::array<std::vector<int>, 72> vvv{ {} };
-		struct element {
-			int bin;
-			int i;
-			int j;
-			int angle;
-			int value;
-		};
-		vector<element> container;
-		int containerCount = 0;
-
-		Canny(GrayComponents, cannyEdge, 100, 200);
-		imshow("cannyEdge", cannyEdge);
-
-		Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
-
-		for (size_t i = 0; i < cannyEdge.rows; i++)
-		{
-			for (size_t j = 0; j < cannyEdge.cols; j++)
-			{
-				if ((int)cannyEdge.at<uchar>(i, j) != 0)
-				{
-					newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];
-					container.push_back(element());
-					container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);
-					container[containerCount].i = i;
-					container[containerCount].j = j;
-					container[containerCount].angle = newAngle.ptr<float>(i)[j];
-					container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
-					containerCount++;
-				}
-			}
-		}
-		//////999999999999999999999999999999999999999999999999999999
-		ofstream ContainerFile;
-		ContainerFile.open("ContainerFile.txt");
-		for (int i = 0; i < container.size(); i++)
-		{
-			ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
-			ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
-			ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
-			ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
-			ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
-			ContainerFile << "\n";
-			ContainerFile << "\n";
-		}
-		ContainerFile.close();
-		//////999999999999999999999999999999999999999999999999999999
-		int maxCount = 0;
-		struct maxCountStruct {
-			int bin;
-			int angle;
-			int size;
-		};
-		vector<maxCountStruct> maxCountContainer;
-		int temp = 0;
-		struct MaxElementStruct {
-			int bin = 0;
-			int angle = 0;
-			int size = 0;
-		};
-		MaxElementStruct mes;
-		for (size_t l = 0; l < container.size(); l++)
-		{
-			if (maxCountContainer.empty())
-			{
-				maxCountContainer.push_back(maxCountStruct());
-				maxCountContainer[l].bin = container[l].bin;
-				maxCountContainer[l].angle = container[l].angle;
-				maxCountContainer[l].size += 1;
-			}
-			else
-			{
-				for (size_t m = 0; m < maxCountContainer.size(); m++)
-				{
-					if (maxCountContainer[m].bin == container[l].bin)
-					{
-						maxCountContainer[m].size += 1;
-						break;
-					}
-					else if (m == maxCountContainer.size() - 1)
-					{
-						maxCountContainer.push_back(maxCountStruct());
-						maxCountContainer[maxCountContainer.size() - 1].bin = container[l].bin;
-						maxCountContainer[maxCountContainer.size() - 1].angle = container[l].angle;
-						maxCountContainer[maxCountContainer.size() - 1].size += 1;
-						break;
-					}
-
-					if (maxCountContainer[m].size > temp)	///Find bin with the most elements
-					{
-						temp = maxCountContainer[m].size;
-						mes.bin = (int)maxCountContainer[m].bin;	///Bin with most elements (bin ID)
-						mes.angle = (int)maxCountContainer[m].angle;
-						mes.size = (int)maxCountContainer[m].size;
-					}
-				}
-			}
-		}
-		cout << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl;
-		cout << "Angle - " << smi << "= " << mes.angle << "\n";
-		Mat tempGraySrc = GrayImg;
-		for (size_t n = 0; n < container.size(); n++)
-		{
-			if (container[n].bin == mes.bin)
-			{
-				tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
-			}
-		}
-		imshow("tempGraySrc", tempGraySrc);
-		imwrite("tempGraySrc.bmp", tempGraySrc);
-
-		Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-#pragma region Bounding Box
-		vector<double> lengths(4);
-		double rectSize_b;
-		size_t imgCount = 0;
-		//cout << "maskImages.size()= " << maskImages.size() << "\n";
-		//for (imgCount; imgCount < maskImages.size(); imgCount++)
+		//if (mi== 17 ||mi == 16 ||mi == 13 || mi == 9)
 		//{
-		Mat tempPoints;
-		findNonZero(maskImages[mi], tempPoints);
-		Points.push_back(tempPoints);
-		//}
-		Point2f vtx[4];
-		RotatedRect box = minAreaRect(Points[mi]); //only the first Mat Points
-		box.points(vtx);
-		/*Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);*/
-		for (int i = 0; i < 4; i++)
-		{
-			line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-			line(tempSrc2, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-			lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
-		}
-		/*imshow("Bounding Box", tempSrc1);*/
-		//cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";
-		cout << "minAreaRect width= " << box.size.width << "\n";
-		cout << "minAreaRect height= " << box.size.height << "\n";
+			std::string smi = std::to_string(mi);
+			Mat tempComponent = Mat(maskImages[mi]);
+			//imshow("tempComponent- " + smi, tempComponent);
+			Mat GrayComponents;
+			//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
+			//imshow("GrayComponents", GrayComponents);
+			GrayComponents = tempComponent;
+			Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+			Sobel(GrayComponents, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+
+			Mat Mag(GrayComponents.size(), CV_32FC1);
+			Mat Angle(GrayComponents.size(), CV_32FC1);
+			cartToPolar(grad_x, grad_y, Mag, Angle, true);
+
+			std::array<std::vector<int>, 72> vvv{ {} };
+			struct element {
+				int bin;
+				int i;
+				int j;
+				int angle;
+				int value;
+			};
+			vector<element> container;
+			int containerCount = 0;
+
+			Canny(GrayComponents, cannyEdge, 100, 200);
+			//imshow("cannyEdge", cannyEdge);
+
+			Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
+
+			for (size_t i = 0; i < cannyEdge.rows; i++)
+			{
+				for (size_t j = 0; j < cannyEdge.cols; j++)
+				{
+					if ((int)cannyEdge.at<uchar>(i, j) != 0)
+					{
+						newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];
+						container.push_back(element());
+						container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);
+						container[containerCount].i = i;
+						container[containerCount].j = j;
+						container[containerCount].angle = newAngle.ptr<float>(i)[j];
+						container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
+						containerCount++;
+					}
+				}
+			}
+			//////999999999999999999999999999999999999999999999999999999
+			ofstream ContainerFile;
+			ContainerFile.open("ContainerFile.txt");
+			for (int i = 0; i < container.size(); i++)
+			{
+				ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
+				ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
+				ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
+				ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
+				ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
+				ContainerFile << "\n";
+				ContainerFile << "\n";
+			}
+			ContainerFile.close();
+			//////999999999999999999999999999999999999999999999999999999
+			int maxCount = 0;
+			struct maxCountStruct {
+				int bin;
+				int angle;
+				int size;
+			};
+			vector<maxCountStruct> maxCountContainer;
+			int temp = 0;
+			struct MaxElementStruct {
+				int bin = 0;
+				int angle = 0;
+				int size = 0;
+			};
+			MaxElementStruct mes;
+			for (size_t l = 0; l < container.size(); l++)
+			{
+				if (maxCountContainer.empty())
+				{
+					maxCountContainer.push_back(maxCountStruct());
+					maxCountContainer[l].bin = container[l].bin;
+					maxCountContainer[l].angle = container[l].angle;
+					maxCountContainer[l].size += 1;
+				}
+				else
+				{
+					for (size_t m = 0; m < maxCountContainer.size(); m++)
+					{
+						if (maxCountContainer[m].bin == container[l].bin)
+						{
+							maxCountContainer[m].size += 1;
+							break;
+						}
+						else if (m == maxCountContainer.size() - 1)
+						{
+							maxCountContainer.push_back(maxCountStruct());
+							maxCountContainer[maxCountContainer.size() - 1].bin = container[l].bin;
+							maxCountContainer[maxCountContainer.size() - 1].angle = container[l].angle;
+							maxCountContainer[maxCountContainer.size() - 1].size += 1;
+							break;
+						}
+
+						if (maxCountContainer[m].size > temp)	///Find bin with the most elements
+						{
+							temp = maxCountContainer[m].size;
+							mes.bin = (int)maxCountContainer[m].bin;	///Bin with most elements (bin ID)
+							mes.angle = (int)maxCountContainer[m].angle;
+							mes.size = (int)maxCountContainer[m].size;
+						}
+					}
+				}
+			}
+			cout << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl;
+			cout << "Angle (mes)- " << smi << "= " << mes.angle << "\n";
+			Mat tempGraySrc = GrayImg;
+			for (size_t n = 0; n < container.size(); n++)
+			{
+				if (container[n].bin == mes.bin)
+				{
+					tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
+				}
+			}
+			//imshow("tempGraySrc", tempGraySrc);
+			imwrite("tempGraySrc.bmp", tempGraySrc);
+
+			Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+#pragma region Bounding Box
+			vector<double> lengths(4);
+			double rectSize_b;
+			size_t imgCount = 0;
+			//cout << "maskImages.size()= " << maskImages.size() << "\n";
+			//for (imgCount; imgCount < maskImages.size(); imgCount++)
+			//{
+			Mat tempPoints;
+			findNonZero(maskImages[mi], tempPoints);
+			Points.push_back(tempPoints);
+			//}
+			Point2f vtx[4];
+			RotatedRect box = minAreaRect(Points[mi]); //only the first Mat Points
+			box.points(vtx);
+			/*Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);*/
+			for (int i = 0; i < 4; i++)
+			{
+				line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+				line(tempSrc2, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+				lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
+			}
+			/*imshow("Bounding Box", tempSrc1);*/
+			//cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";
+			cout << "minAreaRect width= " << box.size.width << "\n";
+			cout << "minAreaRect height= " << box.size.height << "\n";
 #pragma endregion
-		Mat plotImage = src;
-		circle(plotImage, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
-		circle(tempSrc2, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
+			Mat plotImage = src;
+			circle(plotImage, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
+			circle(tempSrc2, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
 
 #pragma region walk in edge angle direction
-		//Point2f u, u2, u22, v;
-		//Point2f w1, w2;
-		//cout << "cos((mes.angle)* CV_PI / 180.0)= " << cos((mes.angle)* CV_PI / 180.0) << "\n";
-		//cout << "sin((mes.angle)* CV_PI / 180.0)= " << sin((mes.angle)* CV_PI / 180.0) << "\n";
-		//u = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
-		//u2 = u;
-		rectSize_b = *max_element(lengths.begin(), lengths.end());
-		double d = 0.1*rectSize_b;
-		//double normU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
-		////cout << "normU= " << normU << "\n";
-		//v = Point2f(u.x / normU, u.y / normU);
+			Point2f u, u2, u22, v;
+			Point2f w1, w2;
+			cout << "cos((mes.angle)* CV_PI / 180.0)= " << cos((mes.angle)* CV_PI / 180.0) << "\n";
+			cout << "sin((mes.angle)* CV_PI / 180.0)= " << sin((mes.angle)* CV_PI / 180.0) << "\n";
+			u = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
+			u2 = u;
+			rectSize_b = *max_element(lengths.begin(), lengths.end());
+			double d = 0.1*rectSize_b;
+			double normU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
+			//cout << "normU= " << normU << "\n";
+			v = Point2f(u.x / normU, u.y / normU);
+			Mat tempSrcW1 = src, tempSrcW2 = src;
+			for (size_t i = 0; i < 10; i++)
+			{
+				if (i == 0)
+				{	// starting point = center of mask
+					w1.x = maskCentroid[mi].x + v.x*d;	//one side
+					w1.y = maskCentroid[mi].y + v.y*d;
 
-		//for (size_t i = 0; i < 10; i++)
-		//{
-		//	if (i == 0)
-		//	{
-		//		w1.x = maskCentroid[mi].x + v.x*d;
-		//		w1.y = maskCentroid[mi].y + v.y*d;
+					w2.x = maskCentroid[mi].x - v.x*d;	//other side
+					w2.y = maskCentroid[mi].y - v.y*d;
+				}
+				else
+				{	// points on either-side of mask center point
+					w1.x = u2.x + v.x*d;		//one side
+					w1.y = u2.y + v.y*d;
 
-		//		w2.x = maskCentroid[mi].x - v.x*d;
-		//		w2.y = maskCentroid[mi].y - v.y*d;
-		//	}
-		//	else
-		//	{
-		//		w1.x = u2.x + v.x*d;
-		//		w1.y = u2.y + v.y*d;
+					w2.x = u22.x - v.x*d;		//other side
+					w2.y = u22.y - v.y*d;
+				}
+				//cout << "i - " << i << "2-Plot here= " << w1 << ", " << w2 << "\n";
+				//circle(plotImage, w1, 1, Scalar(0, 0, 255), 1, 8, 0);
+				//circle(plotImage, w2, 1, Scalar(255, 0, 0), 1, 8, 0);
 
-		//		w2.x = u22.x - v.x*d;
-		//		w2.y = u22.y - v.y*d;
-		//	}
-		//	//cout << "i - " << i << "2-Plot here= " << w1 << ", " << w2 << "\n";
-		//	//circle(plotImage, w1, 1, Scalar(0, 0, 255), 1, 8, 0);
-		//	//circle(plotImage, w2, 1, Scalar(255, 0, 0), 1, 8, 0);
-		//	circle(tempSrc2, w1, 1, Scalar(255, 0, 0), 1, 8, 0);
-		//	//circle(tempSrc2, w2, 1, Scalar(255, 100, 0), 1, 8, 0);
-		//	u2 = w1;
-		//	u22 = w2;
-		//}
+				circle(tempSrc2, w1, 1, Scalar(55, 55, 55), 1, 8, 0);
+				circle(tempSrc2, w2, 1, Scalar(55, 55, 55), 1, 8, 0);
+				//circle(tempSrcW1, w1, 1, Scalar(0, 0, 0), 1, 8, 0);
+				//circle(tempSrcW2, w2, 1, Scalar(255, 255, 255), 1, 8, 0);
+				u2 = w1;
+				u22 = w2;
+			}
+			/*		imshow("tempSrcW1- " + smi, tempSrcW1);
+					imshow("tempSrcW2- " + smi, tempSrcW2)*/;
 #pragma endregion
 
 #pragma region walk perpendicular in edge angle direction
-		//Point2f uu, uu2, uu22, vv;
-		//Point2f ww1, ww2;
-		//uu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
-		//uu2 = uu;
-		//rectSize_b = *max_element(lengths.begin(), lengths.end());
-		////double dd = 0.1*rectSize_b;
-		//double normUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
-		//vv = Point2f(uu.x / normUU, uu.y / normUU);
-		////rotate and swap
-		//double tempXX = vv.x;
-		//vv.x = -vv.y;
-		//vv.y = tempXX;
-		//for (size_t i = 0; i < 10; i++)
-		//{
-		//	if (i == 0)
-		//	{
-		//		ww1.x = maskCentroid[mi].x + vv.x*d;
-		//		ww1.y = maskCentroid[mi].y + vv.y*d;
+			Point2f uu, uu2, uu22, vv, ep11, ep12, ep21, ep22;
+			Point2f ww1, ww2;
+			uu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
+			uu2 = uu;
+			rectSize_b = *max_element(lengths.begin(), lengths.end());
+			//double dd = 0.1*rectSize_b;
+			double normUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
+			vv = Point2f(uu.x / normUU, uu.y / normUU);
+			u = vv;
+			//rotate and swap
+			double tempXX = vv.x;
+			vv.x = -vv.y;
+			vv.y = tempXX;
+			int e = 5;
+			for (size_t i = 0; i < 10; i++)
+			{
+				if (i == 0)
+				{	// starting point = center of mask
+					ww1.x = maskCentroid[mi].x + vv.x*d;	//one side
+					ww1.y = maskCentroid[mi].y + vv.y*d;
 
-		//		ww2.x = maskCentroid[mi].x - vv.x*d;
-		//		ww2.y = maskCentroid[mi].y - vv.y*d;
-		//	}
-		//	else
-		//	{
-		//		ww1.x = uu2.x + vv.x*d;
-		//		ww1.y = uu2.y + vv.y*d;
-		//		//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
-		//		ww2.x = uu22.x - vv.x*d;
-		//		ww2.y = uu22.y - vv.y*d;
-		//		//cout << "ww2= " << ww2 << "\n";
-		//	}
-		//	//cout << "i - " << i << "1-Plot here= " << ww1 << ", " << ww2 << "\n";
-		//	//circle(src, ww1, 1, Scalar(0, 255, 255), 1, 8, 0); //yellow
-		//	//circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
-		//	circle(tempSrc2, ww1, 1, Scalar(255, 255, 10), 1, 8, 0); //
-		//															 //circle(tempSrc2, ww2, 1, Scalar(255, 255, 10), 1, 8, 0); //
-		//	uu2 = ww1;
-		//	uu22 = ww2;
-		//}
+					ww2.x = maskCentroid[mi].x - vv.x*d;	//other side
+					ww2.y = maskCentroid[mi].y - vv.y*d;
+
+					//end points of profile
+					ep11.x = ww1.x - ((box.size.width+e) / 2) * uu.x;
+					ep11.y = ww1.y - ((box.size.width+e) / 2) * uu.y;
+					ep12.x = ww1.x + ((box.size.width+e) / 2) * uu.x;
+					ep12.y = ww1.y + ((box.size.width+e) / 2) * uu.y;
+
+					ep21.x = ww2.x - ((box.size.width+e) / 2) * uu.x;
+					ep21.y = ww2.y - ((box.size.width+e) / 2) * uu.y;
+					ep22.x = ww2.x + ((box.size.width+e) / 2) * uu.x;
+					ep22.y = ww2.y + ((box.size.width+e) / 2) * uu.y;
+				}
+				else
+				{	// points on either-side of mask center point
+					ww1.x = uu2.x + vv.x*d;		//one side
+					ww1.y = uu2.y + vv.y*d;
+
+					ww2.x = uu22.x - vv.x*d;	//other side
+					ww2.y = uu22.y - vv.y*d;
+
+					//end points of profile
+					ep11.x = ww1.x - ((box.size.width+e) / 2) * uu.x;
+					ep11.y = ww1.y - ((box.size.width+e) / 2) * uu.y;
+					ep12.x = ww1.x + ((box.size.width+e) / 2) * uu.x;
+					ep12.y = ww1.y + ((box.size.width+e) / 2) * uu.y;
+
+					ep21.x = ww2.x - ((box.size.width+e) / 2) * uu.x;
+					ep21.y = ww2.y - ((box.size.width+e) / 2) * uu.y;
+					ep22.x = ww2.x + ((box.size.width+e) / 2) * uu.x;
+					ep22.y = ww2.y + ((box.size.width+e) / 2) * uu.y;
+				}
+				circle(tempSrc2, ww2, 1, Scalar(255, 0, 0), 1, 8, 0); //turqoise
+				circle(tempSrc2, ww1, 1, Scalar(55, 0, 0), 1, 8, 0); //
+																		 //circle(tempSrc2, ww2, 1, Scalar(255, 255, 10), 1, 8, 0); //
+				circle(tempSrc2, ep11, 1, Scalar(0, 0, 255), 1, 8, 0); //
+				circle(tempSrc2, ep12, 1, Scalar(0, 0, 255), 1, 8, 0); //
+				circle(tempSrc2, ep21, 1, Scalar(0, 0, 255), 1, 8, 0); //
+				circle(tempSrc2, ep22, 1, Scalar(0, 0, 255), 1, 8, 0); //
+
+				uu2 = ww1;
+				uu22 = ww2;
+			}
 #pragma endregion  
 
 #pragma region EPs
-		Point2f uuu, uuu2, uuu22, vvvv, ep1,ep2;
-		Point2f www1, www2;
-		uuu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
-		uuu2 = uuu;
-		rectSize_b = *max_element(lengths.begin(), lengths.end());
-		//double dd = 0.1*rectSize_b;
-		double normUUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
-		vvvv = Point2f(uuu.x / normUUU, uuu.y / normUUU);
-		//rotate and swap
-		Point2d vvvvv;
-		double tempXXX = vvvv.x;
-		vvvvv.x = -vvvv.y;
-		vvvvv.y = tempXXX;
-		for (size_t i = 0; i < 10; i++)
-		{
-			if (i == 0)
-			{
-				www1.x = maskCentroid[mi].x + vvvv.x*d;
-				www1.y = maskCentroid[mi].y + vvvv.y*d;
-				//ep1.x = www1.x-(box.size.width/2)*(vvvv.x*d);
-				//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
-				//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
-				//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+			//Point2f uuu, uuu2, uuu22, vvvv, ep1,ep2;
+			//Point2f www1, www2;
+			//uuu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
+			//uuu2 = uuu;
+			//rectSize_b = *max_element(lengths.begin(), lengths.end());
+			////double dd = 0.1*rectSize_b;
+			//double normUUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
+			//vvvv = Point2f(uuu.x / normUUU, uuu.y / normUUU);
+			////rotate and swap
+			//Point2d vvvvv;
+			//double tempXXX = vvvv.x;
+			//vvvvv.x = -vvvv.y;
+			//vvvvv.y = tempXXX;
+			//for (size_t i = 0; i < 10; i++)
+			//{
+			//	if (i == 0)
+			//	{
+			//		www1.x = maskCentroid[mi].x + vvvv.x*d;
+			//		www1.y = maskCentroid[mi].y + vvvv.y*d;
+			//		//ep1.x = www1.x-(box.size.width/2)*(vvvv.x*d);
+			//		//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+			//		//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
+			//		//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
 
-				www2.x = maskCentroid[mi].x - vvvvv.x*d;
-				www2.y = maskCentroid[mi].y - vvvvv.y*d;
-				ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
-				ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
-				ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
-				ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
-			}
-			else
-			{
-				www1.x = uuu2.x + vvvv.x*d;
-				www1.y = uuu2.y + vvvv.y*d;
-				//ep1.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
-				//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
-				//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
-				//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
-				//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
-				www2.x = uuu22.x - vvvv.x*d;
-				www2.y = uuu22.y - vvvv.y*d;
-				ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
-				ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
-				ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
-				ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
-				//cout << "ww2= " << ww2 << "\n";
-			}
-			//cout << "i - " << i << "1-Plot here= " << ww1 << ", " << ww2 << "\n";
-			//circle(src, ww1, 1, Scalar(0, 255, 255), 1, 8, 0); //yellow
-			//circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
-			//circle(tempSrc2, www1, 1, Scalar(255, 255, 10), 1, 8, 0); //
-			circle(tempSrc2, www2, 1, Scalar(255, 255, 100), 1, 8, 0); //
-			circle(tempSrc2, ep1, 1, Scalar(255, 255, 200), 1, 8, 0);
-			circle(tempSrc2, ep2, 1, Scalar(255, 255, 10), 1, 8, 0);
-			uuu2 = www1;
-			uuu22 = www2;
-		}
+			//		www2.x = maskCentroid[mi].x - vvvvv.x*d;
+			//		www2.y = maskCentroid[mi].y - vvvvv.y*d;
+			//		ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
+			//		ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
+			//		ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
+			//		ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
+			//	}
+			//	else
+			//	{
+			//		www1.x = uuu2.x + vvvv.x*d;
+			//		www1.y = uuu2.y + vvvv.y*d;
+			//		//ep1.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
+			//		//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+			//		//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
+			//		//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+			//		//cout << "minAreaRect Angle= " << box.angle + 180 << "\n";
+			//		www2.x = uuu22.x - vvvv.x*d;
+			//		www2.y = uuu22.y - vvvv.y*d;
+			//		ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
+			//		ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
+			//		ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
+			//		ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
+			//		//cout << "ww2= " << ww2 << "\n";
+			//	}
+			//	//cout << "i - " << i << "1-Plot here= " << ww1 << ", " << ww2 << "\n";
+			//	//circle(src, ww1, 1, Scalar(0, 255, 255), 1, 8, 0); //yellow
+			//	//circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
+			//	//circle(tempSrc2, www1, 1, Scalar(255, 255, 10), 1, 8, 0); //
+			//	circle(tempSrc2, www2, 1, Scalar(255, 255, 100), 1, 8, 0); //
+			//	circle(tempSrc2, ep1, 1, Scalar(255, 255, 200), 1, 8, 0);
+			//	circle(tempSrc2, ep2, 1, Scalar(255, 255, 10), 1, 8, 0);
+			//	uuu2 = www1;
+			//	uuu22 = www2;
+			//}
 #pragma endregion
 
 #pragma endregion
 
 		//imshow("Plot Image", plotImage);
-		imshow("Bounding Box- " + smi, tempSrc2);
+		imshow("Bounding Box- " + smi, tempSrc2); 
+		//}
 	}
-	imshow("Plot Image", src);
+	//imshow("Plot Image", src);
 	//imshow("Bounding Box", tempSrc1);
 	waitKey(0);
 	return 0;

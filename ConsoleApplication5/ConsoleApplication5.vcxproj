@@ -39,6 +39,7 @@
     <ClCompile Include="MyDrawLineOnImage.cpp" />
     <ClCompile Include="MyEdgeDetector.cpp" />
     <ClCompile Include="MyFloodFillZoom.cpp" />
+    <ClCompile Include="MyPCA.cpp" />
     <ClCompile Include="PlotAtOrientation.cpp" />
     <ClCompile Include="plot_sample.cpp" />
     <ClCompile Include="test.cpp" />
