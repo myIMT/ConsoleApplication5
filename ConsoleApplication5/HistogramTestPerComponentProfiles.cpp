@@ -320,6 +320,17 @@ int main(int argc, char *argv[])
 					imshow("tempSrcW2- " + smi, tempSrcW2)*/;
 #pragma endregion
 
+			struct buffer {
+				std::vector<double> pixValues;
+				Point2f startPoint;
+				Point2f endPoint;
+				//int j;
+				//int angle;
+				//int value;
+			};
+			vector<buffer> Profiles;
+			int ProfilesCount = 0;
+
 #pragma region walk perpendicular in edge angle direction
 			Point2f uu, uu2, uu22, vv, ep11, ep12, ep21, ep22;
 			Point2f ww1, ww2;
@@ -335,6 +346,10 @@ int main(int argc, char *argv[])
 			vv.x = -vv.y;
 			vv.y = tempXX;
 			int e = 5;
+
+			Mat tempGraySrc3;
+			cv::cvtColor(src, tempGraySrc3, cv::COLOR_BGR2GRAY);
+			Mat tempSrc3 = tempGraySrc;//imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			for (size_t i = 0; i < 10; i++)
 			{
 				if (i == 0)
@@ -385,6 +400,67 @@ int main(int argc, char *argv[])
 
 				uu2 = ww1;
 				uu22 = ww2;
+
+				#pragma region DrawLines
+					int thickness = 0.2;
+					int lineType = 8;
+					line(tempGraySrc3,
+						Point(ep11.x, ep11.y),
+						Point(ep12.x, ep12.y),
+						Scalar(255, 0, 0),
+						thickness,
+						lineType);  
+				#pragma endregion
+
+
+				#pragma region LinePixels
+				
+				// grabs pixels along the line (pt1, pt2)
+				// from 8-bit 3-channel image to the buffer
+				LineIterator it1(tempGraySrc3, Point(ep11), Point(ep12), 8);
+				//LineIterator it2(tempSrc3, Point(ep21), Point(ep22), 8);
+				LineIterator it11 = it1;
+				//LineIterator it22 = it2;
+				//vector<Vec3b> buf(it.count);
+
+				ofstream file;
+				
+				for (int l = 0; l < it1.count; l++, ++it1)
+				{
+					Profiles.push_back(buffer());
+					Profiles[ProfilesCount].startPoint = ep11;
+					Profiles[ProfilesCount].endPoint = ep12;
+					double val = (double)tempGraySrc3.at<uchar>(it1.pos());
+					Profiles[ProfilesCount].pixValues.push_back(val);// (double)tempSrc3.at<uchar>(it1.pos());
+
+					//double val = (double)src_gray.at<uchar>(it.pos());
+					//buf[i] = val;
+
+					std::string L = std::to_string(l);
+					file.open("buf_"+ format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint)+".csv", ios::app);
+					//file.open("buf_" + L + ".csv", ios::app);
+					//file << Profiles[ProfilesCount].startPoint << "\n";
+					//file << Profiles[ProfilesCount].endPoint << "\n";
+					file << Mat(Profiles[ProfilesCount].pixValues) << "\n";
+					file.close();
+					ProfilesCount += 1;
+				}
+				#pragma endregion
+
+				
+				//// alternative way of iterating through the line
+				//for (int i = 0; i < it2.count; i++, ++it2)
+				//{
+				//	Vec3b val = img.at<Vec3b>(it2.pos());
+				//	CV_Assert(buf[i] == val);
+				//}
+				
+				//container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);
+				//container[containerCount].i = i;
+				//container[containerCount].j = j;
+				//container[containerCount].angle = newAngle.ptr<float>(i)[j];
+				//container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
+				//containerCount++;
 			}
 #pragma endregion  
 
@@ -452,7 +528,8 @@ int main(int argc, char *argv[])
 #pragma endregion
 
 		//imshow("Plot Image", plotImage);
-		imshow("Bounding Box- " + smi, tempSrc2); 
+		imshow("Colour - Bounding Box- " + smi, tempSrc2); 
+		imshow("B&W - Bounding Box- " + smi, tempGraySrc3);
 		//}
 	}
 	//imshow("Plot Image", src);
