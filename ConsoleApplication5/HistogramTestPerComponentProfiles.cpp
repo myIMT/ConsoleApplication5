@@ -48,7 +48,38 @@ int binID;
 vector<Mat> Points;
 vector<Mat> maskImages;
 vector<Point> maskCentroid;
+
+int secondBiggestArea = 0;
+int secondBiggestAreaIndex = -1;
+int thirdBiggestArea =0;
+int thirdBiggestAreaIndex = -1;
+int secondBiggestAreaX;
+int secondBiggestAreaY;
+int secondBiggestAreaWidth;
+int secondBiggestAreaHeight;
+int thirdBiggestAreaX;
+int thirdBiggestAreaY;
+int thirdBiggestAreaWidth;
+int thirdBiggestAreaHeight;
 //----------------------------------------------------
+
+#pragma region ExtractNadirAreas
+void ExtractNadirAreas(vector<int> a)
+{
+	cout << "size of a = " << a.size() << endl;
+	sort(a.begin(), a.end());	/// Sort vector of components-areas
+	reverse(a.begin(), a.end());	/// Reverse sorted vector of components-areas
+	cout << "a-vector-sorted with +4= " << endl;	/// Print sorted-reversed component-areas
+	for (size_t i = 0; i != a.size(); ++i)
+		cout << a[i] << " ";
+	cout << "\n"; cout << "\n"; cout << "\n";
+	secondBiggestArea = a[1];	cout << "second biggest = " << a[1] << "\n";
+	//secondBiggestAreaIndex = a.size()-1;	cout << "second biggest Index = " << a.size() - 1 << "\n";
+	thirdBiggestArea = a[2];	cout << "third biggest = " << a[2] << "\n";
+	//thirdBiggestAreaIndex = a.size() - 2;	cout << "third biggest Index = " << a.size() - 2 << "\n";
+}
+#pragma endregion
+
 
 /// <summary>                                                            
 /// Calculates components                           
@@ -62,6 +93,112 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	cv::Mat FltrStats, FltrCentroids;
 
 	int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 8, CV_32S);
+#pragma region connectedComponentsWithStats
+	ofstream connectedComponentsWithStats;
+	connectedComponentsWithStats.open("connectedComponentsWithStats.txt");
+
+	//imshow("Labels", FltrLabelImage);
+	connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
+	connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
+	connectedComponentsWithStats << "size of FltrLabelImage= " << FltrLabelImage.size() << std::endl;
+	//imshow("FltrLabelImage2", FltrLabelImage2);
+	std::vector<cv::Vec3b> FltrColors(nFltrLabels);
+	FltrColors[0] = cv::Vec3b(0, 0, 0);
+	connectedComponentsWithStats << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
+	//vector<vector<Point>> contours;
+	//vector<Vec4i> hierarchy;
+	vector<int> a;
+
+	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
+		FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+		connectedComponentsWithStats << "Component " << FltrLabel << std::endl;
+		connectedComponentsWithStats << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
+		connectedComponentsWithStats << "CC_STAT_TOP    = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
+		connectedComponentsWithStats << "CC_STAT_WIDTH  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
+		connectedComponentsWithStats << "CC_STAT_HEIGHT = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
+		connectedComponentsWithStats << "CC_STAT_AREA   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
+		connectedComponentsWithStats << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
+
+		a.push_back(FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA));
+	}
+#pragma endregion
+	connectedComponentsWithStats.close();
+
+#pragma region RemoveNadir
+	ExtractNadirAreas(a);
+	Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;
+	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
+		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
+		{
+			secondBiggestAreaIndex = FltrLabel;
+			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+		}
+
+		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
+		{
+			thirdBiggestAreaIndex = FltrLabel;
+			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+		}
+	}
+
+	if (secondBiggestAreaX > thirdBiggestAreaX)
+	{
+		int tempIndex = secondBiggestAreaIndex;
+		int tempX = secondBiggestAreaX;
+		int tempY = secondBiggestAreaY;
+		int tempWidth = secondBiggestAreaWidth;
+		int tempHeight = secondBiggestAreaHeight;
+
+		secondBiggestAreaIndex = thirdBiggestAreaIndex;
+		secondBiggestAreaX = thirdBiggestAreaX;
+		secondBiggestAreaY = thirdBiggestAreaY;
+		secondBiggestAreaWidth = thirdBiggestAreaWidth;
+		secondBiggestAreaHeight = thirdBiggestAreaHeight;
+
+		thirdBiggestAreaIndex = tempIndex;
+
+		thirdBiggestAreaIndex = tempIndex;
+		thirdBiggestAreaX = tempX;
+		thirdBiggestAreaY = tempY;
+		thirdBiggestAreaWidth = tempWidth;
+		thirdBiggestAreaHeight = tempHeight;
+	}
+
+	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
+	//imshow("nadirMat", nadirMat);
+	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
+	/*imshow("nadirMat", nadirMat);*/
+	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
+	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
+	//imshow("Original Image", GrayScaleSrcImg); 
+	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
+	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
+	//Mat image;
+	//Mat croppedImage = image(myROI);
+	Mat cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
+	Mat cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
+	imshow("cropedLeftImage", cropedLeftImage);
+	imshow("cropedRightImage", cropedRightImage);
+	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
+	//cv::Mat small_image;
+	//cv::Mat big_image;
+	//...
+	//	//Somehow fill small_image and big_image with your data
+	//	...
+	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
+	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
+	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
+	imshow("croppedImage", croppedImage);
+#pragma endregion
+
 
 	std::string nFltrLabelsString = std::to_string(nFltrLabels);
 
@@ -70,8 +207,8 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	normalize(FltrLabelImage, FltrLabelImage2, 0, 255, NORM_MINMAX, CV_8U);
 	//imshow("FltrLabelImage2", FltrLabelImage2);
 
-	std::vector<cv::Vec3b> FltrColors(nFltrLabels);
-	FltrColors[0] = cv::Vec3b(0, 0, 0);
+	//std::vector<cv::Vec3b> FltrColors(nFltrLabels);
+	//FltrColors[0] = cv::Vec3b(0, 0, 0);;
 
 	for (int FltrLabel = 1; FltrLabel < nFltrLabels; ++FltrLabel) {
 		//FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
@@ -109,7 +246,8 @@ int main(int argc, char *argv[])
 {
 	//src = cv::imread("20161215 02.33_368L2.jpg");
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
-	src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
+	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
+	Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
 	//imshow("src", src);
 	//srcImg = src;
 	//bilateralFilter(src, srcImg, 15, 80, 80);
@@ -124,7 +262,8 @@ int main(int argc, char *argv[])
 	//imshow("maskImages[0]", Mat(maskImages[0]));
 	//Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-	Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+	Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
 #pragma region MyRegion
 	
 	ofstream ComponentsLoop;
@@ -333,7 +472,8 @@ int main(int argc, char *argv[])
 
 			//Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-			Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+			Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
 #pragma region Bounding Box
 			vector<double> lengths(4);
 			double rectSize_b;
@@ -618,8 +758,8 @@ int main(int argc, char *argv[])
 #pragma endregion
 
 		//imshow("Plot Image", plotImage);
-		imshow("Source - component nr." + smi, tempSrc2); 
-		imshow("Grayscale- component nr." + smi, tempGraySrc3);
+		//imshow("Source - component nr." + smi, tempSrc2); 
+		//imshow("Grayscale- component nr." + smi, tempGraySrc3);
 		//}
 	}
 	ComponentsLoop.close();
