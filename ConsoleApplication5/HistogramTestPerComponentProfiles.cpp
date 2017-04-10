@@ -61,6 +61,8 @@ int thirdBiggestAreaX;
 int thirdBiggestAreaY;
 int thirdBiggestAreaWidth;
 int thirdBiggestAreaHeight;
+
+#include "GraphUtils.h"
 //----------------------------------------------------
 
 #pragma region ExtractNadirAreas
@@ -87,16 +89,20 @@ void ExtractNadirAreas(vector<int> a)
 /// <param name="GrayScaleSrcImg">Grayscale image (Mat) of original image.</param> 
 Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 {
+	cout << "03 - CALCULATING COMPONENTS ON BLURRED GRAYSCALE SOURCE IMAGE ('GrayImg')" << "\n";
+
 	cv::Mat FltrBinaryImg = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
+	cout << "04 - CONVERTING BLURRED GRAYSCALE SOURCE IMAGE TO BINARY: 'FltrBinaryImg'" << "\n";
 
 	cv::Mat FltrLabelImage;
 	cv::Mat FltrStats, FltrCentroids;
 
 	int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 8, CV_32S);
+	cout << "05 - CALCULATING CONNECTEDCOMPONENTSWITHSTATS ON 'FltrBinaryImg': 'FltrLabelImage'" << "\n";
 #pragma region connectedComponentsWithStats
 	ofstream connectedComponentsWithStats;
 	connectedComponentsWithStats.open("connectedComponentsWithStats.txt");
-
+	cout << "06 - WRITING CONNECTEDCOMPONENTSWITHSTATS RESULTS TO FILE: 'connectedComponentsWithStats.txt'" << "\n";
 	//imshow("Labels", FltrLabelImage);
 	connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
 	connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
@@ -121,6 +127,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 		a.push_back(FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA));
 	}
+	cout << "07 - STORING EACH COMPONENT'S AREA IN (GLOBAL DECLARED) VECTOR: 'a'" << "\n";
 #pragma endregion
 	connectedComponentsWithStats.close();
 
@@ -185,8 +192,8 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	//Mat croppedImage = image(myROI);
 	Mat cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
 	Mat cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
-	imshow("cropedLeftImage", cropedLeftImage);
-	imshow("cropedRightImage", cropedRightImage);
+	//imshow("cropedLeftImage", cropedLeftImage);
+	//imshow("cropedRightImage", cropedRightImage);
 	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
 	//cv::Mat small_image;
 	//cv::Mat big_image;
@@ -196,9 +203,10 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
 	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
 	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
-	imshow("croppedImage", croppedImage);
+	//imshow("croppedImage", croppedImage);
 #pragma endregion
-
+	cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n";
+	cout << "09 -  -- ASSUMING TWO BLACK STRIPS ARE ALWAYS THE 2ND AND 3RD LARGEST COMPONENTS" << "\n";
 
 	std::string nFltrLabelsString = std::to_string(nFltrLabels);
 
@@ -209,6 +217,8 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 	//std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 	//FltrColors[0] = cv::Vec3b(0, 0, 0);;
+	cout << "10 - STORE ALL COMPONENTS'S IN (GLOBALLY DECLARED) VECTOR: 'maskImages'" << "\n";
+	cout << "11 - STORE ALL COMPONENTS'S CENTROID IN (GLOBALLY DECLARED) VECTOR: 'maskCentroid'" << "\n";
 
 	for (int FltrLabel = 1; FltrLabel < nFltrLabels; ++FltrLabel) {
 		//FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
@@ -236,6 +246,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	//imwrite("Connected Components.bmp", FltrDst);
 
 	return FltrDst;
+	cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";
 }
 
 /// <summary>                                                            
@@ -244,34 +255,42 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 /// <param name="">xxx.</param> 
 int main(int argc, char *argv[])
 {
-	//src = cv::imread("20161215 02.33_368L2.jpg");
+	cout << "--------------------------------------- START ---------------------------------------" << "\n";
+	src = cv::imread("20161215 02.33_368L2.jpg");
+	cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";
+
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
-	Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
-	//imshow("src", src);
+	//Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
+	imshow("0 - src", src);
 	//srcImg = src;
 	//bilateralFilter(src, srcImg, 15, 80, 80);
 	blur(src, srcImg, Size(5, 5), Point(-1, -1));
-	//imshow("srcImg", srcImg);`
+	cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";
+	imshow("1 - blur srcImg", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-	//imshow("GrayImg", GrayImg);
+	cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";
+	imshow("2 - Blur GrayImg", GrayImg);
+
+	Mat linePixelsTempGraySrc3 = GrayImg;
 
 	Mat components = GetConnectedComponent(GrayImg);
-	//imshow("components", components);
+	
+	imshow("3 - components", components);
 
 	//imshow("maskImages[0]", Mat(maskImages[0]));
-	//Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+	Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-	Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
+	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
 #pragma region MyRegion
-	
+	cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n";
 	ofstream ComponentsLoop;
 	ComponentsLoop.open("ComponentsLoop.txt");
 
 	ofstream Bin_Analysis;
 	Bin_Analysis.open("Bin_Analysis.csv");
-
+	cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n";
 	///Loop through each component
 	for (size_t mi = 0; mi < 1/*maskImages.size()*/; mi++)
 	{
@@ -280,7 +299,7 @@ int main(int argc, char *argv[])
 		//{
 			std::string smi = std::to_string(mi);
 			Mat tempComponent = Mat(maskImages[mi]);
-			//imshow("tempComponent- " + smi, tempComponent);
+			imshow("4 - component- " + smi, tempComponent);
 			Mat GrayComponents;
 			//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
 			//imshow("GrayComponents", GrayComponents);
@@ -291,10 +310,9 @@ int main(int argc, char *argv[])
 			Mat Mag(GrayComponents.size(), CV_32FC1);
 			Mat Angle(GrayComponents.size(), CV_32FC1);
 			cartToPolar(grad_x, grad_y, Mag, Angle, true);
-
 			//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
 			ofstream Angle_DataFile;
-			Angle_DataFile.open("Angle_DataFile.csv");
+			Angle_DataFile.open("Angle_DataFile_" + smi + ".csv");
 			Angle_DataFile << Angle << "\n";
 			Angle_DataFile.close();
 			//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -311,11 +329,11 @@ int main(int argc, char *argv[])
 			int containerCount = 0;
 
 			Canny(GrayComponents, cannyEdge, 100, 200);
-			//imshow("cannyEdge", cannyEdge);
+			imshow("5 - component cannyEdge - " + smi, cannyEdge);
 			//imwrite("cannyEdge_DataFile.csv",cannyEdge);
 			//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
 			ofstream cannyEdge_DataFile;
-			cannyEdge_DataFile.open("cannyEdge_DataFile.csv");
+			cannyEdge_DataFile.open("cannyEdge_DataFile_" + smi + ".csv");
 			cannyEdge_DataFile << cannyEdge << "\n";
 			cannyEdge_DataFile.close();
 			//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
@@ -338,9 +356,9 @@ int main(int argc, char *argv[])
 
 						Bin_Analysis << "Canny Edge Non-zero pixel (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 
-						newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							///Create new Angle matrix
-						container.push_back(element());												///Initialise container
-						container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	///Store bin (newAngle/5)
+						newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							/*Create new Angle matrix*/	
+						container.push_back(element());												/*Initialise container*/	
+						container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/	
 						container[containerCount].i = i;											///Store row position
 						container[containerCount].j = j;											///Store column position
 						container[containerCount].angle = newAngle.ptr<float>(i)[j];				///Store new Angle value
@@ -356,7 +374,7 @@ int main(int argc, char *argv[])
 			Bin_Analysis.close();
 			//////999999999999999999999999999999999999999999999999999999
 			ofstream ContainerFile;
-			ContainerFile.open("ContainerFile.txt");
+			ContainerFile.open("ContainerFile_" + smi + ".txt");
 			for (int i = 0; i < container.size(); i++)
 			{
 				ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
@@ -429,7 +447,7 @@ int main(int argc, char *argv[])
 
 						//////666666666666666666666666666666666666666666666666666666666666666666666666666666
 						ofstream maxCountContainer_DataFile;
-						maxCountContainer_DataFile.open("maxCountContainer_DataFile.csv");
+						maxCountContainer_DataFile.open("maxCountContainer_DataFile_" + smi + ".csv");
 						for (int i = 0; i < maxCountContainer.size(); i++)
 						{
 							maxCountContainer_DataFile << "maxCountContainer[" << i << "].i= " << i << "\n";
@@ -467,13 +485,14 @@ int main(int argc, char *argv[])
 					tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
 				}
 			}
+			
 			//imshow("tempGraySrc", tempGraySrc);
 			imwrite("tempGraySrc.bmp", tempGraySrc);
 
-			//Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+			Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-			Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
+			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
 #pragma region Bounding Box
 			vector<double> lengths(4);
 			double rectSize_b;
@@ -495,7 +514,7 @@ int main(int argc, char *argv[])
 				line(tempSrc2, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
 				lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
 			}
-			/*imshow("Bounding Box", tempSrc1);*/
+			imshow("Bounding Box", tempSrc1);
 			//cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";
 			cout << "minAreaRect width= " << box.size.width << "\n";
 			cout << "minAreaRect height= " << box.size.height << "\n";
@@ -546,8 +565,8 @@ int main(int argc, char *argv[])
 				u2 = w1;
 				u22 = w2;
 			}
-			/*		imshow("tempSrcW1- " + smi, tempSrcW1);
-					imshow("tempSrcW2- " + smi, tempSrcW2)*/;
+				imshow("tempSrcW1- " + smi, tempSrcW1);
+				imshow("tempSrcW2- " + smi, tempSrcW2);
 #pragma endregion
 
 			struct buffer {
@@ -575,12 +594,15 @@ int main(int argc, char *argv[])
 			double tempXX = vv.x;
 			vv.x = -vv.y;
 			vv.y = tempXX;
-			int e = 5;
+			int e = 20;
 
 			Mat tempGraySrc3;
 			cv::cvtColor(src, tempGraySrc3, cv::COLOR_BGR2GRAY);
 			Mat tempSrc3 = tempGraySrc;//imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-			for (size_t i = 0; i < 10; i++)
+			//Mat linePixelsTempGraySrc3 = tempGraySrc3;
+			int i = 0;
+			std::string ii = std::to_string(i);
+			for (i = 0; i < 10; i++)
 			{
 				if (i == 0)
 				{	// starting point = center of mask
@@ -654,13 +676,28 @@ int main(int argc, char *argv[])
 				//vector<Vec3b> buf(it.count);
 
 				ofstream file;
-				
+				vector<float> pixelsOnLine;
+				Mat linePixel;
+				//float pixelsUnderLine[it1.count];
 				for (int l = 0; l < it1.count; l++, ++it1)
 				{
 					Profiles.push_back(buffer());
 					Profiles[ProfilesCount].startPoint = ep11;
 					Profiles[ProfilesCount].endPoint = ep12;
-					double val = (double)tempGraySrc3.at<uchar>(it1.pos());
+					double val = (double)linePixelsTempGraySrc3.at<uchar>(it1.pos());
+					pixelsOnLine.push_back(val);
+					linePixel.push_back(val);
+					//5555555555555555555555555555555555555555555555555555555555555555
+					ofstream tempGraySrc3DataFile;
+					tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + ".csv");
+					tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
+					tempGraySrc3DataFile << "\n";
+					tempGraySrc3DataFile << "\n";
+					tempGraySrc3DataFile.close();
+					//55555555555555555555555555555555555555555555555555555555555555555555
+					cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep11.x, ep11.y) << ", "<< Point(ep12.x, ep12.y) << "\n";
+					cout << "it1.pos() = " << Point(ep11.x, ep11.y) << ", " << it1.pos() << "\n";
+					cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1.pos()) << "\n";
 					Profiles[ProfilesCount].pixValues.push_back(val);// (double)tempSrc3.at<uchar>(it1.pos());
 
 					//double val = (double)src_gray.at<uchar>(it.pos());
@@ -677,6 +714,23 @@ int main(int argc, char *argv[])
 				}
 				#pragma endregion
 
+				//4444444444444444444444444444444444444444444444444444444444444444444
+				//Mat testSrc = src;
+				////Plotting graph with Shervin Emami library
+				uchar *linePixelData = linePixel.data;
+				showUCharGraph("Pixel Values", linePixelData, linePixel.size().height*src.size().width);
+				
+				//uchar *dataMat = pixelsOnLine.data;
+				//float *floatVector = pixelsOnLine.;
+				//showFloatGraph("Pixel Values", pixelsOnLine, pixelsOnLine.size());
+
+				ofstream pixelsOnLineDataFile;
+				pixelsOnLineDataFile.open("pixelsOnLine.csv");
+				pixelsOnLineDataFile << Mat(pixelsOnLine) << "\n";
+				pixelsOnLineDataFile << "\n";
+				pixelsOnLineDataFile << "\n";
+				pixelsOnLineDataFile.close();
+				//4444444444444444444444444444444444444444444444444444444444444444444
 				
 				//// alternative way of iterating through the line
 				//for (int i = 0; i < it2.count; i++, ++it2)
@@ -758,10 +812,53 @@ int main(int argc, char *argv[])
 #pragma endregion
 
 		//imshow("Plot Image", plotImage);
-		//imshow("Source - component nr." + smi, tempSrc2); 
-		//imshow("Grayscale- component nr." + smi, tempGraySrc3);
+		imshow("Source - component nr." + smi, tempSrc2); 
+		imshow("Grayscale- component nr." + smi, tempGraySrc3);
 		//}
 	}
+	cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";
+
+	cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";
+
+	cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n";
+	cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n";
+	cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n";
+	cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n";
+	cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n";
+	cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n";
+	cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n";
+	cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n";
+	cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n";
+	cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n";
+
+	cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n";
+
+	cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n";
+
+	cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n";
+
+	cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n";
+
+	cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n";
+
+	cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n";
+	cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n";
+	cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n";
+
+
+	cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";
+	cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n";
+	cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n";
+
+	cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";
+	cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n";
+	cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n";
+	cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n";
+
+	cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n";
+	cout << "43 -  -- -- XXX" << "\n";
+	cout << "44 -  -- -- YYY" << "\n";
+	cout << "45 -  -- -- ZZZ" << "\n";
 	ComponentsLoop.close();
 	//imshow("Plot Image", src);
 	//imshow("Bounding Box", tempSrc1);
