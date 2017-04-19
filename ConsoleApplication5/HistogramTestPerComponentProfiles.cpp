@@ -9,6 +9,8 @@
 #include <fstream>
 #include <string> 
 #include <array>
+//#include <opencv3_0_0/plot.hpp>
+#include <numeric> 
 
 using std::vector;
 
@@ -65,6 +67,24 @@ int thirdBiggestAreaHeight;
 #include "GraphUtils.h"
 //----------------------------------------------------
 
+template <typename T>
+Mat plotGraph(std::vector<T>& vals, int YRange[2])
+{
+
+	auto it = minmax_element(vals.begin(), vals.end());
+	float scale = 1. / ceil(*it.second - *it.first);
+	float bias = *it.first;
+	int rows = YRange[1] - YRange[0] + 1;
+	cv::Mat image = Mat::zeros(rows, vals.size(), CV_8UC3);
+	image.setTo(0);
+	for (int i = 0; i < (int)vals.size() - 1; i++)
+	{
+		cv::line(image, cv::Point(i, rows - 1 - (vals[i] - bias)*scale*YRange[1]), cv::Point(i + 1, rows - 1 - (vals[i + 1] - bias)*scale*YRange[1]), Scalar(255, 0, 0), 1);
+	}
+
+	return image;
+}
+
 #pragma region ExtractNadirAreas
 void ExtractNadirAreas(vector<int> a)
 {
@@ -81,7 +101,6 @@ void ExtractNadirAreas(vector<int> a)
 	//thirdBiggestAreaIndex = a.size() - 2;	cout << "third biggest Index = " << a.size() - 2 << "\n";
 }
 #pragma endregion
-
 
 /// <summary>                                                            
 /// Calculates components                           
@@ -300,6 +319,7 @@ int main(int argc, char *argv[])
 			std::string smi = std::to_string(mi);
 			Mat tempComponent = Mat(maskImages[mi]);
 			imshow("4 - component- " + smi, tempComponent);
+			imwrite("4_component_" + smi + ".bmp", tempComponent);
 			Mat GrayComponents;
 			//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
 			//imshow("GrayComponents", GrayComponents);
@@ -330,6 +350,7 @@ int main(int argc, char *argv[])
 
 			Canny(GrayComponents, cannyEdge, 100, 200);
 			imshow("5 - component cannyEdge - " + smi, cannyEdge);
+			imwrite("5_component_cannyEdge" + smi + ".bmp", cannyEdge);
 			//imwrite("cannyEdge_DataFile.csv",cannyEdge);
 			//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
 			ofstream cannyEdge_DataFile;
@@ -515,6 +536,7 @@ int main(int argc, char *argv[])
 				lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
 			}
 			imshow("Bounding Box", tempSrc1);
+			imwrite("Bounding_Box" + smi + ".bmp", tempSrc1);
 			//cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";
 			cout << "minAreaRect width= " << box.size.width << "\n";
 			cout << "minAreaRect height= " << box.size.height << "\n";
@@ -566,7 +588,9 @@ int main(int argc, char *argv[])
 				u22 = w2;
 			}
 				imshow("tempSrcW1- " + smi, tempSrcW1);
+				imwrite("tempSrcW1_" + smi + ".bmp", tempSrcW1);
 				imshow("tempSrcW2- " + smi, tempSrcW2);
+				imwrite("tempSrcW2_" + smi + ".bmp", tempSrcW2);
 #pragma endregion
 
 			struct buffer {
@@ -600,11 +624,35 @@ int main(int argc, char *argv[])
 			cv::cvtColor(src, tempGraySrc3, cv::COLOR_BGR2GRAY);
 			Mat tempSrc3 = tempGraySrc;//imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat linePixelsTempGraySrc3 = tempGraySrc3;
-			int i = 0;
-			std::string ii = std::to_string(i);
-			for (i = 0; i < 10; i++)
+			int i = -1;
+			/*std::string ii = std::to_string(i);*/
+			Mat imageArray[10];
+			bool beginning = true;
+
+			for (i = -1; i < box.size.width/2; i++)
 			{
-				if (i == 0)
+				std::string ii = std::to_string(i);
+
+				if (i == -1)
+				{
+					ww1.x = maskCentroid[mi].x;// +vv.x*d;	//one side
+					ww1.y = maskCentroid[mi].y;// +vv.y*d;
+
+					ww2.x = maskCentroid[mi].x;// -vv.x*d;	//other side
+					ww2.y = maskCentroid[mi].y;// -vv.y*d;
+
+											   //end points of profile
+					ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
+					ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
+					ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
+					ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
+
+					ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
+					ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
+					ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
+					ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
+				}
+				else if (i == 0)
 				{	// starting point = center of mask
 					ww1.x = maskCentroid[mi].x + vv.x*d;	//one side
 					ww1.y = maskCentroid[mi].y + vv.y*d;
@@ -622,6 +670,8 @@ int main(int argc, char *argv[])
 					ep21.y = ww2.y - ((box.size.width+e) / 2) * uu.y;
 					ep22.x = ww2.x + ((box.size.width+e) / 2) * uu.x;
 					ep22.y = ww2.y + ((box.size.width+e) / 2) * uu.y;
+
+					beginning = false;
 				}
 				else
 				{	// points on either-side of mask center point
@@ -662,6 +712,12 @@ int main(int argc, char *argv[])
 						Scalar(255, 0, 0),
 						thickness,
 						lineType);  
+					line(tempGraySrc3,
+						Point(ep21.x, ep21.y),
+						Point(ep22.x, ep22.y),
+						Scalar(255, 0, 0),
+						thickness,
+						lineType);
 				#pragma endregion
 
 
@@ -669,36 +725,44 @@ int main(int argc, char *argv[])
 				
 				// grabs pixels along the line (pt1, pt2)
 				// from 8-bit 3-channel image to the buffer
-				LineIterator it1(tempGraySrc3, Point(ep11), Point(ep12), 8);
+				LineIterator it1B(tempGraySrc3, Point(ep11), Point(ep12), 8);		// Lines before centroid
+				LineIterator it1A(tempGraySrc3, Point(ep21), Point(ep22), 8);		// Lines after centroid
 				//LineIterator it2(tempSrc3, Point(ep21), Point(ep22), 8);
-				LineIterator it11 = it1;
+				LineIterator it11B = it1B;
+				LineIterator it11A = it1A;
 				//LineIterator it22 = it2;
 				//vector<Vec3b> buf(it.count);
 
 				ofstream file;
-				vector<float> pixelsOnLine;
+				vector<float> pixelsOnLineB;
+				vector<float> pixelsOnLineA;
+				vector<vector<float>> pixels;
+				
 				Mat linePixel;
 				//float pixelsUnderLine[it1.count];
-				for (int l = 0; l < it1.count; l++, ++it1)
+
+				// Record pixels under line B (Before centroid)
+				for (int l = 0; l < it1B.count; l++, ++it1B)
 				{
 					Profiles.push_back(buffer());
 					Profiles[ProfilesCount].startPoint = ep11;
 					Profiles[ProfilesCount].endPoint = ep12;
-					double val = (double)linePixelsTempGraySrc3.at<uchar>(it1.pos());
-					pixelsOnLine.push_back(val);
-					linePixel.push_back(val);
+					double valB = (double)linePixelsTempGraySrc3.at<uchar>(it1B.pos());
+					pixelsOnLineB.push_back(valB);
+					linePixel.push_back(valB);
 					//5555555555555555555555555555555555555555555555555555555555555555
 					ofstream tempGraySrc3DataFile;
-					tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + ".csv");
+					tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + "B.csv");
 					tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
 					tempGraySrc3DataFile << "\n";
 					tempGraySrc3DataFile << "\n";
 					tempGraySrc3DataFile.close();
 					//55555555555555555555555555555555555555555555555555555555555555555555
-					cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep11.x, ep11.y) << ", "<< Point(ep12.x, ep12.y) << "\n";
-					cout << "it1.pos() = " << Point(ep11.x, ep11.y) << ", " << it1.pos() << "\n";
-					cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1.pos()) << "\n";
-					Profiles[ProfilesCount].pixValues.push_back(val);// (double)tempSrc3.at<uchar>(it1.pos());
+
+					//cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep11.x, ep11.y) << ", "<< Point(ep12.x, ep12.y) << "\n";
+					//cout << "it1.pos() = " << Point(ep11.x, ep11.y) << ", " << it1B.pos() << "\n";
+					//cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1B.pos()) << "\n";
+					Profiles[ProfilesCount].pixValues.push_back(valB);// (double)tempSrc3.at<uchar>(it1.pos());
 
 					//double val = (double)src_gray.at<uchar>(it.pos());
 					//buf[i] = val;
@@ -712,24 +776,110 @@ int main(int argc, char *argv[])
 					file.close();
 					ProfilesCount += 1;
 				}
+
+				// Record pixels under line A (After centroid)
+				for (int l = 0; l < it1A.count; l++, ++it1A)
+				{
+					Profiles.push_back(buffer());
+					Profiles[ProfilesCount].startPoint = ep21;
+					Profiles[ProfilesCount].endPoint = ep22;
+					double valA = (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos());
+					pixelsOnLineA.push_back(valA);
+					linePixel.push_back(valA);
+					//5555555555555555555555555555555555555555555555555555555555555555
+					ofstream tempGraySrc3DataFile;
+					tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + "A.csv");
+					tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
+					tempGraySrc3DataFile << "\n";
+					tempGraySrc3DataFile << "\n";
+					tempGraySrc3DataFile.close();
+					//55555555555555555555555555555555555555555555555555555555555555555555
+					//cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep21.x, ep21.y) << ", " << Point(ep22.x, ep22.y) << "\n";
+					//cout << "it1.pos() = " << Point(ep21.x, ep21.y) << ", " << it1A.pos() << "\n";
+					//cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos()) << "\n";
+					Profiles[ProfilesCount].pixValues.push_back(valA);// (double)tempSrc3.at<uchar>(it1.pos());
+
+																	  //double val = (double)src_gray.at<uchar>(it.pos());
+																	  //buf[i] = val;
+
+					std::string L = std::to_string(l);
+					file.open("buf_" + format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint) + ".csv", ios::app);
+					//file.open("buf_" + L + ".csv", ios::app);
+					//file << Profiles[ProfilesCount].startPoint << "\n";
+					//file << Profiles[ProfilesCount].endPoint << "\n";
+					file << Mat(Profiles[ProfilesCount].pixValues) << "\n";
+					file.close();
+					ProfilesCount += 1;
+				}
 				#pragma endregion
 
 				//4444444444444444444444444444444444444444444444444444444444444444444
 				//Mat testSrc = src;
-				////Plotting graph with Shervin Emami library
-				uchar *linePixelData = linePixel.data;
-				showUCharGraph("Pixel Values", linePixelData, linePixel.size().height*src.size().width);
-				
+				//Plotting graph with Shervin Emami library
+				//float *linePixelData = pixelsOnLine;
+				//showUCharGraph("Pixel Values", &pixelsOnLine[0], linePixel.size().height*src.size().width,0);
+
+
+				cout << "\n";
+				cout << "\n";
+				cout << "linePixel = " << linePixel << "\n";
+				cout << "\n";
 				//uchar *dataMat = pixelsOnLine.data;
 				//float *floatVector = pixelsOnLine.;
 				//showFloatGraph("Pixel Values", pixelsOnLine, pixelsOnLine.size());
 
-				ofstream pixelsOnLineDataFile;
-				pixelsOnLineDataFile.open("pixelsOnLine.csv");
-				pixelsOnLineDataFile << Mat(pixelsOnLine) << "\n";
-				pixelsOnLineDataFile << "\n";
-				pixelsOnLineDataFile << "\n";
-				pixelsOnLineDataFile.close();
+				//ofstream pixelsOnLineDataFile;
+				//pixelsOnLineDataFile.open("pixelsOnLine.csv");
+				//pixelsOnLineDataFile << Mat(pixelsOnLine) << "\n";
+				//pixelsOnLineDataFile << "\n";
+				//pixelsOnLineDataFile << "\n";
+				//pixelsOnLineDataFile.close();
+				//auto it = minmax_element(pixelsOnLine.begin(), pixelsOnLine.end());
+				//for (int j = 0; j < pixelsOnLine.size(); j++)
+				//{
+
+				//}
+
+				//std::iota(pixelsOnLine.begin(), pixelsOnLine.end(), 0);
+				if (pixelsOnLineB.empty())
+				{
+					cout << "pixelsOnLine is empty" << "\n";
+				}
+				else
+				{
+					////vector<int> numbers(pixelsOnLine.size());
+					////std::iota(numbers.begin(), numbers.end(), 0);
+					////
+					//////int range[2] = { numbers.data };
+					//////Mat lineGraph = plotGraph(numbers, numbers.size());
+					////imageArray[i] = plotGraph(pixelsOnLine, numbers.data());
+					//////Mat lineG = plotGraph(pixelsOnLine, range);
+					////imshow("lineG" + ii, imageArray[i]);
+					//pixels.push_back(pixelsOnLine);
+					//string name = "Pixel Values" + ii;
+					//const char * cstr = name.c_str();			//convert cv::String to const char *
+					//showFloatGraph(cstr, &pixels[0][i], pixelsOnLine.size(), 0);
+					ofstream PixelsOnLineBFile;
+					PixelsOnLineBFile.open("PixelsOnLineB" + ii + ".csv");
+					PixelsOnLineBFile << Mat(pixelsOnLineB) << "\n";;
+					PixelsOnLineBFile << "\n";
+					PixelsOnLineBFile << "\n";
+					PixelsOnLineBFile.close();
+				}
+
+				if (pixelsOnLineA.empty())
+				{
+					cout << "pixelsOnLineA is empty" << "\n";
+				}
+				else
+				{
+					ofstream PixelsOnLineAFile;
+					PixelsOnLineAFile.open("PixelsOnLineA" + ii + ".csv");
+					PixelsOnLineAFile << Mat(pixelsOnLineA) << "\n";;
+					PixelsOnLineAFile << "\n";
+					PixelsOnLineAFile << "\n";
+					PixelsOnLineAFile.close();
+				}
 				//4444444444444444444444444444444444444444444444444444444444444444444
 				
 				//// alternative way of iterating through the line
@@ -746,6 +896,7 @@ int main(int argc, char *argv[])
 				//container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
 				//containerCount++;
 			}
+			////////
 #pragma endregion  
 
 #pragma region EPs
@@ -813,7 +964,9 @@ int main(int argc, char *argv[])
 
 		//imshow("Plot Image", plotImage);
 		imshow("Source - component nr." + smi, tempSrc2); 
+		imwrite("Source_component_nr_" + smi + ".bmp", tempSrc2);
 		imshow("Grayscale- component nr." + smi, tempGraySrc3);
+		imwrite("Grayscale- component nr." + smi + ".bmp", tempGraySrc3);
 		//}
 	}
 	cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";
