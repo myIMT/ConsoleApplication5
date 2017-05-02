@@ -64,6 +64,19 @@ int thirdBiggestAreaY;
 int thirdBiggestAreaWidth;
 int thirdBiggestAreaHeight;
 
+struct connectedComponentsWithStatsStruct {
+	int COMP_STRUCT_NR;
+	int CC_STAT_LEFT;
+	int CC_STAT_TOP;
+	int CC_STAT_WIDTH;
+	int CC_STAT_HEIGHT;
+	int CC_STAT_AREA;
+	int CC_STAT_CENTROID_X;
+	int CC_STAT_CENTROID_Y;
+};
+vector<connectedComponentsWithStatsStruct> CompStats;
+int CompStructCount = 0;
+
 #include "GraphUtils.h"
 //----------------------------------------------------
 
@@ -136,15 +149,33 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
 		FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+		CompStats.push_back(connectedComponentsWithStatsStruct());												/*Initialise container*/
+		
 		connectedComponentsWithStats << "Component " << FltrLabel << std::endl;
+		CompStats[CompStructCount].COMP_STRUCT_NR = FltrLabel;
+
 		connectedComponentsWithStats << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
+		CompStats[CompStructCount].CC_STAT_LEFT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+
 		connectedComponentsWithStats << "CC_STAT_TOP    = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
+		CompStats[CompStructCount].CC_STAT_TOP = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+
 		connectedComponentsWithStats << "CC_STAT_WIDTH  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
+		CompStats[CompStructCount].CC_STAT_WIDTH = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+
 		connectedComponentsWithStats << "CC_STAT_HEIGHT = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
+		CompStats[CompStructCount].CC_STAT_HEIGHT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+
 		connectedComponentsWithStats << "CC_STAT_AREA   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
+		CompStats[CompStructCount].CC_STAT_AREA = FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA);
+
 		connectedComponentsWithStats << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
+		CompStats[CompStructCount].CC_STAT_CENTROID_X = FltrCentroids.at<double>(FltrLabel, 0);
+		CompStats[CompStructCount].CC_STAT_CENTROID_Y = FltrCentroids.at<double>(FltrLabel, 1);
 
 		a.push_back(FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA));
+
+		CompStructCount++;
 	}
 	cout << "07 - STORING EACH COMPONENT'S AREA IN (GLOBAL DECLARED) VECTOR: 'a'" << "\n";
 #pragma endregion
@@ -262,7 +293,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 		}
 	}
 	//imshow(nFltrLabelsString + "-Connected Components", FltrDst);
-	//imwrite("Connected Components.bmp", FltrDst);
+
 
 	return FltrDst;
 	cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";
@@ -281,21 +312,21 @@ int main(int argc, char *argv[])
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
 	//Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
-	imshow("0 - src", src);
+	//imshow("0 - src", src);
 	//srcImg = src;
 	//bilateralFilter(src, srcImg, 15, 80, 80);
 	blur(src, srcImg, Size(5, 5), Point(-1, -1));
 	cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";
-	imshow("1 - blur srcImg", srcImg);
+	//imshow("1 - blur srcImg", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
 	cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";
-	imshow("2 - Blur GrayImg", GrayImg);
+	//imshow("2 - Blur GrayImg", GrayImg);
 
 	Mat linePixelsTempGraySrc3 = GrayImg;
 
 	Mat components = GetConnectedComponent(GrayImg);
 	
-	imshow("3 - components", components);
+	//imshow("3 - components", components);
 
 	//imshow("maskImages[0]", Mat(maskImages[0]));
 	Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
@@ -313,13 +344,16 @@ int main(int argc, char *argv[])
 	///Loop through each component
 	for (size_t mi = 0; mi < 1/*maskImages.size()*/; mi++)
 	{
-		ComponentsLoop << "		Component Nr. = " << mi << "\n"; 
-		//if (mi== 17 ||mi == 16 ||mi == 13 || mi == 9)
-		//{
+
+		if (true)
+		{
+			ComponentsLoop << "		Component Nr. = " << mi << "\n";
+			//if (mi== 17 ||mi == 16 ||mi == 13 || mi == 9)
+			//{
 			std::string smi = std::to_string(mi);
 			Mat tempComponent = Mat(maskImages[mi]);
-			imshow("4 - component- " + smi, tempComponent);
-			imwrite("4_component_" + smi + ".bmp", tempComponent);
+			//imshow("4 - component- " + smi, tempComponent);
+			//imwrite("4_component_" + smi + ".bmp", tempComponent);
 			Mat GrayComponents;
 			//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
 			//imshow("GrayComponents", GrayComponents);
@@ -349,9 +383,8 @@ int main(int argc, char *argv[])
 			int containerCount = 0;
 
 			Canny(GrayComponents, cannyEdge, 100, 200);
-			imshow("5 - component cannyEdge - " + smi, cannyEdge);
-			imwrite("5_component_cannyEdge" + smi + ".bmp", cannyEdge);
-			//imwrite("cannyEdge_DataFile.csv",cannyEdge);
+			//imshow("5 - component cannyEdge - " + smi, cannyEdge);
+			//imwrite("5_component_cannyEdge" + smi + ".bmp", cannyEdge);
 			//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
 			ofstream cannyEdge_DataFile;
 			cannyEdge_DataFile.open("cannyEdge_DataFile_" + smi + ".csv");
@@ -367,7 +400,7 @@ int main(int argc, char *argv[])
 				///Walk along cannyEdge rows & columns
 				for (size_t j = 0; j < cannyEdge.cols; j++)
 				{
-					ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i <<", " << j << "\n";
+					ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 					Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 					///if cannyEdge pixel intensity id non-zero
 					if ((int)cannyEdge.at<uchar>(i, j) != 0)
@@ -377,9 +410,9 @@ int main(int argc, char *argv[])
 
 						Bin_Analysis << "Canny Edge Non-zero pixel (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 
-						newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							/*Create new Angle matrix*/	
-						container.push_back(element());												/*Initialise container*/	
-						container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/	
+						newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							/*Create new Angle matrix*/
+						container.push_back(element());												/*Initialise container*/
+						container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/
 						container[containerCount].i = i;											///Store row position
 						container[containerCount].j = j;											///Store column position
 						container[containerCount].angle = newAngle.ptr<float>(i)[j];				///Store new Angle value
@@ -490,7 +523,7 @@ int main(int argc, char *argv[])
 							mes.angle = (int)maxCountContainer[m].angle;
 							mes.size = (int)maxCountContainer[m].size;
 						}
-						ComponentsLoop << "		Element with highest frequency ("<< mes.size << "= " << mes.angle << "\n";
+						ComponentsLoop << "		Element with highest frequency (" << mes.size << "= " << mes.angle << "\n";
 					}
 				}
 			}
@@ -506,9 +539,9 @@ int main(int argc, char *argv[])
 					tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
 				}
 			}
-			
+
 			//imshow("tempGraySrc", tempGraySrc);
-			imwrite("tempGraySrc.bmp", tempGraySrc);
+			//imwrite("tempGraySrc.bmp", tempGraySrc);
 
 			Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
@@ -535,8 +568,8 @@ int main(int argc, char *argv[])
 				line(tempSrc2, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
 				lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
 			}
-			imshow("Bounding Box", tempSrc1);
-			imwrite("Bounding_Box" + smi + ".bmp", tempSrc1);
+			//imshow("Bounding Box", tempSrc1);
+			//imwrite("Bounding_Box" + smi + ".bmp", tempSrc1);
 			//cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";
 			cout << "minAreaRect width= " << box.size.width << "\n";
 			cout << "minAreaRect height= " << box.size.height << "\n";
@@ -587,10 +620,13 @@ int main(int argc, char *argv[])
 				u2 = w1;
 				u22 = w2;
 			}
-				imshow("tempSrcW1- " + smi, tempSrcW1);
-				imwrite("tempSrcW1_" + smi + ".bmp", tempSrcW1);
-				imshow("tempSrcW2- " + smi, tempSrcW2);
-				imwrite("tempSrcW2_" + smi + ".bmp", tempSrcW2);
+			rectangle(tempSrcW1, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(255, 0, 0));
+			imshow("tempSrcW1- " + smi, tempSrcW1);
+			//imwrite("tempSrcW1_" + smi + ".bmp", tempSrcW1);
+
+			rectangle(tempSrcW2, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(0, 255, 0));
+			imshow("tempSrcW2- " + smi, tempSrcW2);
+			//imwrite("tempSrcW2_" + smi + ".bmp", tempSrcW2);
 #pragma endregion
 
 			struct buffer {
@@ -629,7 +665,7 @@ int main(int argc, char *argv[])
 			Mat imageArray[10];
 			bool beginning = true;
 
-			for (i = -1; i < box.size.width/2; i++)
+			for (i = -1; i < box.size.width / 2; i++)
 			{
 				std::string ii = std::to_string(i);
 
@@ -661,15 +697,15 @@ int main(int argc, char *argv[])
 					ww2.y = maskCentroid[mi].y - vv.y*d;
 
 					//end points of profile
-					ep11.x = ww1.x - ((box.size.width+e) / 2) * uu.x;
-					ep11.y = ww1.y - ((box.size.width+e) / 2) * uu.y;
-					ep12.x = ww1.x + ((box.size.width+e) / 2) * uu.x;
-					ep12.y = ww1.y + ((box.size.width+e) / 2) * uu.y;
+					ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
+					ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
+					ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
+					ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
 
-					ep21.x = ww2.x - ((box.size.width+e) / 2) * uu.x;
-					ep21.y = ww2.y - ((box.size.width+e) / 2) * uu.y;
-					ep22.x = ww2.x + ((box.size.width+e) / 2) * uu.x;
-					ep22.y = ww2.y + ((box.size.width+e) / 2) * uu.y;
+					ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
+					ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
+					ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
+					ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
 
 					beginning = false;
 				}
@@ -682,15 +718,15 @@ int main(int argc, char *argv[])
 					ww2.y = uu22.y - vv.y*d;
 
 					//end points of profile
-					ep11.x = ww1.x - ((box.size.width+e) / 2) * uu.x;
-					ep11.y = ww1.y - ((box.size.width+e) / 2) * uu.y;
-					ep12.x = ww1.x + ((box.size.width+e) / 2) * uu.x;
-					ep12.y = ww1.y + ((box.size.width+e) / 2) * uu.y;
+					ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
+					ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
+					ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
+					ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
 
-					ep21.x = ww2.x - ((box.size.width+e) / 2) * uu.x;
-					ep21.y = ww2.y - ((box.size.width+e) / 2) * uu.y;
-					ep22.x = ww2.x + ((box.size.width+e) / 2) * uu.x;
-					ep22.y = ww2.y + ((box.size.width+e) / 2) * uu.y;
+					ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
+					ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
+					ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
+					ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
 				}
 				circle(tempSrc2, ww2, 1, Scalar(255, 0, 0), 1, 8, 0); //turqoise
 				circle(tempSrc2, ww1, 1, Scalar(55, 0, 0), 1, 8, 0); //
@@ -703,26 +739,26 @@ int main(int argc, char *argv[])
 				uu2 = ww1;
 				uu22 = ww2;
 
-				#pragma region DrawLines
-					int thickness = 0.2;
-					int lineType = 8;
-					line(tempGraySrc3,
-						Point(ep11.x, ep11.y),
-						Point(ep12.x, ep12.y),
-						Scalar(255, 0, 0),
-						thickness,
-						lineType);  
-					line(tempGraySrc3,
-						Point(ep21.x, ep21.y),
-						Point(ep22.x, ep22.y),
-						Scalar(255, 0, 0),
-						thickness,
-						lineType);
-				#pragma endregion
+#pragma region DrawLines
+				int thickness = 0.2;
+				int lineType = 8;
+				line(tempGraySrc3,
+					Point(ep11.x, ep11.y),
+					Point(ep12.x, ep12.y),
+					Scalar(255, 0, 0),
+					thickness,
+					lineType);
+				line(tempGraySrc3,
+					Point(ep21.x, ep21.y),
+					Point(ep22.x, ep22.y),
+					Scalar(255, 0, 0),
+					thickness,
+					lineType);
+#pragma endregion
 
 
-				#pragma region LinePixels
-				
+#pragma region LinePixels
+
 				// grabs pixels along the line (pt1, pt2)
 				// from 8-bit 3-channel image to the buffer
 				LineIterator it1B(tempGraySrc3, Point(ep11), Point(ep12), 8);		// Lines before centroid
@@ -737,7 +773,7 @@ int main(int argc, char *argv[])
 				vector<float> pixelsOnLineB;
 				vector<float> pixelsOnLineA;
 				vector<vector<float>> pixels;
-				
+
 				Mat linePixel;
 				//float pixelsUnderLine[it1.count];
 
@@ -768,7 +804,7 @@ int main(int argc, char *argv[])
 					//buf[i] = val;
 
 					std::string L = std::to_string(l);
-					file.open("buf_"+ format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint)+".csv", ios::app);
+					file.open("buf_" + format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint) + ".csv", ios::app);
 					//file.open("buf_" + L + ".csv", ios::app);
 					//file << Profiles[ProfilesCount].startPoint << "\n";
 					//file << Profiles[ProfilesCount].endPoint << "\n";
@@ -811,7 +847,7 @@ int main(int argc, char *argv[])
 					file.close();
 					ProfilesCount += 1;
 				}
-				#pragma endregion
+#pragma endregion
 
 				//4444444444444444444444444444444444444444444444444444444444444444444
 				//Mat testSrc = src;
@@ -881,14 +917,14 @@ int main(int argc, char *argv[])
 					PixelsOnLineAFile.close();
 				}
 				//4444444444444444444444444444444444444444444444444444444444444444444
-				
+
 				//// alternative way of iterating through the line
 				//for (int i = 0; i < it2.count; i++, ++it2)
 				//{
 				//	Vec3b val = img.at<Vec3b>(it2.pos());
 				//	CV_Assert(buf[i] == val);
 				//}
-				
+
 				//container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);
 				//container[containerCount].i = i;
 				//container[containerCount].j = j;
@@ -963,11 +999,12 @@ int main(int argc, char *argv[])
 #pragma endregion
 
 		//imshow("Plot Image", plotImage);
-		imshow("Source - component nr." + smi, tempSrc2); 
-		imwrite("Source_component_nr_" + smi + ".bmp", tempSrc2);
-		imshow("Grayscale- component nr." + smi, tempGraySrc3);
-		imwrite("Grayscale- component nr." + smi + ".bmp", tempGraySrc3);
-		//}
+		//imshow("Source - component nr." + smi, tempSrc2); 
+		//imwrite("Source_component_nr_" + smi + ".bmp", tempSrc2);
+		//imshow("Grayscale- component nr." + smi, tempGraySrc3);
+		//imwrite("Grayscale- component nr." + smi + ".bmp", tempGraySrc3);
+		//} 
+		}
 	}
 	cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";
 
