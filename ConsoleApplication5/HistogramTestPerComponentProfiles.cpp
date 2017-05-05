@@ -101,16 +101,16 @@ Mat plotGraph(std::vector<T>& vals, int YRange[2])
 #pragma region ExtractNadirAreas
 void ExtractNadirAreas(vector<int> a)
 {
-	cout << "size of a = " << a.size() << endl;
+	//cout << "size of a = " << a.size() << endl;
 	sort(a.begin(), a.end());	/// Sort vector of components-areas
 	reverse(a.begin(), a.end());	/// Reverse sorted vector of components-areas
-	cout << "a-vector-sorted with +4= " << endl;	/// Print sorted-reversed component-areas
+	//cout << "a-vector-sorted with +4= " << endl;	/// Print sorted-reversed component-areas
 	for (size_t i = 0; i != a.size(); ++i)
-		cout << a[i] << " ";
-	cout << "\n"; cout << "\n"; cout << "\n";
-	secondBiggestArea = a[1];	cout << "second biggest = " << a[1] << "\n";
-	//secondBiggestAreaIndex = a.size()-1;	cout << "second biggest Index = " << a.size() - 1 << "\n";
-	thirdBiggestArea = a[2];	cout << "third biggest = " << a[2] << "\n";
+		//cout << a[i] << " ";
+	//cout << "\n"; cout << "\n"; cout << "\n";
+	secondBiggestArea = a[1];	//cout << "second biggest = " << a[1] << "\n";
+	//secondBiggestAreaIndex = a.size()-1;	//cout << "second biggest Index = " << a.size() - 1 << "\n";
+	thirdBiggestArea = a[2];	//cout << "third biggest = " << a[2] << "\n";
 	//thirdBiggestAreaIndex = a.size() - 2;	cout << "third biggest Index = " << a.size() - 2 << "\n";
 }
 #pragma endregion
@@ -121,28 +121,28 @@ void ExtractNadirAreas(vector<int> a)
 /// <param name="GrayScaleSrcImg">Grayscale image (Mat) of original image.</param> 
 Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 {
-	cout << "03 - CALCULATING COMPONENTS ON BLURRED GRAYSCALE SOURCE IMAGE ('GrayImg')" << "\n";
+	//cout << "03 - CALCULATING COMPONENTS ON BLURRED GRAYSCALE SOURCE IMAGE ('GrayImg')" << "\n";
 
 	cv::Mat FltrBinaryImg = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
-	cout << "04 - CONVERTING BLURRED GRAYSCALE SOURCE IMAGE TO BINARY: 'FltrBinaryImg'" << "\n";
+	//cout << "04 - CONVERTING BLURRED GRAYSCALE SOURCE IMAGE TO BINARY: 'FltrBinaryImg'" << "\n";
 
 	cv::Mat FltrLabelImage;
 	cv::Mat FltrStats, FltrCentroids;
 
 	int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 8, CV_32S);
-	cout << "05 - CALCULATING CONNECTEDCOMPONENTSWITHSTATS ON 'FltrBinaryImg': 'FltrLabelImage'" << "\n";
+	//cout << "05 - CALCULATING CONNECTEDCOMPONENTSWITHSTATS ON 'FltrBinaryImg': 'FltrLabelImage'" << "\n";
 #pragma region connectedComponentsWithStats
-	ofstream connectedComponentsWithStats;
-	connectedComponentsWithStats.open("connectedComponentsWithStats.txt");
-	cout << "06 - WRITING CONNECTEDCOMPONENTSWITHSTATS RESULTS TO FILE: 'connectedComponentsWithStats.txt'" << "\n";
+	//ofstream connectedComponentsWithStats;
+	//connectedComponentsWithStats.open("connectedComponentsWithStats.txt");
+	//cout << "06 - WRITING CONNECTEDCOMPONENTSWITHSTATS RESULTS TO FILE: 'connectedComponentsWithStats.txt'" << "\n";
 	//imshow("Labels", FltrLabelImage);
-	connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
-	connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
-	connectedComponentsWithStats << "size of FltrLabelImage= " << FltrLabelImage.size() << std::endl;
+	//connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
+	//connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
+	//connectedComponentsWithStats << "size of FltrLabelImage= " << FltrLabelImage.size() << std::endl;
 	//imshow("FltrLabelImage2", FltrLabelImage2);
 	std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 	FltrColors[0] = cv::Vec3b(0, 0, 0);
-	connectedComponentsWithStats << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
+	//connectedComponentsWithStats << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
 	//vector<vector<Point>> contours;
 	//vector<Vec4i> hierarchy;
 	vector<int> a;
@@ -151,25 +151,25 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 		FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
 		CompStats.push_back(connectedComponentsWithStatsStruct());												/*Initialise container*/
 		
-		connectedComponentsWithStats << "Component " << FltrLabel << std::endl;
+		//connectedComponentsWithStats << "Component " << FltrLabel << std::endl;
 		CompStats[CompStructCount].COMP_STRUCT_NR = FltrLabel;
 
-		connectedComponentsWithStats << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
+		//connectedComponentsWithStats << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
 		CompStats[CompStructCount].CC_STAT_LEFT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
 
-		connectedComponentsWithStats << "CC_STAT_TOP    = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
+		//connectedComponentsWithStats << "CC_STAT_TOP    = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
 		CompStats[CompStructCount].CC_STAT_TOP = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
 
-		connectedComponentsWithStats << "CC_STAT_WIDTH  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
+		//connectedComponentsWithStats << "CC_STAT_WIDTH  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
 		CompStats[CompStructCount].CC_STAT_WIDTH = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
 
-		connectedComponentsWithStats << "CC_STAT_HEIGHT = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
+		//connectedComponentsWithStats << "CC_STAT_HEIGHT = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
 		CompStats[CompStructCount].CC_STAT_HEIGHT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
 
-		connectedComponentsWithStats << "CC_STAT_AREA   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
+		//connectedComponentsWithStats << "CC_STAT_AREA   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
 		CompStats[CompStructCount].CC_STAT_AREA = FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA);
 
-		connectedComponentsWithStats << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
+		//connectedComponentsWithStats << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
 		CompStats[CompStructCount].CC_STAT_CENTROID_X = FltrCentroids.at<double>(FltrLabel, 0);
 		CompStats[CompStructCount].CC_STAT_CENTROID_Y = FltrCentroids.at<double>(FltrLabel, 1);
 
@@ -177,9 +177,9 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 		CompStructCount++;
 	}
-	cout << "07 - STORING EACH COMPONENT'S AREA IN (GLOBAL DECLARED) VECTOR: 'a'" << "\n";
+	//cout << "07 - STORING EACH COMPONENT'S AREA IN (GLOBAL DECLARED) VECTOR: 'a'" << "\n";
 #pragma endregion
-	connectedComponentsWithStats.close();
+	//connectedComponentsWithStats.close();
 
 #pragma region RemoveNadir
 	ExtractNadirAreas(a);
@@ -255,8 +255,8 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
 	//imshow("croppedImage", croppedImage);
 #pragma endregion
-	cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n";
-	cout << "09 -  -- ASSUMING TWO BLACK STRIPS ARE ALWAYS THE 2ND AND 3RD LARGEST COMPONENTS" << "\n";
+	//cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n";
+	//cout << "09 -  -- ASSUMING TWO BLACK STRIPS ARE ALWAYS THE 2ND AND 3RD LARGEST COMPONENTS" << "\n";
 
 	std::string nFltrLabelsString = std::to_string(nFltrLabels);
 
@@ -267,8 +267,8 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 	//std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 	//FltrColors[0] = cv::Vec3b(0, 0, 0);;
-	cout << "10 - STORE ALL COMPONENTS'S IN (GLOBALLY DECLARED) VECTOR: 'maskImages'" << "\n";
-	cout << "11 - STORE ALL COMPONENTS'S CENTROID IN (GLOBALLY DECLARED) VECTOR: 'maskCentroid'" << "\n";
+	//cout << "10 - STORE ALL COMPONENTS'S IN (GLOBALLY DECLARED) VECTOR: 'maskImages'" << "\n";
+	//cout << "11 - STORE ALL COMPONENTS'S CENTROID IN (GLOBALLY DECLARED) VECTOR: 'maskCentroid'" << "\n";
 
 	for (int FltrLabel = 1; FltrLabel < nFltrLabels; ++FltrLabel) {
 		//FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
@@ -296,7 +296,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 
 
 	return FltrDst;
-	cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";
+	//cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";
 }
 
 /// <summary>                                                            
@@ -305,9 +305,9 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 /// <param name="">xxx.</param> 
 int main(int argc, char *argv[])
 {
-	cout << "--------------------------------------- START ---------------------------------------" << "\n";
+	//cout << "--------------------------------------- START ---------------------------------------" << "\n";
 	src = cv::imread("20161215 02.33_368L2.jpg");
-	cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";
+	//cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";
 
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
 	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
@@ -316,10 +316,10 @@ int main(int argc, char *argv[])
 	//srcImg = src;
 	//bilateralFilter(src, srcImg, 15, 80, 80);
 	blur(src, srcImg, Size(5, 5), Point(-1, -1));
-	cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";
+	//cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";
 	//imshow("1 - blur srcImg", srcImg);
 	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-	cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";
+	//cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";
 	//imshow("2 - Blur GrayImg", GrayImg);
 
 	Mat linePixelsTempGraySrc3 = GrayImg;
@@ -334,20 +334,24 @@ int main(int argc, char *argv[])
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
 #pragma region MyRegion
-	cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n";
-	ofstream ComponentsLoop;
-	ComponentsLoop.open("ComponentsLoop.txt");
+	//cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n";
+	//ofstream ComponentsLoop;
+	//ComponentsLoop.open("ComponentsLoop.txt");
 
-	ofstream Bin_Analysis;
-	Bin_Analysis.open("Bin_Analysis.csv");
-	cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n";
+	//ofstream Bin_Analysis;
+	//Bin_Analysis.open("Bin_Analysis.csv");
+	//cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n";
+
+	ofstream ComponentAngle;
+	ComponentAngle.open("ComponentAngle.txt");
+
 	///Loop through each component
-	for (size_t mi = 0; mi < 1/*maskImages.size()*/; mi++)
+	for (size_t mi = 0; mi < maskImages.size(); mi++)
 	{
 
 		if (true)
 		{
-			ComponentsLoop << "		Component Nr. = " << mi << "\n";
+			//ComponentsLoop << "		Component Nr. = " << mi << "\n";
 			//if (mi== 17 ||mi == 16 ||mi == 13 || mi == 9)
 			//{
 			std::string smi = std::to_string(mi);
@@ -365,10 +369,10 @@ int main(int argc, char *argv[])
 			Mat Angle(GrayComponents.size(), CV_32FC1);
 			cartToPolar(grad_x, grad_y, Mag, Angle, true);
 			//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
-			ofstream Angle_DataFile;
-			Angle_DataFile.open("Angle_DataFile_" + smi + ".csv");
-			Angle_DataFile << Angle << "\n";
-			Angle_DataFile.close();
+			//ofstream Angle_DataFile;
+			//Angle_DataFile.open("Angle_DataFile_" + smi + ".csv");
+			//Angle_DataFile << Angle << "\n";
+			//Angle_DataFile.close();
 			//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
 
 			std::array<std::vector<int>, 72> vvv{ {} };
@@ -386,10 +390,10 @@ int main(int argc, char *argv[])
 			//imshow("5 - component cannyEdge - " + smi, cannyEdge);
 			//imwrite("5_component_cannyEdge" + smi + ".bmp", cannyEdge);
 			//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
-			ofstream cannyEdge_DataFile;
-			cannyEdge_DataFile.open("cannyEdge_DataFile_" + smi + ".csv");
-			cannyEdge_DataFile << cannyEdge << "\n";
-			cannyEdge_DataFile.close();
+			//ofstream cannyEdge_DataFile;
+			//cannyEdge_DataFile.open("cannyEdge_DataFile_" + smi + ".csv");
+			//cannyEdge_DataFile << cannyEdge << "\n";
+			//cannyEdge_DataFile.close();
 			//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
 
 			Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
@@ -400,15 +404,15 @@ int main(int argc, char *argv[])
 				///Walk along cannyEdge rows & columns
 				for (size_t j = 0; j < cannyEdge.cols; j++)
 				{
-					ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
-					Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+					//ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+					//Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 					///if cannyEdge pixel intensity id non-zero
 					if ((int)cannyEdge.at<uchar>(i, j) != 0)
 					{
-						ComponentsLoop << "				Non-Zero Canny pixel value (coordinates - (x,y) ) = " << i << ", " << j << "\n";
-						ComponentsLoop << "				Storing Non-Zero Canny pixel value in container" << "\n";
+						//ComponentsLoop << "				Non-Zero Canny pixel value (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+						//ComponentsLoop << "				Storing Non-Zero Canny pixel value in container" << "\n";
 
-						Bin_Analysis << "Canny Edge Non-zero pixel (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+						//Bin_Analysis << "Canny Edge Non-zero pixel (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 
 						newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							/*Create new Angle matrix*/
 						container.push_back(element());												/*Initialise container*/
@@ -421,25 +425,25 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-			ComponentsLoop << "Finished walking on Canny Edge" << "\n";
-			ComponentsLoop << "\n";
-			ComponentsLoop << "\n";
+			//ComponentsLoop << "Finished walking on Canny Edge" << "\n";
+			//ComponentsLoop << "\n";
+			//ComponentsLoop << "\n";
 
-			Bin_Analysis.close();
+			//Bin_Analysis.close();
 			//////999999999999999999999999999999999999999999999999999999
-			ofstream ContainerFile;
-			ContainerFile.open("ContainerFile_" + smi + ".txt");
-			for (int i = 0; i < container.size(); i++)
-			{
-				ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
-				ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
-				ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
-				ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
-				ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
-				ContainerFile << "\n";
-				ContainerFile << "\n";
-			}
-			ContainerFile.close();
+			//ofstream ContainerFile;
+			//ContainerFile.open("ContainerFile_" + smi + ".txt");
+			//for (int i = 0; i < container.size(); i++)
+			//{
+			//	//ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
+			//	//ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
+			//	//ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
+			//	//ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
+			//	//ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
+			//	//ContainerFile << "\n";
+			//	//ContainerFile << "\n";
+			//}
+			//ContainerFile.close();
 			//////999999999999999999999999999999999999999999999999999999
 			int maxCount = 0;
 			struct maxCountStruct {
@@ -456,19 +460,19 @@ int main(int argc, char *argv[])
 			};
 			MaxElementStruct mes;
 
-			ofstream KeepingTrackOfContainers_DataFile;
-			KeepingTrackOfContainers_DataFile.open("KeepingTrackOfContainers_DataFile.csv");
+			//ofstream KeepingTrackOfContainers_DataFile;
+			//KeepingTrackOfContainers_DataFile.open("//KeepingTrackOfContainers_DataFile.csv");
 
-			ComponentsLoop << "			For every element in container (total size = " << container.size() << ")" << "\n";
+			//ComponentsLoop << "			For every element in container (total size = " << container.size() << ")" << "\n";
 			/// Grouping bin values together and counting them
 			/// For every element in container
 			for (size_t l = 0; l < container.size(); l++)
 			{
-				ComponentsLoop << "			container[l] = " << l << "\n";
+				//ComponentsLoop << "			container[l] = " << l << "\n";
 				/// If new container is empty (at start)
 				if (maxCountContainer.empty())
 				{
-					ComponentsLoop << "				Initial element (new container empty) in new container[l] = " << l << "\n";
+					//ComponentsLoop << "				Initial element (new container empty) in new container[l] = " << l << "\n";
 					maxCountContainer.push_back(maxCountStruct());		/// Initialise new container
 					maxCountContainer[l].bin = container[l].bin;		/// Store container bin value in new container bin field
 					maxCountContainer[l].angle = container[l].angle;	/// Store container angle value in new container angle field
@@ -479,14 +483,14 @@ int main(int argc, char *argv[])
 					/// For every element in new container (new container contains at least one element thus far) & its elements will increase with every loop
 					for (size_t m = 0; m < maxCountContainer.size(); m++)
 					{
-						ComponentsLoop << "				For every element in new container[m] (as it's filling up ) = " << m << "\n";
+						//ComponentsLoop << "				For every element in new container[m] (as it's filling up ) = " << m << "\n";
 
-						KeepingTrackOfContainers_DataFile << "container iterator (l): " << l << "\n";
-						KeepingTrackOfContainers_DataFile << "maxCountContainer iterator (m)= " << m << "\n";
+						//KeepingTrackOfContainers_DataFile << "container iterator (l): " << l << "\n";
+						//KeepingTrackOfContainers_DataFile << "maxCountContainer iterator (m)= " << m << "\n";
 						/// 
 						if (maxCountContainer[m].bin == container[l].bin)
 						{
-							ComponentsLoop << "					When container element [l] already exist in new container [m] (don't re-add it, just update it's count ) = " << l << ", " << m << "\n";
+							//ComponentsLoop << "					When container element [l] already exist in new container [m] (don't re-add it, just update it's count ) = " << l << ", " << m << "\n";
 							maxCountContainer[m].size += 1;
 							break;
 						}
@@ -500,22 +504,22 @@ int main(int argc, char *argv[])
 						}
 
 						//////666666666666666666666666666666666666666666666666666666666666666666666666666666
-						ofstream maxCountContainer_DataFile;
-						maxCountContainer_DataFile.open("maxCountContainer_DataFile_" + smi + ".csv");
-						for (int i = 0; i < maxCountContainer.size(); i++)
-						{
-							maxCountContainer_DataFile << "maxCountContainer[" << i << "].i= " << i << "\n";
-							maxCountContainer_DataFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
-							maxCountContainer_DataFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
-							maxCountContainer_DataFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
-							maxCountContainer_DataFile << "\n";
-							maxCountContainer_DataFile << "\n";
-						}
-						maxCountContainer_DataFile.close();
-						maxCountContainer_DataFile.close();
+						//ofstream maxCountContainer_DataFile;
+						//maxCountContainer_DataFile.open("maxCountContainer_DataFile_" + smi + ".csv");
+						//for (int i = 0; i < maxCountContainer.size(); i++)
+						//{
+						//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].i= " << i << "\n";
+						//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
+						//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
+						//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
+						//	maxCountContainer_DataFile << "\n";
+						//	maxCountContainer_DataFile << "\n";
+						//}
+						//maxCountContainer_DataFile.close();
+						//maxCountContainer_DataFile.close();
 						//////666666666666666666666666666666666666666666666666666666666666666666666666666666
 
-						ComponentsLoop << "		Adjusting element with the highest frequency" << "\n";
+						//ComponentsLoop << "		Adjusting element with the highest frequency" << "\n";
 						if (maxCountContainer[m].size > temp)	///Find bin with the most elements
 						{
 							temp = maxCountContainer[m].size;
@@ -523,14 +527,16 @@ int main(int argc, char *argv[])
 							mes.angle = (int)maxCountContainer[m].angle;
 							mes.size = (int)maxCountContainer[m].size;
 						}
-						ComponentsLoop << "		Element with highest frequency (" << mes.size << "= " << mes.angle << "\n";
+						//ComponentsLoop << "		Element with highest frequency (" << mes.size << "= " << mes.angle << "\n";
 					}
 				}
 			}
-			KeepingTrackOfContainers_DataFile.close();
+			//KeepingTrackOfContainers_DataFile.close();
 
-			cout << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl;
-			cout << "Angle (mes)- " << smi << "= " << mes.angle << "\n";
+			//cout << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl;
+			//cout << "Angle (mes)- " << smi << "= " << mes.angle << "\n";
+			//ComponentAngle << "Angle (mes)- " << smi << "\n";
+			ComponentAngle << "Angle (mes)- " << smi << "= " << mes.angle << "\n";
 			Mat tempGraySrc = GrayImg;
 			for (size_t n = 0; n < container.size(); n++)
 			{
@@ -571,8 +577,8 @@ int main(int argc, char *argv[])
 			//imshow("Bounding Box", tempSrc1);
 			//imwrite("Bounding_Box" + smi + ".bmp", tempSrc1);
 			//cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";
-			cout << "minAreaRect width= " << box.size.width << "\n";
-			cout << "minAreaRect height= " << box.size.height << "\n";
+			//cout << "minAreaRect width= " << box.size.width << "\n";
+			//cout << "minAreaRect height= " << box.size.height << "\n";
 #pragma endregion
 			Mat plotImage = src;
 			circle(plotImage, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
@@ -581,8 +587,8 @@ int main(int argc, char *argv[])
 #pragma region walk in edge angle direction
 			Point2f u, u2, u22, v;
 			Point2f w1, w2;
-			cout << "cos((mes.angle)* CV_PI / 180.0)= " << cos((mes.angle)* CV_PI / 180.0) << "\n";
-			cout << "sin((mes.angle)* CV_PI / 180.0)= " << sin((mes.angle)* CV_PI / 180.0) << "\n";
+			//cout << "cos((mes.angle)* CV_PI / 180.0)= " << cos((mes.angle)* CV_PI / 180.0) << "\n";
+			//cout << "sin((mes.angle)* CV_PI / 180.0)= " << sin((mes.angle)* CV_PI / 180.0) << "\n";
 			u = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
 			u2 = u;
 			rectSize_b = *max_element(lengths.begin(), lengths.end());
@@ -621,11 +627,11 @@ int main(int argc, char *argv[])
 				u22 = w2;
 			}
 			rectangle(tempSrcW1, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(255, 0, 0));
-			imshow("tempSrcW1- " + smi, tempSrcW1);
+			//imshow("tempSrcW1- " + smi, tempSrcW1);
 			//imwrite("tempSrcW1_" + smi + ".bmp", tempSrcW1);
 
 			rectangle(tempSrcW2, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(0, 255, 0));
-			imshow("tempSrcW2- " + smi, tempSrcW2);
+			//imshow("tempSrcW2- " + smi, tempSrcW2);
 			//imwrite("tempSrcW2_" + smi + ".bmp", tempSrcW2);
 #pragma endregion
 
@@ -787,12 +793,12 @@ int main(int argc, char *argv[])
 					pixelsOnLineB.push_back(valB);
 					linePixel.push_back(valB);
 					//5555555555555555555555555555555555555555555555555555555555555555
-					ofstream tempGraySrc3DataFile;
-					tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + "B.csv");
-					tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
-					tempGraySrc3DataFile << "\n";
-					tempGraySrc3DataFile << "\n";
-					tempGraySrc3DataFile.close();
+					//ofstream tempGraySrc3DataFile;
+					//tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + "B.csv");
+					//tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
+					//tempGraySrc3DataFile << "\n";
+					//tempGraySrc3DataFile << "\n";
+					//tempGraySrc3DataFile.close();
 					//55555555555555555555555555555555555555555555555555555555555555555555
 
 					//cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep11.x, ep11.y) << ", "<< Point(ep12.x, ep12.y) << "\n";
@@ -823,12 +829,12 @@ int main(int argc, char *argv[])
 					pixelsOnLineA.push_back(valA);
 					linePixel.push_back(valA);
 					//5555555555555555555555555555555555555555555555555555555555555555
-					ofstream tempGraySrc3DataFile;
-					tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + "A.csv");
-					tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
-					tempGraySrc3DataFile << "\n";
-					tempGraySrc3DataFile << "\n";
-					tempGraySrc3DataFile.close();
+					//ofstream tempGraySrc3DataFile;
+					//tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + ii + "A.csv");
+					//tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
+					//tempGraySrc3DataFile << "\n";
+					//tempGraySrc3DataFile << "\n";
+					//tempGraySrc3DataFile.close();
 					//55555555555555555555555555555555555555555555555555555555555555555555
 					//cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep21.x, ep21.y) << ", " << Point(ep22.x, ep22.y) << "\n";
 					//cout << "it1.pos() = " << Point(ep21.x, ep21.y) << ", " << it1A.pos() << "\n";
@@ -856,10 +862,10 @@ int main(int argc, char *argv[])
 				//showUCharGraph("Pixel Values", &pixelsOnLine[0], linePixel.size().height*src.size().width,0);
 
 
-				cout << "\n";
-				cout << "\n";
-				cout << "linePixel = " << linePixel << "\n";
-				cout << "\n";
+				//cout << "\n";
+				//cout << "\n";
+				//cout << "linePixel = " << linePixel << "\n";
+				//cout << "\n";
 				//uchar *dataMat = pixelsOnLine.data;
 				//float *floatVector = pixelsOnLine.;
 				//showFloatGraph("Pixel Values", pixelsOnLine, pixelsOnLine.size());
@@ -879,7 +885,7 @@ int main(int argc, char *argv[])
 				//std::iota(pixelsOnLine.begin(), pixelsOnLine.end(), 0);
 				if (pixelsOnLineB.empty())
 				{
-					cout << "pixelsOnLine is empty" << "\n";
+					//cout << "pixelsOnLine is empty" << "\n";
 				}
 				else
 				{
@@ -895,26 +901,26 @@ int main(int argc, char *argv[])
 					//string name = "Pixel Values" + ii;
 					//const char * cstr = name.c_str();			//convert cv::String to const char *
 					//showFloatGraph(cstr, &pixels[0][i], pixelsOnLine.size(), 0);
-					ofstream PixelsOnLineBFile;
-					PixelsOnLineBFile.open("PixelsOnLineB" + ii + ".csv");
-					PixelsOnLineBFile << Mat(pixelsOnLineB) << "\n";;
-					PixelsOnLineBFile << "\n";
-					PixelsOnLineBFile << "\n";
-					PixelsOnLineBFile.close();
+					//ofstream PixelsOnLineBFile;
+					//PixelsOnLineBFile.open("PixelsOnLineB" + ii + ".csv");
+					//PixelsOnLineBFile << Mat(pixelsOnLineB) << "\n";;
+					//PixelsOnLineBFile << "\n";
+					//PixelsOnLineBFile << "\n";
+					//PixelsOnLineBFile.close();
 				}
 
 				if (pixelsOnLineA.empty())
 				{
-					cout << "pixelsOnLineA is empty" << "\n";
+					//cout << "pixelsOnLineA is empty" << "\n";
 				}
 				else
 				{
-					ofstream PixelsOnLineAFile;
-					PixelsOnLineAFile.open("PixelsOnLineA" + ii + ".csv");
-					PixelsOnLineAFile << Mat(pixelsOnLineA) << "\n";;
-					PixelsOnLineAFile << "\n";
-					PixelsOnLineAFile << "\n";
-					PixelsOnLineAFile.close();
+					//ofstream PixelsOnLineAFile;
+					//PixelsOnLineAFile.open("PixelsOnLineA" + ii + ".csv");
+					//PixelsOnLineAFile << Mat(pixelsOnLineA) << "\n";;
+					//PixelsOnLineAFile << "\n";
+					//PixelsOnLineAFile << "\n";
+					//PixelsOnLineAFile.close();
 				}
 				//4444444444444444444444444444444444444444444444444444444444444444444
 
@@ -1006,50 +1012,51 @@ int main(int argc, char *argv[])
 		//} 
 		}
 	}
-	cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";
+	//cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";
 
-	cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";
+	//cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";
 
-	cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n";
-	cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n";
-	cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n";
-	cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n";
-	cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n";
-	cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n";
-	cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n";
-	cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n";
-	cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n";
-	cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n";
+	//cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n";
+	//cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n";
+	//cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n";
+	//cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n";
+	//cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n";
+	//cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n";
+	//cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n";
+	//cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n";
+	//cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n";
+	//cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n";
 
-	cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n";
+	//cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n";
 
-	cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n";
+	//cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n";
 
-	cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n";
+	//cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n";
 
-	cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n";
+	//cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n";
 
-	cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n";
+	//cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n";
 
-	cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n";
-	cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n";
-	cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n";
+	//cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n";
+	//cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n";
+	//cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n";
 
 
-	cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";
-	cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n";
-	cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n";
+	//cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";
+	//cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n";
+	//cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n";
 
-	cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";
-	cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n";
-	cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n";
-	cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n";
+	//cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";
+	//cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n";
+	//cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n";
+	//cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n";
 
-	cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n";
-	cout << "43 -  -- -- XXX" << "\n";
-	cout << "44 -  -- -- YYY" << "\n";
-	cout << "45 -  -- -- ZZZ" << "\n";
-	ComponentsLoop.close();
+	//cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n";
+	//cout << "43 -  -- -- XXX" << "\n";
+	//cout << "44 -  -- -- YYY" << "\n";
+	//cout << "45 -  -- -- ZZZ" << "\n";
+	//ComponentsLoop.close();
+	ComponentAngle.close();
 	//imshow("Plot Image", src);
 	//imshow("Bounding Box", tempSrc1);
 	waitKey(0);

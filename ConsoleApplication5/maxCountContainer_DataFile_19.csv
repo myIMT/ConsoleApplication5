@@ -1,0 +1,18 @@
+maxCountContainer[0].i= 0
+maxCountContainer[0].bin= 8
+maxCountContainer[0].angle= 44
+maxCountContainer[0].size= 1
+
+
+maxCountContainer[1].i= 1
+maxCountContainer[1].bin= 27
+maxCountContainer[1].angle= 135
+maxCountContainer[1].size= 1
+
+
+maxCountContainer[2].i= 2
+maxCountContainer[2].bin= 63
+maxCountContainer[2].angle= 315
+maxCountContainer[2].size= 1
+
+

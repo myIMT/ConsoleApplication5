@@ -1,0 +1,140 @@
+container[0].bin= 8
+container[0].i= 255
+container[0].j= 61
+container[0].angle= 44
+container[0].value= 255
+
+
+container[1].bin= 12
+container[1].i= 255
+container[1].j= 62
+container[1].angle= 63
+container[1].value= 255
+
+
+container[2].bin= 23
+container[2].i= 255
+container[2].j= 63
+container[2].angle= 116
+container[2].value= 255
+
+
+container[3].bin= 27
+container[3].i= 255
+container[3].j= 64
+container[3].angle= 135
+container[3].value= 255
+
+
+container[4].bin= 5
+container[4].i= 256
+container[4].j= 61
+container[4].angle= 26
+container[4].value= 255
+
+
+container[5].bin= 27
+container[5].i= 256
+container[5].j= 64
+container[5].angle= 135
+container[5].value= 255
+
+
+container[6].bin= 27
+container[6].i= 256
+container[6].j= 65
+container[6].angle= 135
+container[6].value= 255
+
+
+container[7].bin= 0
+container[7].i= 257
+container[7].j= 60
+container[7].angle= 0
+container[7].value= 255
+
+
+container[8].bin= 27
+container[8].i= 257
+container[8].j= 65
+container[8].angle= 135
+container[8].value= 255
+
+
+container[9].bin= 27
+container[9].i= 257
+container[9].j= 66
+container[9].angle= 135
+container[9].value= 255
+
+
+container[10].bin= 0
+container[10].i= 258
+container[10].j= 60
+container[10].angle= 0
+container[10].value= 255
+
+
+container[11].bin= 27
+container[11].i= 258
+container[11].j= 66
+container[11].angle= 135
+container[11].value= 255
+
+
+container[12].bin= 27
+container[12].i= 258
+container[12].j= 67
+container[12].angle= 135
+container[12].value= 255
+
+
+container[13].bin= 66
+container[13].i= 259
+container[13].j= 61
+container[13].angle= 333
+container[13].value= 255
+
+
+container[14].bin= 63
+container[14].i= 260
+container[14].j= 61
+container[14].angle= 315
+container[14].value= 255
+
+
+container[15].bin= 59
+container[15].i= 260
+container[15].j= 62
+container[15].angle= 296
+container[15].value= 255
+
+
+container[16].bin= 54
+container[16].i= 260
+container[16].j= 63
+container[16].angle= 270
+container[16].value= 255
+
+
+container[17].bin= 54
+container[17].i= 260
+container[17].j= 64
+container[17].angle= 270
+container[17].value= 255
+
+
+container[18].bin= 48
+container[18].i= 260
+container[18].j= 65
+container[18].angle= 243
+container[18].value= 255
+
+
+container[19].bin= 48
+container[19].i= 260
+container[19].j= 66
+container[19].angle= 243
+container[19].value= 255
+
+
