@@ -87,6 +87,15 @@
     <ClCompile Include="MyPCA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestWatershed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Example_DistanceTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Example_KMeans_Clustering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectedComponents03.h">

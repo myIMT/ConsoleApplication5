@@ -1,0 +1,1972 @@
+The biggest number is: 31 at bin 27
+Angle (mes)- 0= 135
+RotatedRect box = minAreaRect(Points[mi])-39.4007
+###########################################################
+The biggest number is: 32 at bin 30
+Angle (mes)- 1= 153
+RotatedRect box = minAreaRect(Points[mi])-24.3045
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 2= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 0
+Angle (mes)- 3= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 4= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 5= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 3 at bin 63
+Angle (mes)- 6= 315
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 7= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 8= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 6 at bin 0
+Angle (mes)- 9= 0
+RotatedRect box = minAreaRect(Points[mi])-5.71059
+###########################################################
+The biggest number is: 3 at bin 36
+Angle (mes)- 10= 180
+RotatedRect box = minAreaRect(Points[mi])-71.565
+###########################################################
+The biggest number is: 8 at bin 66
+Angle (mes)- 11= 333
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 12= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 28 at bin 66
+Angle (mes)- 13= 333
+RotatedRect box = minAreaRect(Points[mi])-23.9625
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 14= 90
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 66
+Angle (mes)- 15= 333
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 6 at bin 66
+Angle (mes)- 16= 333
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 65 at bin 30
+Angle (mes)- 17= 153
+RotatedRect box = minAreaRect(Points[mi])-40.6013
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 18= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 19= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 20= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 7 at bin 0
+Angle (mes)- 21= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 22= 153
+RotatedRect box = minAreaRect(Points[mi])-35.5377
+###########################################################
+The biggest number is: 10 at bin 30
+Angle (mes)- 23= 153
+RotatedRect box = minAreaRect(Points[mi])-23.9625
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 24= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 13 at bin 27
+Angle (mes)- 25= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 11 at bin 27
+Angle (mes)- 26= 135
+RotatedRect box = minAreaRect(Points[mi])-47.4896
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 27= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 3 at bin 66
+Angle (mes)- 28= 333
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 29= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 11 at bin 63
+Angle (mes)- 30= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 26 at bin 27
+Angle (mes)- 31= 135
+RotatedRect box = minAreaRect(Points[mi])-28.369
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 32= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 33= 71
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 34= 90
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 11 at bin 0
+Angle (mes)- 35= 0
+RotatedRect box = minAreaRect(Points[mi])-78.6901
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 36= 71
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 37= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 19 at bin 30
+Angle (mes)- 38= 153
+RotatedRect box = minAreaRect(Points[mi])-28.1786
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 39= 315
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 13 at bin 27
+Angle (mes)- 40= 135
+RotatedRect box = minAreaRect(Points[mi])-39.8056
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 41= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 29 at bin 63
+Angle (mes)- 42= 315
+RotatedRect box = minAreaRect(Points[mi])-36.5289
+###########################################################
+The biggest number is: 18 at bin 27
+Angle (mes)- 43= 135
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 4 at bin 5
+Angle (mes)- 44= 26
+RotatedRect box = minAreaRect(Points[mi])-71.565
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 45= 90
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 46= 0
+RotatedRect box = minAreaRect(Points[mi])-81.8699
+###########################################################
+The biggest number is: 21 at bin 30
+Angle (mes)- 47= 153
+RotatedRect box = minAreaRect(Points[mi])-30.6507
+###########################################################
+The biggest number is: 2 at bin 27
+Angle (mes)- 48= 135
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 4 at bin 66
+Angle (mes)- 49= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 50= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 3 at bin 59
+Angle (mes)- 51= 296
+RotatedRect box = minAreaRect(Points[mi])-63.435
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 52= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 53= 90
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 5 at bin 5
+Angle (mes)- 54= 26
+RotatedRect box = minAreaRect(Points[mi])-68.1986
+###########################################################
+The biggest number is: 3 at bin 36
+Angle (mes)- 55= 180
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 58 at bin 30
+Angle (mes)- 56= 153
+RotatedRect box = minAreaRect(Points[mi])-25.0169
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 57= 18
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 58= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 59= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 15 at bin 27
+Angle (mes)- 60= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 61= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 62= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 63= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 3 at bin 8
+Angle (mes)- 64= 44
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 65= 0
+RotatedRect box = minAreaRect(Points[mi])-63.435
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 66= 153
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 67= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 66
+Angle (mes)- 68= 333
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 3 at bin 36
+Angle (mes)- 69= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 70= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 11 at bin 30
+Angle (mes)- 71= 153
+RotatedRect box = minAreaRect(Points[mi])-21.0375
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 72= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 73= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 13 at bin 27
+Angle (mes)- 74= 135
+RotatedRect box = minAreaRect(Points[mi])-14.0362
+###########################################################
+The biggest number is: 33 at bin 63
+Angle (mes)- 75= 315
+RotatedRect box = minAreaRect(Points[mi])-40.6013
+###########################################################
+The biggest number is: 42 at bin 30
+Angle (mes)- 76= 153
+RotatedRect box = minAreaRect(Points[mi])-17.4472
+###########################################################
+The biggest number is: 22 at bin 30
+Angle (mes)- 77= 153
+RotatedRect box = minAreaRect(Points[mi])-24.6236
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 78= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 79= 44
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 80= 153
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 15 at bin 66
+Angle (mes)- 81= 333
+RotatedRect box = minAreaRect(Points[mi])-22.3801
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 82= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 3 at bin 36
+Angle (mes)- 83= 180
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 84= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 7 at bin 0
+Angle (mes)- 85= 0
+RotatedRect box = minAreaRect(Points[mi])-9.46232
+###########################################################
+The biggest number is: 23 at bin 30
+Angle (mes)- 86= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 87= 315
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 50 at bin 30
+Angle (mes)- 88= 153
+RotatedRect box = minAreaRect(Points[mi])-27.165
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 89= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 90= 153
+RotatedRect box = minAreaRect(Points[mi])-11.3099
+###########################################################
+The biggest number is: 2 at bin 30
+Angle (mes)- 91= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 4 at bin 8
+Angle (mes)- 92= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 93= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 94= 18
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 18 at bin 63
+Angle (mes)- 95= 315
+RotatedRect box = minAreaRect(Points[mi])-40.9144
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 96= 135
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 97= 153
+RotatedRect box = minAreaRect(Points[mi])-30.9638
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 98= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 99= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 100= 135
+RotatedRect box = minAreaRect(Points[mi])-30.2564
+###########################################################
+The biggest number is: 15 at bin 30
+Angle (mes)- 101= 153
+RotatedRect box = minAreaRect(Points[mi])-28.6105
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 102= 0
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 103= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 104= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 27 at bin 30
+Angle (mes)- 105= 153
+RotatedRect box = minAreaRect(Points[mi])-35.9097
+###########################################################
+The biggest number is: 39 at bin 36
+Angle (mes)- 106= 180
+RotatedRect box = minAreaRect(Points[mi])-25.2011
+###########################################################
+The biggest number is: 10 at bin 30
+Angle (mes)- 107= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 108= 0
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 7 at bin 63
+Angle (mes)- 109= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 110= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 6 at bin 36
+Angle (mes)- 111= 180
+RotatedRect box = minAreaRect(Points[mi])-27.7585
+###########################################################
+The biggest number is: 33 at bin 30
+Angle (mes)- 112= 153
+RotatedRect box = minAreaRect(Points[mi])-31.5043
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 113= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 39 at bin 30
+Angle (mes)- 114= 153
+RotatedRect box = minAreaRect(Points[mi])-29.7449
+###########################################################
+The biggest number is: 6 at bin 36
+Angle (mes)- 115= 180
+RotatedRect box = minAreaRect(Points[mi])-75.9638
+###########################################################
+The biggest number is: 23 at bin 30
+Angle (mes)- 116= 153
+RotatedRect box = minAreaRect(Points[mi])-30.5792
+###########################################################
+The biggest number is: 7 at bin 63
+Angle (mes)- 117= 315
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 63 at bin 30
+Angle (mes)- 118= 153
+RotatedRect box = minAreaRect(Points[mi])-28.4212
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 119= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 25 at bin 63
+Angle (mes)- 120= 315
+RotatedRect box = minAreaRect(Points[mi])-34.1597
+###########################################################
+The biggest number is: 27 at bin 0
+Angle (mes)- 121= 0
+RotatedRect box = minAreaRect(Points[mi])-85.6013
+###########################################################
+The biggest number is: 18 at bin 63
+Angle (mes)- 122= 315
+RotatedRect box = minAreaRect(Points[mi])-39.2894
+###########################################################
+The biggest number is: 63 at bin 30
+Angle (mes)- 123= 153
+RotatedRect box = minAreaRect(Points[mi])-29.4759
+###########################################################
+The biggest number is: 21 at bin 30
+Angle (mes)- 124= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 125= 153
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 23 at bin 63
+Angle (mes)- 126= 315
+RotatedRect box = minAreaRect(Points[mi])-31.6075
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 127= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 13 at bin 0
+Angle (mes)- 128= 0
+RotatedRect box = minAreaRect(Points[mi])-25.56
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 129= 135
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 13 at bin 30
+Angle (mes)- 130= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 12 at bin 66
+Angle (mes)- 131= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 132= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 33 at bin 63
+Angle (mes)- 133= 315
+RotatedRect box = minAreaRect(Points[mi])-28.706
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 134= 18
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 24 at bin 30
+Angle (mes)- 135= 153
+RotatedRect box = minAreaRect(Points[mi])-29.7449
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 136= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 137= 135
+RotatedRect box = minAreaRect(Points[mi])-49.0856
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 138= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 23
+Angle (mes)- 139= 116
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 140= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 15 at bin 66
+Angle (mes)- 141= 333
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 142= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 16 at bin 30
+Angle (mes)- 143= 153
+RotatedRect box = minAreaRect(Points[mi])-29.7449
+###########################################################
+The biggest number is: 8 at bin 36
+Angle (mes)- 144= 180
+RotatedRect box = minAreaRect(Points[mi])-11.3099
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 145= 90
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 27 at bin 0
+Angle (mes)- 146= 0
+RotatedRect box = minAreaRect(Points[mi])-6.34019
+###########################################################
+The biggest number is: 13 at bin 63
+Angle (mes)- 147= 315
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 6 at bin 0
+Angle (mes)- 148= 0
+RotatedRect box = minAreaRect(Points[mi])-9.46232
+###########################################################
+The biggest number is: 9 at bin 63
+Angle (mes)- 149= 315
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 150= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 8 at bin 36
+Angle (mes)- 151= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 152= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 153= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 154= 44
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 6 at bin 5
+Angle (mes)- 155= 26
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 4 at bin 66
+Angle (mes)- 156= 333
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 157= 153
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 17 at bin 30
+Angle (mes)- 158= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 159= 135
+RotatedRect box = minAreaRect(Points[mi])-39.8056
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 160= 71
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 5
+Angle (mes)- 161= 26
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 162= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 10 at bin 66
+Angle (mes)- 163= 333
+RotatedRect box = minAreaRect(Points[mi])-28.6105
+###########################################################
+The biggest number is: 2 at bin 66
+Angle (mes)- 164= 333
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 165= 153
+RotatedRect box = minAreaRect(Points[mi])-29.0546
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 166= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 4 at bin 63
+Angle (mes)- 167= 315
+RotatedRect box = minAreaRect(Points[mi])-53.1301
+###########################################################
+The biggest number is: 16 at bin 30
+Angle (mes)- 168= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 169= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 8 at bin 36
+Angle (mes)- 170= 180
+RotatedRect box = minAreaRect(Points[mi])-10.6197
+###########################################################
+The biggest number is: 16 at bin 36
+Angle (mes)- 171= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 172= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 14 at bin 27
+Angle (mes)- 173= 135
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 174= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 45 at bin 30
+Angle (mes)- 175= 153
+RotatedRect box = minAreaRect(Points[mi])-30.6186
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 176= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 177= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 178= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 179= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 53 at bin 63
+Angle (mes)- 180= 315
+RotatedRect box = minAreaRect(Points[mi])-33.3407
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 181= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 182= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 183= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 184= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 21 at bin 30
+Angle (mes)- 185= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 186= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 187= 71
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 188= 153
+RotatedRect box = minAreaRect(Points[mi])-29.7449
+###########################################################
+The biggest number is: 2 at bin 36
+Angle (mes)- 189= 180
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 10 at bin 63
+Angle (mes)- 190= 315
+RotatedRect box = minAreaRect(Points[mi])-22.6199
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 191= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 7 at bin 0
+Angle (mes)- 192= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 21 at bin 66
+Angle (mes)- 193= 333
+RotatedRect box = minAreaRect(Points[mi])-21.2505
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 194= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 12 at bin 66
+Angle (mes)- 195= 333
+RotatedRect box = minAreaRect(Points[mi])-19.9831
+###########################################################
+The biggest number is: 13 at bin 30
+Angle (mes)- 196= 153
+RotatedRect box = minAreaRect(Points[mi])-27.8973
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 197= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 12 at bin 27
+Angle (mes)- 198= 135
+RotatedRect box = minAreaRect(Points[mi])-42.2737
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 199= 153
+RotatedRect box = minAreaRect(Points[mi])-23.9625
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 200= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 10 at bin 30
+Angle (mes)- 201= 153
+RotatedRect box = minAreaRect(Points[mi])-22.6199
+###########################################################
+The biggest number is: 18 at bin 30
+Angle (mes)- 202= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 11 at bin 30
+Angle (mes)- 203= 153
+RotatedRect box = minAreaRect(Points[mi])-24.444
+###########################################################
+The biggest number is: 11 at bin 66
+Angle (mes)- 204= 333
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 8 at bin 0
+Angle (mes)- 205= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 206= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 207= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 25 at bin 30
+Angle (mes)- 208= 153
+RotatedRect box = minAreaRect(Points[mi])-19.44
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 209= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 210= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 19 at bin 30
+Angle (mes)- 211= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 2 at bin 5
+Angle (mes)- 212= 26
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 2 at bin 12
+Angle (mes)- 213= 63
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 214= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 215= 44
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 12
+Angle (mes)- 216= 63
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 17 at bin 30
+Angle (mes)- 217= 153
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 218= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 30
+Angle (mes)- 219= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 18 at bin 30
+Angle (mes)- 220= 153
+RotatedRect box = minAreaRect(Points[mi])-11.3099
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 221= 153
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 222= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 16 at bin 63
+Angle (mes)- 223= 315
+RotatedRect box = minAreaRect(Points[mi])-40.9144
+###########################################################
+The biggest number is: 12 at bin 30
+Angle (mes)- 224= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 225= 90
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 9 at bin 59
+Angle (mes)- 226= 296
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 12 at bin 30
+Angle (mes)- 227= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 228= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 229= 0
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 230= 135
+RotatedRect box = minAreaRect(Points[mi])-38.6598
+###########################################################
+The biggest number is: 3 at bin 66
+Angle (mes)- 231= 333
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 232= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 11 at bin 30
+Angle (mes)- 233= 153
+RotatedRect box = minAreaRect(Points[mi])-32.4712
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 234= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 235= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 13 at bin 30
+Angle (mes)- 236= 153
+RotatedRect box = minAreaRect(Points[mi])-32.0054
+###########################################################
+The biggest number is: 11 at bin 36
+Angle (mes)- 237= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 238= 135
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 13 at bin 30
+Angle (mes)- 239= 153
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 6 at bin 30
+Angle (mes)- 240= 153
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 241= 90
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 8
+Angle (mes)- 242= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 2 at bin 5
+Angle (mes)- 243= 26
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 19 at bin 30
+Angle (mes)- 244= 153
+RotatedRect box = minAreaRect(Points[mi])-30.2564
+###########################################################
+The biggest number is: 14 at bin 30
+Angle (mes)- 245= 153
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 246= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 247= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 66 at bin 30
+Angle (mes)- 248= 153
+RotatedRect box = minAreaRect(Points[mi])-25.71
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 249= 153
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 250= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 251= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 252= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 2 at bin 36
+Angle (mes)- 253= 180
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 254= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 255= 90
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 13 at bin 63
+Angle (mes)- 256= 315
+RotatedRect box = minAreaRect(Points[mi])-53.1301
+###########################################################
+The biggest number is: 11 at bin 30
+Angle (mes)- 257= 153
+RotatedRect box = minAreaRect(Points[mi])-34.992
+###########################################################
+The biggest number is: 5 at bin 8
+Angle (mes)- 258= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 9 at bin 66
+Angle (mes)- 259= 333
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 260= 135
+RotatedRect box = minAreaRect(Points[mi])-38.6598
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 261= 0
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 262= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 263= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 264= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 265= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 266= 153
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 27 at bin 30
+Angle (mes)- 267= 153
+RotatedRect box = minAreaRect(Points[mi])-22.3801
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 268= 135
+RotatedRect box = minAreaRect(Points[mi])-24.444
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 269= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 25 at bin 30
+Angle (mes)- 270= 153
+RotatedRect box = minAreaRect(Points[mi])-22.9321
+###########################################################
+The biggest number is: 2 at bin 66
+Angle (mes)- 271= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 54
+Angle (mes)- 272= 270
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 6 at bin 36
+Angle (mes)- 273= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 39 at bin 63
+Angle (mes)- 274= 315
+RotatedRect box = minAreaRect(Points[mi])-28.8108
+###########################################################
+The biggest number is: 11 at bin 30
+Angle (mes)- 275= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 276= 71
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 277= 44
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 21 at bin 30
+Angle (mes)- 278= 153
+RotatedRect box = minAreaRect(Points[mi])-20.556
+###########################################################
+The biggest number is: 4 at bin 36
+Angle (mes)- 279= 180
+RotatedRect box = minAreaRect(Points[mi])-78.6901
+###########################################################
+The biggest number is: 17 at bin 63
+Angle (mes)- 280= 315
+RotatedRect box = minAreaRect(Points[mi])-38.1572
+###########################################################
+The biggest number is: 12 at bin 63
+Angle (mes)- 281= 315
+RotatedRect box = minAreaRect(Points[mi])-39.8056
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 282= 44
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 21 at bin 63
+Angle (mes)- 283= 315
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 16 at bin 63
+Angle (mes)- 284= 315
+RotatedRect box = minAreaRect(Points[mi])-40.6013
+###########################################################
+The biggest number is: 20 at bin 66
+Angle (mes)- 285= 333
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 286= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 20 at bin 30
+Angle (mes)- 287= 153
+RotatedRect box = minAreaRect(Points[mi])-29.7449
+###########################################################
+The biggest number is: 6 at bin 36
+Angle (mes)- 288= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 12 at bin 36
+Angle (mes)- 289= 180
+RotatedRect box = minAreaRect(Points[mi])-15.6422
+###########################################################
+The biggest number is: 11 at bin 66
+Angle (mes)- 290= 333
+RotatedRect box = minAreaRect(Points[mi])-32.7352
+###########################################################
+The biggest number is: 13 at bin 0
+Angle (mes)- 291= 0
+RotatedRect box = minAreaRect(Points[mi])-77.4712
+###########################################################
+The biggest number is: 9 at bin 0
+Angle (mes)- 292= 0
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 293= 135
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 6 at bin 30
+Angle (mes)- 294= 153
+RotatedRect box = minAreaRect(Points[mi])-20.556
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 295= 44
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 12 at bin 30
+Angle (mes)- 296= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 3 at bin 63
+Angle (mes)- 297= 315
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 2 at bin 18
+Angle (mes)- 298= 90
+RotatedRect box = minAreaRect(Points[mi])-71.565
+###########################################################
+The biggest number is: 12 at bin 0
+Angle (mes)- 299= 0
+RotatedRect box = minAreaRect(Points[mi])-9.46232
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 300= 135
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 31 at bin 27
+Angle (mes)- 301= 135
+RotatedRect box = minAreaRect(Points[mi])-31.7014
+###########################################################
+The biggest number is: 3 at bin 36
+Angle (mes)- 302= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 303= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 304= 153
+RotatedRect box = minAreaRect(Points[mi])-30.9638
+###########################################################
+The biggest number is: 11 at bin 36
+Angle (mes)- 305= 180
+RotatedRect box = minAreaRect(Points[mi])-3.36646
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 306= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 307= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 308= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 309= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 9 at bin 36
+Angle (mes)- 310= 180
+RotatedRect box = minAreaRect(Points[mi])-8.1301
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 311= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 2 at bin 41
+Angle (mes)- 312= 206
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 313= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 314= 135
+RotatedRect box = minAreaRect(Points[mi])-38.6598
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 315= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 316= 135
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 66
+Angle (mes)- 317= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 318= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 319= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 320= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 321= 0
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 66
+Angle (mes)- 322= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 6 at bin 36
+Angle (mes)- 323= 180
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 0 at bin 0
+Angle (mes)- 324= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 10 at bin 66
+Angle (mes)- 325= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 5 at bin 8
+Angle (mes)- 326= 44
+RotatedRect box = minAreaRect(Points[mi])-9.46232
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 327= 153
+RotatedRect box = minAreaRect(Points[mi])-30.9638
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 328= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 329= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 15 at bin 66
+Angle (mes)- 330= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 331= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 332= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 333= 315
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 334= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 335= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 336= 0
+RotatedRect box = minAreaRect(Points[mi])-11.3099
+###########################################################
+The biggest number is: 5 at bin 66
+Angle (mes)- 337= 333
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 12 at bin 63
+Angle (mes)- 338= 315
+RotatedRect box = minAreaRect(Points[mi])-35.5377
+###########################################################
+The biggest number is: 17 at bin 0
+Angle (mes)- 339= 0
+RotatedRect box = minAreaRect(Points[mi])-15.4222
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 340= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 2 at bin 30
+Angle (mes)- 341= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 342= 135
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 343= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 16 at bin 66
+Angle (mes)- 344= 333
+RotatedRect box = minAreaRect(Points[mi])-19.9831
+###########################################################
+The biggest number is: 12 at bin 30
+Angle (mes)- 345= 153
+RotatedRect box = minAreaRect(Points[mi])-22.6199
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 346= 135
+RotatedRect box = minAreaRect(Points[mi])-35.5377
+###########################################################
+The biggest number is: 13 at bin 63
+Angle (mes)- 347= 315
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 348= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 8 at bin 36
+Angle (mes)- 349= 180
+RotatedRect box = minAreaRect(Points[mi])-80.5377
+###########################################################
+The biggest number is: 15 at bin 0
+Angle (mes)- 350= 0
+RotatedRect box = minAreaRect(Points[mi])-13.2405
+###########################################################
+The biggest number is: 6 at bin 0
+Angle (mes)- 351= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 352= 90
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 11 at bin 27
+Angle (mes)- 353= 135
+RotatedRect box = minAreaRect(Points[mi])-32.0054
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 354= 153
+RotatedRect box = minAreaRect(Points[mi])-15.9454
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 355= 315
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 13 at bin 63
+Angle (mes)- 356= 315
+RotatedRect box = minAreaRect(Points[mi])-30.2564
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 357= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 358= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 359= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 360= 135
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 18 at bin 0
+Angle (mes)- 361= 0
+RotatedRect box = minAreaRect(Points[mi])-17.6501
+###########################################################
+The biggest number is: 10 at bin 30
+Angle (mes)- 362= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 363= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 364= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 365= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 366= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 6 at bin 30
+Angle (mes)- 367= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 11 at bin 66
+Angle (mes)- 368= 333
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 12 at bin 0
+Angle (mes)- 369= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 370= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 7 at bin 36
+Angle (mes)- 371= 180
+RotatedRect box = minAreaRect(Points[mi])-6.34019
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 372= 153
+RotatedRect box = minAreaRect(Points[mi])-30.9638
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 373= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 2 at bin 5
+Angle (mes)- 374= 26
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 5 at bin 63
+Angle (mes)- 375= 315
+RotatedRect box = minAreaRect(Points[mi])-36.8699
+###########################################################
+The biggest number is: 7 at bin 63
+Angle (mes)- 376= 315
+RotatedRect box = minAreaRect(Points[mi])-51.3402
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 377= 135
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 378= 44
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 379= 44
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 380= 18
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 381= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 382= 90
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 12 at bin 27
+Angle (mes)- 383= 135
+RotatedRect box = minAreaRect(Points[mi])-39.8056
+###########################################################
+The biggest number is: 5 at bin 8
+Angle (mes)- 384= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 3 at bin 8
+Angle (mes)- 385= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 10 at bin 27
+Angle (mes)- 386= 135
+RotatedRect box = minAreaRect(Points[mi])-35.5377
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 387= 0
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 388= 153
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 389= 0
+RotatedRect box = minAreaRect(Points[mi])-11.3099
+###########################################################
+The biggest number is: 11 at bin 36
+Angle (mes)- 390= 180
+RotatedRect box = minAreaRect(Points[mi])-86.9872
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 391= 71
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 3 at bin 8
+Angle (mes)- 392= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 4 at bin 66
+Angle (mes)- 393= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 63
+Angle (mes)- 394= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 11 at bin 63
+Angle (mes)- 395= 315
+RotatedRect box = minAreaRect(Points[mi])-39.8056
+###########################################################
+The biggest number is: 7 at bin 0
+Angle (mes)- 396= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 8 at bin 63
+Angle (mes)- 397= 315
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 6 at bin 0
+Angle (mes)- 398= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 4 at bin 36
+Angle (mes)- 399= 180
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 4 at bin 36
+Angle (mes)- 400= 180
+RotatedRect box = minAreaRect(Points[mi])-9.46232
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 401= 0
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 402= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 13 at bin 36
+Angle (mes)- 403= 180
+RotatedRect box = minAreaRect(Points[mi])-11.3099
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 404= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 17 at bin 30
+Angle (mes)- 405= 153
+RotatedRect box = minAreaRect(Points[mi])-22.6199
+###########################################################
+The biggest number is: 12 at bin 36
+Angle (mes)- 406= 180
+RotatedRect box = minAreaRect(Points[mi])-77.0054
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 407= 153
+RotatedRect box = minAreaRect(Points[mi])-14.0362
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 408= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 13 at bin 30
+Angle (mes)- 409= 153
+RotatedRect box = minAreaRect(Points[mi])-31.6075
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 410= 135
+RotatedRect box = minAreaRect(Points[mi])-39.8056
+###########################################################
+The biggest number is: 9 at bin 0
+Angle (mes)- 411= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 10 at bin 30
+Angle (mes)- 412= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 23 at bin 66
+Angle (mes)- 413= 333
+RotatedRect box = minAreaRect(Points[mi])-24.444
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 414= 153
+RotatedRect box = minAreaRect(Points[mi])-14.0362
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 415= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 416= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 10 at bin 63
+Angle (mes)- 417= 315
+RotatedRect box = minAreaRect(Points[mi])-36.0274
+###########################################################
+The biggest number is: 3 at bin 32
+Angle (mes)- 418= 161
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 7 at bin 63
+Angle (mes)- 419= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 420= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 421= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 6 at bin 54
+Angle (mes)- 422= 270
+RotatedRect box = minAreaRect(Points[mi])-81.8699
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 423= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 3 at bin 36
+Angle (mes)- 424= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 425= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 426= 0
+RotatedRect box = minAreaRect(Points[mi])-23.9625
+###########################################################
+The biggest number is: 5 at bin 66
+Angle (mes)- 427= 333
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 0
+Angle (mes)- 428= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 66
+Angle (mes)- 429= 333
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 66
+Angle (mes)- 430= 333
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 17 at bin 63
+Angle (mes)- 431= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 15 at bin 30
+Angle (mes)- 432= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 12 at bin 30
+Angle (mes)- 433= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 9 at bin 63
+Angle (mes)- 434= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 435= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 13 at bin 63
+Angle (mes)- 436= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 41 at bin 30
+Angle (mes)- 437= 153
+RotatedRect box = minAreaRect(Points[mi])-28.5231
+###########################################################
+The biggest number is: 11 at bin 63
+Angle (mes)- 438= 315
+RotatedRect box = minAreaRect(Points[mi])-34.6952
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 439= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 9 at bin 27
+Angle (mes)- 440= 135
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 441= 153
+RotatedRect box = minAreaRect(Points[mi])-23.1986
+###########################################################
+The biggest number is: 7 at bin 36
+Angle (mes)- 442= 180
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 443= 18
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 17 at bin 30
+Angle (mes)- 444= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 15 at bin 0
+Angle (mes)- 445= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 446= 44
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 447= 71
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 448= 153
+RotatedRect box = minAreaRect(Points[mi])-32.0054
+###########################################################
+The biggest number is: 7 at bin 27
+Angle (mes)- 449= 135
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 450= 71
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 9 at bin 30
+Angle (mes)- 451= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 452= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 453= 0
+RotatedRect box = minAreaRect(Points[mi])-66.8014
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 454= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 18 at bin 0
+Angle (mes)- 455= 0
+RotatedRect box = minAreaRect(Points[mi])-5.19443
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 456= 135
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 457= 135
+RotatedRect box = minAreaRect(Points[mi])-33.6901
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 458= 0
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 459= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 2 at bin 23
+Angle (mes)- 460= 116
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 461= 135
+RotatedRect box = minAreaRect(Points[mi])-71.565
+###########################################################
+The biggest number is: 9 at bin 63
+Angle (mes)- 462= 315
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 8 at bin 30
+Angle (mes)- 463= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 6 at bin 0
+Angle (mes)- 464= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 465= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 4 at bin 30
+Angle (mes)- 466= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 3 at bin 30
+Angle (mes)- 467= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 9 at bin 63
+Angle (mes)- 468= 315
+RotatedRect box = minAreaRect(Points[mi])-29.7449
+###########################################################
+The biggest number is: 2 at bin 8
+Angle (mes)- 469= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 3 at bin 8
+Angle (mes)- 470= 44
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 471= 0
+RotatedRect box = minAreaRect(Points[mi])-14.0362
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 472= 18
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 473= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 5 at bin 0
+Angle (mes)- 474= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 475= 44
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 476= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 3 at bin 27
+Angle (mes)- 477= 135
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 11 at bin 30
+Angle (mes)- 478= 153
+RotatedRect box = minAreaRect(Points[mi])-21.8014
+###########################################################
+The biggest number is: 10 at bin 0
+Angle (mes)- 479= 0
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 1 at bin 3
+Angle (mes)- 480= 18
+RotatedRect box = minAreaRect(Points[mi])-0
+###########################################################
+The biggest number is: 5 at bin 8
+Angle (mes)- 481= 44
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 5 at bin 30
+Angle (mes)- 482= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 483= 153
+RotatedRect box = minAreaRect(Points[mi])-18.4349
+###########################################################
+The biggest number is: 6 at bin 27
+Angle (mes)- 484= 135
+RotatedRect box = minAreaRect(Points[mi])-20.556
+###########################################################
+The biggest number is: 6 at bin 30
+Angle (mes)- 485= 153
+RotatedRect box = minAreaRect(Points[mi])-14.0362
+###########################################################
+The biggest number is: 5 at bin 27
+Angle (mes)- 486= 135
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 7 at bin 30
+Angle (mes)- 487= 153
+RotatedRect box = minAreaRect(Points[mi])-26.5651
+###########################################################
+The biggest number is: 1 at bin 14
+Angle (mes)- 488= 71
+RotatedRect box = minAreaRect(Points[mi])-45
+###########################################################
+The biggest number is: 1 at bin 8
+Angle (mes)- 489= 44
+RotatedRect box = minAreaRect(Points[mi])0
+###########################################################
+The biggest number is: 4 at bin 0
+Angle (mes)- 490= 0
+RotatedRect box = minAreaRect(Points[mi])-90
+###########################################################
+The biggest number is: 2 at bin 0
+Angle (mes)- 491= 0
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################
+The biggest number is: 1 at bin 18
+Angle (mes)- 492= 90
+RotatedRect box = minAreaRect(Points[mi])90
+###########################################################

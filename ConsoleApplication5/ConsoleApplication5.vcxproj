@@ -28,6 +28,8 @@
     <ClCompile Include="convertTobw.cpp" />
     <ClCompile Include="cvplot.cpp" />
     <ClCompile Include="DrawlinesFromPointOnLine1.cpp" />
+    <ClCompile Include="Example_DistanceTransform.cpp" />
+    <ClCompile Include="Example_KMeans_Clustering.cpp" />
     <ClCompile Include="findContours.cpp" />
     <ClCompile Include="GraphUtils.cpp" />
     <ClCompile Include="HistogramTest.cpp" />
@@ -43,6 +45,7 @@
     <ClCompile Include="PlotAtOrientation.cpp" />
     <ClCompile Include="plot_sample.cpp" />
     <ClCompile Include="test.cpp" />
+    <ClCompile Include="TestWatershed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Downloads\cvWiener2.h" />
