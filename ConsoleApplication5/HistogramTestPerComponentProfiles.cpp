@@ -50,6 +50,11 @@ int channels[] = { 0 };
 int binID;
 
 vector<Mat> Points;
+//struct masks {
+//	Mat mask;
+//	Point maskCentroid;
+//};
+//vector<masks> maskImages;
 vector<Mat> maskImages;
 vector<Point> maskCentroid;
 
@@ -85,6 +90,10 @@ bool file_output = false;
 bool imshow_output = false;
 bool imwrite_output = false;
 bool all_output = false;
+
+Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;
+int nFltrLabels2 = -1;
+Mat testMaskiRead;
 
 //----------------------------------------------------  
 #pragma endregion
@@ -191,88 +200,99 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 #pragma endregion
 	//connectedComponentsWithStats.close();
 
-//#pragma region RemoveNadir
-//	ExtractNadirAreas(a);
-//	Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;
-//	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
-//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
-//		{
-//			secondBiggestAreaIndex = FltrLabel;
-//			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-//			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-//			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-//			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-//		}
-//
-//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
-//		{
-//			thirdBiggestAreaIndex = FltrLabel;
-//			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-//			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-//			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-//			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-//		}
-//	}
-//
-//	if (secondBiggestAreaX > thirdBiggestAreaX)
-//	{
-//		int tempIndex = secondBiggestAreaIndex;
-//		int tempX = secondBiggestAreaX;
-//		int tempY = secondBiggestAreaY;
-//		int tempWidth = secondBiggestAreaWidth;
-//		int tempHeight = secondBiggestAreaHeight;
-//
-//		secondBiggestAreaIndex = thirdBiggestAreaIndex;
-//		secondBiggestAreaX = thirdBiggestAreaX;
-//		secondBiggestAreaY = thirdBiggestAreaY;
-//		secondBiggestAreaWidth = thirdBiggestAreaWidth;
-//		secondBiggestAreaHeight = thirdBiggestAreaHeight;
-//
-//		thirdBiggestAreaIndex = tempIndex;
-//
-//		thirdBiggestAreaIndex = tempIndex;
-//		thirdBiggestAreaX = tempX;
-//		thirdBiggestAreaY = tempY;
-//		thirdBiggestAreaWidth = tempWidth;
-//		thirdBiggestAreaHeight = tempHeight;
-//	}
-//
-//	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
-//	//if (all_output){ imshow("nadirMat", nadirMat);
-//	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
-//	/*if (all_output){ imshow("nadirMat", nadirMat);*/
-//	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
-//	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
-//	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
-//	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
-//	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
-//	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
-//	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
-//	//Mat image;
-//	//Mat croppedImage = image(myROI);
-//	Mat cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
-//	Mat cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
-//	//if (all_output){ imshow("cropedLeftImage", cropedLeftImage);
-//	//if (all_output){ imshow("cropedRightImage", cropedRightImage);
-//	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
-//	//cv::Mat small_image;
-//	//cv::Mat big_image;
-//	//...
-//	//	//Somehow fill small_image and big_image with your data
-//	//	...
-//	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
-//	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
-//	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
-//	//if (all_output){ imshow("croppedImage", croppedImage);
-//#pragma endregion
+#pragma region RemoveNadir
+	ExtractNadirAreas(a);
+	/*Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;*/
+	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
+		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
+		{
+			secondBiggestAreaIndex = FltrLabel;
+			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+		}
+
+		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
+		{
+			thirdBiggestAreaIndex = FltrLabel;
+			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+		}
+	}
+
+	if (secondBiggestAreaX > thirdBiggestAreaX)
+	{
+		int tempIndex = secondBiggestAreaIndex;
+		int tempX = secondBiggestAreaX;
+		int tempY = secondBiggestAreaY;
+		int tempWidth = secondBiggestAreaWidth;
+		int tempHeight = secondBiggestAreaHeight;
+
+		secondBiggestAreaIndex = thirdBiggestAreaIndex;
+		secondBiggestAreaX = thirdBiggestAreaX;
+		secondBiggestAreaY = thirdBiggestAreaY;
+		secondBiggestAreaWidth = thirdBiggestAreaWidth;
+		secondBiggestAreaHeight = thirdBiggestAreaHeight;
+
+		thirdBiggestAreaIndex = tempIndex;
+
+		thirdBiggestAreaIndex = tempIndex;
+		thirdBiggestAreaX = tempX;
+		thirdBiggestAreaY = tempY;
+		thirdBiggestAreaWidth = tempWidth;
+		thirdBiggestAreaHeight = tempHeight;
+	}
+
+	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
+	//if (!all_output) { imshow("Remove Nadir (1)", nadirMat); }
+	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
+	/*if (all_output){ imshow("nadirMat", nadirMat);*/
+	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
+	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
+	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
+	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
+	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
+	//Mat image;
+	//Mat croppedImage = image(myROI);
+	Mat cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
+	Mat cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
+	if (!all_output) { imshow("Remove Nadir (2)- cropedLeftImage", cropedLeftImage); }
+	if (!all_output) { imshow("Remove Nadir (3) - cropedRightImage", cropedRightImage); }
+	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
+	//cv::Mat small_image;
+	//cv::Mat big_image;
+	//...
+	//	//Somehow fill small_image and big_image with your data
+	//	...
+	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
+	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
+	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
+	if (!all_output) { imshow("Remove Nadir (3) - croppedImage", croppedImage); }
+#pragma endregion
+
+	imwrite("Grayscale_image_without_Nadir.bmp", croppedImage);
+
+	Mat FltrLabelImage2;
+	Mat FltrStats2, FltrCentroids2;
+
+	Mat FltrBinaryImg2 = threshval < 128 ? (croppedImage < threshval) : (croppedImage > threshval);
+	imwrite("B&W_image_without_Nadir.bmp", croppedImage);
+	nFltrLabels2 = cv::connectedComponentsWithStats(FltrBinaryImg2, FltrLabelImage2, FltrStats2, FltrCentroids2, 8, CV_32S);
+
 	if (all_output){ cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n";}
 	if (all_output){ cout << "09 -  -- ASSUMING TWO BLACK STRIPS ARE ALWAYS THE 2ND AND 3RD LARGEST COMPONENTS" << "\n";}
 
-	std::string nFltrLabelsString = std::to_string(nFltrLabels);
+	std::string nFltrLabels2String = std::to_string(nFltrLabels2);
 
-	cv::Mat FltrLabelImage2;
+	cv::Mat FltrLabelImage3;
 
-	normalize(FltrLabelImage, FltrLabelImage2, 0, 255, NORM_MINMAX, CV_8U);
+	FltrLabelImage3 = FltrLabelImage2;
+	//normalize(FltrLabelImage2, FltrLabelImage3, 0, 255, NORM_MINMAX, CV_8U);
 	//if (all_output){ imshow("FltrLabelImage2", FltrLabelImage2);
 
 	//std::vector<cv::Vec3b> FltrColors(nFltrLabels);
@@ -280,35 +300,149 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	if (all_output){ cout << "10 - STORE ALL COMPONENTS'S IN (GLOBALLY DECLARED) VECTOR: 'maskImages'" << "\n";}
 	if (all_output){ cout << "11 - STORE ALL COMPONENTS'S CENTROID IN (GLOBALLY DECLARED) VECTOR: 'maskCentroid'" << "\n";}
 
-	for (int FltrLabel = 1; FltrLabel < nFltrLabels; ++FltrLabel) {
-		//FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
-		FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
-		Mat mask_i = FltrLabelImage == FltrLabel;
+	//AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
+	//ofstream masksVector_DataFile;
+	//masksVector_DataFile.open("masksVector_DataFile.txt", ios::app);
+	std::vector<cv::Vec3b> FltrColors2(nFltrLabels2);
+	FltrColors2[0] = cv::Vec3b(0, 0, 0);
+
+	for (int FltrLabel2 = 1; FltrLabel2 < nFltrLabels2; ++FltrLabel2) 
+	{
+		std::string mask_index = std::to_string(FltrLabel2);
+		////FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+		//FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
+		Mat mask_i = FltrLabelImage3 == FltrLabel2;
 		if (mask_i.empty())      // please, *always check* resource-loading.
 		{
 			cerr << "mask_i is empty - can't be loaded!" << endl; 
 			continue;
 		}
-		maskImages.push_back(mask_i);
-		maskCentroid.push_back(Point(FltrCentroids.at<double>(FltrLabel, 0), FltrCentroids.at<double>(FltrLabel, 1)));
+		//maskImages.push_back(mask_i);
+		imwrite("mask_i" + mask_index + ".bmp", mask_i);
+		maskCentroid.push_back(Point(FltrCentroids.at<double>(FltrLabel2, 0), FltrCentroids2.at<double>(FltrLabel2, 1)));
 	}
-
 	//
-	cv::Mat FltrDst(GrayScaleSrcImg.size(), CV_8UC3);
-	for (int r = 0; r < FltrDst.rows; ++r) {
-		for (int c = 0; c < FltrDst.cols; ++c) {
-			int FltrLabel = FltrLabelImage.at<int>(r, c);
-			cv::Vec3b &FltrPixel = FltrDst.at<cv::Vec3b>(r, c);
-			FltrPixel = FltrColors[FltrLabel];
+	cv::Mat FltrDst2(croppedImage.size(), CV_8UC3);
+	for (int r = 0; r < FltrDst2.rows; ++r) {
+		for (int c = 0; c < FltrDst2.cols; ++c) {
+			int FltrLabel2 = FltrLabelImage3.at<int>(r, c);
+			cv::Vec3b &FltrPixel2 = FltrDst2.at<cv::Vec3b>(r, c);
+			FltrPixel2 = FltrColors2[FltrLabel2];
 		}
 	}
-	//if (all_output){ imshow(nFltrLabelsString + "-Connected Components", FltrDst);
-	if (all_output) { imwrite(nFltrLabelsString + "-Connected Components.bmp", FltrDst); }
+	if (!all_output) {imshow(nFltrLabels2String + "-Connected Components", FltrDst2);}
+	if (!all_output) { imwrite(nFltrLabels2String + "-Connected Components.bmp", FltrDst2); }
 
 
-	return FltrDst;
+	return FltrDst2;
 	if (all_output){ cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";}
 }
+
+#pragma region filters
+// 1
+
+/** Global Variables */
+int alpha = 100;
+int beta = 100;
+int gamma_cor = 100;
+Mat img_original, img_corrected, img_gamma_corrected;
+
+void basicLinearTransform(const Mat &img, const double alpha_, const int beta_)
+{
+	Mat res;
+	img.convertTo(res, -1, alpha_, beta_);
+
+	hconcat(img, res, img_corrected);
+}
+
+void gammaCorrection(const Mat &img, const double gamma_)
+{
+	CV_Assert(gamma_ >= 0);
+	//![changing-contrast-brightness-gamma-correction]
+	Mat lookUpTable(1, 256, CV_8U);
+	uchar* p = lookUpTable.ptr();
+	for (int i = 0; i < 256; ++i)
+		p[i] = saturate_cast<uchar>(pow(i / 255.0, gamma_) * 255.0);
+
+	Mat res = img.clone();
+	LUT(img, lookUpTable, res);
+	//![changing-contrast-brightness-gamma-correction]
+
+	hconcat(img, res, img_gamma_corrected);
+}
+
+void on_linear_transform_alpha_trackbar(int, void *)
+{
+	double alpha_value = alpha / 100.0;
+	int beta_value = beta - 100;
+	basicLinearTransform(img_original, alpha_value, beta_value);
+}
+
+void on_linear_transform_beta_trackbar(int, void *)
+{
+	double alpha_value = alpha / 100.0;
+	int beta_value = beta - 100;
+	basicLinearTransform(img_original, alpha_value, beta_value);
+}
+
+void on_gamma_correction_trackbar(int, void *)
+{
+	double gamma_value = gamma_cor / 100.0;
+	gammaCorrection(img_original, gamma_value);
+}
+
+// 2
+
+void GammaCorrection(Mat& src, Mat& dst, float fGamma)
+{
+	CV_Assert(src.data);
+
+	// accept only char type matrices
+	CV_Assert(src.depth() != sizeof(uchar));
+
+	// build look up table
+	unsigned char lut[256];
+	for (int i = 0; i < 256; i++)
+	{
+		lut[i] = saturate_cast<uchar>(pow((float)(i / 255.0), fGamma) * 255.0f);
+	}
+
+	dst = src.clone();
+	const int channels = dst.channels();
+	switch (channels)
+	{
+	case 1:
+	{
+
+		MatIterator_<uchar> it, end;
+		for (it = dst.begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
+			//*it = pow((float)(((*it))/255.0), fGamma) * 255.0;
+			*it = lut[(*it)];
+
+		break;
+	}
+	case 3:
+	{
+
+		MatIterator_<Vec3b> it, end;
+		for (it = dst.begin<Vec3b>(), end = dst.end<Vec3b>(); it != end; it++)
+		{
+
+			(*it)[0] = lut[((*it)[0])];
+			(*it)[1] = lut[((*it)[1])];
+			(*it)[2] = lut[((*it)[2])];
+		}
+
+		break;
+
+	}
+	}
+}
+#pragma endregion
+
+
+
+
 
 /// <summary>                                                            
 /// Operations performed on each component.                             
@@ -323,23 +457,63 @@ int main(int argc, char *argv[])
 	//imwrite_output = 0;
 
 	if (all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
-	src = cv::imread("20161215 02.33_368L2.jpg");
+	src = cv::imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg");
+	//src = cv::imread("20161215 02.33_368R2.jpg");
+	//src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
+	//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
 	//src = cv::imread("double ripple example_RR.jpg");
-	if (all_output) { imshow("0 - Source Img", src); }
+	if (!all_output) { imshow("0 - Source Img", src); }
 	if (all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
 
-	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
-	//src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
-	//Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
-	//if (all_output){ imshow("0 - src", src);
-	//srcImg = src;
+	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
+	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
+	////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
+	////if (all_output){ imshow("0 - src", src);
+	////srcImg = src;
 	//bilateralFilter(src, srcImg, 15, 80, 80);
-	blur(src, srcImg, Size(5, 5), Point(-1, -1));
-	if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
-	if (all_output) { imshow("1 - blur srcImg", srcImg); }
-	cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-	if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
-	if (all_output) { imshow("2 - Blur GrayImg", GrayImg); }
+	//blur(src, srcImg, Size(5, 5), Point(-1, -1));
+	//if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
+	//if (all_output) { imshow("1 - blur srcImg", srcImg); }
+	//cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
+	//if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
+	//if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }
+
+
+#pragma region Apply Gamma-correction functions
+
+	Mat dst(src.rows, src.cols, src.type());
+	GammaCorrection(src, dst, 0.5);
+
+	imshow("2", dst);
+	cv::cvtColor(dst, GrayImg, cv::COLOR_BGR2GRAY);
+	if (!all_output) { imshow("2 - Filtered GrayImg", GrayImg); }
+//	img_original = src;
+//	img_corrected = Mat(img_original.rows, img_original.cols * 2, img_original.type());
+//	img_gamma_corrected = Mat(img_original.rows, img_original.cols * 2, img_original.type());
+//
+//	hconcat(img_original, img_original, img_corrected);
+//	hconcat(img_original, img_original, img_gamma_corrected);
+//
+//	namedWindow("Brightness and contrast adjustments", WINDOW_AUTOSIZE);
+//	namedWindow("Gamma correction", WINDOW_AUTOSIZE);
+//
+//	createTrackbar("Alpha gain (contrast)", "Brightness and contrast adjustments", &alpha, 500, on_linear_transform_alpha_trackbar);
+//	createTrackbar("Beta bias (brightness)", "Brightness and contrast adjustments", &beta, 200, on_linear_transform_beta_trackbar);
+//	createTrackbar("Gamma correction", "Gamma correction", &gamma_cor, 200, on_gamma_correction_trackbar);
+//
+//	while (true)
+//	{
+//		imshow("Brightness and contrast adjustments", img_corrected);
+//		imshow("Gamma correction", img_gamma_corrected);
+//
+//		int c = waitKey(30);
+//		if (c == 27)
+//			break;
+//	}
+//
+//	imwrite("linear_transform_correction.png", img_corrected);
+//	imwrite("gamma_correction.png", img_gamma_corrected);
+#pragma endregion
 
 	Mat linePixelsTempGraySrc3 = GrayImg;
 
@@ -348,7 +522,7 @@ int main(int argc, char *argv[])
 	if (all_output) { imshow("3 - components", components); }
 
 	//if (all_output){ imshow("maskImages[0]", Mat(maskImages[0]));
-	Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+	Mat tempSrc1 = imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
@@ -367,19 +541,21 @@ int main(int argc, char *argv[])
 	//AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
 
 	///Loop through each component
-	for (size_t mi = 0; mi < maskImages.size(); mi++)
+	for (size_t mi = 1; mi < 2 /*nFltrLabels2*/; mi++)
 	{
-		system("cls");
-		if (!all_output) {cout << "component= " << mi;}
-		
+		std::string smi = std::to_string(mi);
+		//system("cls");
+		//if (!all_output) {cout << "component= " << mi;}
+		//testMaskiRead = imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
+		if (!all_output) { imshow("mask_i" + smi, testMaskiRead); }
 		if (true)
 		{
 		/*	ComponentsLoop << "		Component Nr. = " << mi << "\n";*/
 			//if (mi== 17 ||mi == 16 ||mi == 13 || mi == 9)
 			//{
-			std::string smi = std::to_string(mi);
-			Mat tempComponent = Mat(maskImages[mi]);
-			if (all_output) { imshow("4 - component- " + smi, tempComponent); }
+			Mat tempComponent = imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
+				//maskImages.at(mi);
+			if (!all_output) { imshow("4 - component- " + smi, tempComponent); }
 			//if (all_output){ imwrite("4_component_" + smi + ".bmp", tempComponent);
 			Mat GrayComponents;
 			//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
@@ -579,7 +755,7 @@ int main(int argc, char *argv[])
 			//if (all_output){ imshow("tempGraySrc", tempGraySrc);
 			//if (all_output){ imwrite("tempGraySrc.bmp", tempGraySrc);
 
-			Mat tempSrc2 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+			Mat tempSrc2 = imread("/images/20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 			//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
@@ -591,7 +767,7 @@ int main(int argc, char *argv[])
 			//for (imgCount; imgCount < maskImages.size(); imgCount++)
 			//{
 			Mat tempPoints;
-			findNonZero(maskImages[mi], tempPoints);
+			findNonZero(imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED), tempPoints);
 			Points.push_back(tempPoints);
 			//}
 			Point2f vtx[4];
@@ -614,8 +790,8 @@ int main(int argc, char *argv[])
 			//if (all_output){ cout << "minAreaRect height= " << box.size.height << "\n";}
 #pragma endregion
 			Mat plotImage = src;
-			circle(plotImage, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
-			circle(tempSrc2, maskCentroid[mi], 1, Scalar(0, 255, 0), 1, 8, 0);
+			circle(plotImage, maskCentroid.at(mi), 1, Scalar(0, 255, 0), 1, 8, 0);
+			circle(tempSrc2, maskCentroid.at(mi), 1, Scalar(0, 255, 0), 1, 8, 0);
 
 #pragma region walk in edge angle direction
 			Point2f u, u2, u22, v;
@@ -634,11 +810,11 @@ int main(int argc, char *argv[])
 			{
 				if (i == 0)
 				{	// starting point = center of mask
-					w1.x = maskCentroid[mi].x + v.x*d;	//one side
-					w1.y = maskCentroid[mi].y + v.y*d;
+					w1.x = maskCentroid.at(mi).x + v.x*d;	//one side
+					w1.y = maskCentroid.at(mi).y + v.y*d;
 
-					w2.x = maskCentroid[mi].x - v.x*d;	//other side
-					w2.y = maskCentroid[mi].y - v.y*d;
+					w2.x = maskCentroid.at(mi).x - v.x*d;	//other side
+					w2.y = maskCentroid.at(mi).y - v.y*d;
 				}
 				else
 				{	// points on either-side of mask center point
@@ -711,11 +887,11 @@ int main(int argc, char *argv[])
 
 				if (i == -1)
 				{
-					ww1.x = maskCentroid[mi].x;// +vv.x*d;	//one side
-					ww1.y = maskCentroid[mi].y;// +vv.y*d;
+					ww1.x = maskCentroid.at(mi).x;// +vv.x*d;	//one side
+					ww1.y = maskCentroid.at(mi).y;// +vv.y*d;
 
-					ww2.x = maskCentroid[mi].x;// -vv.x*d;	//other side
-					ww2.y = maskCentroid[mi].y;// -vv.y*d;
+					ww2.x = maskCentroid.at(mi).x;// -vv.x*d;	//other side
+					ww2.y = maskCentroid.at(mi).y;// -vv.y*d;
 
 											   //end points of profile
 					ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
@@ -730,11 +906,11 @@ int main(int argc, char *argv[])
 				}
 				else if (i == 0)
 				{	// starting point = center of mask
-					ww1.x = maskCentroid[mi].x + vv.x*d;	//one side
-					ww1.y = maskCentroid[mi].y + vv.y*d;
+					ww1.x = maskCentroid.at(mi).x + vv.x*d;	//one side
+					ww1.y = maskCentroid.at(mi).y + vv.y*d;
 
-					ww2.x = maskCentroid[mi].x - vv.x*d;	//other side
-					ww2.y = maskCentroid[mi].y - vv.y*d;
+					ww2.x = maskCentroid.at(mi).x - vv.x*d;	//other side
+					ww2.y = maskCentroid.at(mi).y - vv.y*d;
 
 					//end points of profile
 					ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
@@ -949,15 +1125,15 @@ int main(int argc, char *argv[])
 			{
 				if (i == 0)
 				{
-					www1.x = maskCentroid[mi].x + vvvv.x*d;
-					www1.y = maskCentroid[mi].y + vvvv.y*d;
+					www1.x = maskCentroid.at(mi).x + vvvv.x*d;
+					www1.y = maskCentroid.at(mi).y + vvvv.y*d;
 					//ep1.x = www1.x-(box.size.width/2)*(vvvv.x*d);
 					//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
 					//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
 					//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
 
-					www2.x = maskCentroid[mi].x - vvvvv.x*d;
-					www2.y = maskCentroid[mi].y - vvvvv.y*d;
+					www2.x = maskCentroid.at(mi).x - vvvvv.x*d;
+					www2.y = maskCentroid.at(mi).y - vvvvv.y*d;
 					ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
 					ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
 					ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
@@ -993,7 +1169,7 @@ int main(int argc, char *argv[])
 			//if (all_output){ imshow("Profile Lines", tempSrc2);
 #pragma endregion
 
-#pragma endregion
+
 
 		//if (all_output){ imshow("Plot Image", plotImage);
 		//if (all_output){ imshow("Source - component nr." + smi, tempSrc2); 
@@ -1003,6 +1179,7 @@ int main(int argc, char *argv[])
 		//} 
 		}
 	}
+#pragma endregion
 	if (all_output){ cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";}
 
 	if (all_output){ cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";}
