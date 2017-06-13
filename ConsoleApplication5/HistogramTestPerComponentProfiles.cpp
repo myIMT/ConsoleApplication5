@@ -94,6 +94,7 @@ bool all_output = false;
 Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;
 int nFltrLabels2 = -1;
 Mat testMaskiRead;
+Mat GrayScaleCroppedImage;
 
 //----------------------------------------------------  
 #pragma endregion
@@ -255,6 +256,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
 	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
 	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
+	//Rect rect(x, y, width, height)
 	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
 	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
 	//Mat image;
@@ -280,8 +282,28 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	Mat FltrLabelImage2;
 	Mat FltrStats2, FltrCentroids2;
 
-	Mat FltrBinaryImg2 = threshval < 128 ? (croppedImage < threshval) : (croppedImage > threshval);
-	imwrite("B&W_image_without_Nadir.bmp", croppedImage);
+	GrayScaleCroppedImage = croppedImage;
+
+#pragma region Histogram Equilization
+	char* source_window = "Source image";
+	char* equalized_window = "Equalized Image";
+	Mat dstHE;
+	/// Convert to grayscale
+	//cvtColor(src, src, CV_BGR2GRAY);
+
+	/// Apply Histogram Equalization
+	equalizeHist(GrayScaleCroppedImage, dstHE);
+
+	/// Display results
+	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
+	namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
+
+	imshow(source_window, GrayScaleCroppedImage);
+	imshow(equalized_window, dstHE);
+#pragma endregion
+
+	Mat FltrBinaryImg2 = threshval < 128 ? (GrayScaleCroppedImage < threshval) : (GrayScaleCroppedImage > threshval);
+	imwrite("B&W_image_without_Nadir.bmp", FltrBinaryImg2);
 	nFltrLabels2 = cv::connectedComponentsWithStats(FltrBinaryImg2, FltrLabelImage2, FltrStats2, FltrCentroids2, 8, CV_32S);
 
 	if (all_output){ cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n";}
@@ -309,7 +331,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	for (int FltrLabel2 = 1; FltrLabel2 < nFltrLabels2; ++FltrLabel2) 
 	{
 		std::string mask_index = std::to_string(FltrLabel2);
-		////FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+		FltrColors2[FltrLabel2] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
 		//FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
 		Mat mask_i = FltrLabelImage3 == FltrLabel2;
 		if (mask_i.empty())      // please, *always check* resource-loading.
@@ -337,6 +359,49 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	return FltrDst2;
 	if (all_output){ cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";}
 }
+
+//Mat RemoveNadir(Mat GrayScaleSrcImg)
+//{
+//	Mat BinaryNadirImage = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
+//
+//	if (!all_output) { cout << "BinaryNadirImage.size().width= " << BinaryNadirImage.size().width << "\n"; }
+//
+//	double c;
+//	double cc;
+//
+//	if (BinaryNadirImage.size().width % 2 == 0)
+//	{
+//		//is even
+//		c = BinaryNadirImage.size().width / 2;
+//		cc = c + 1;
+//	}
+//	else
+//	{
+//		double f = floor(BinaryNadirImage.size().width);
+//		c = f + 1;
+//		cc = 0;
+//	}
+//
+//
+//	double nadirCenterX = BinaryNadirImage.size().width / 2; 
+//	Point nadirCenterPoint = Point(nadirCenterX, 1);
+//	if (!all_output) { cout << "NadirCenter point= " << nadirCenterX << "\n"; }
+//	Mat tempNadirSrc = imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg");
+//	circle(tempNadirSrc, nadirCenterPoint, 1, Scalar(255, 0, 0), 1, 8, 0);
+//	imshow("Centre of Nadir", tempNadirSrc);
+//
+//	//for (size_t x = 0; j < BinaryNadirImage.cols; j++)
+//	//{
+//	//	/*				ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";*/
+//	//	//Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+//	//	///if cannyEdge pixel intensity id non-zero
+//	//	if ((int)cannyEdge.at<uchar>(i, j) != 0)
+//	//	{
+//
+//	//	}
+//	//}
+//	return tempNadirSrc;
+//}
 
 #pragma region filters
 // 1
@@ -458,11 +523,19 @@ int main(int argc, char *argv[])
 
 	if (all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
 	src = cv::imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg");
+	if (src.empty())
+	{
+		//if (!all_output) { cout << "src image is null" << "\n"; }
+	}
+	else
+	{
+		//if (!all_output) { cout << "src image is NOT null" << "\n"; }
+	}
 	//src = cv::imread("20161215 02.33_368R2.jpg");
 	//src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
 	//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
 	//src = cv::imread("double ripple example_RR.jpg");
-	if (!all_output) { imshow("0 - Source Img", src); }
+	//if (!all_output) { imshow("0 - Source Img", src); }
 	if (all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
 
 	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
@@ -478,48 +551,68 @@ int main(int argc, char *argv[])
 	//if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
 	//if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }
 
+//#pragma region Apply Gamma-correction functions
+//
+//	Mat dst(src.rows, src.cols, src.type());
+//	GammaCorrection(src, dst, 0.6);
+//
+//	imshow("2", dst);
+//	cv::cvtColor(dst, GrayImg, cv::COLOR_BGR2GRAY);
+//	if (!all_output) { imshow("2 - Filtered GrayImg", GrayImg); }
+////	img_original = src;
+////	img_corrected = Mat(img_original.rows, img_original.cols * 2, img_original.type());
+////	img_gamma_corrected = Mat(img_original.rows, img_original.cols * 2, img_original.type());
+////
+////	hconcat(img_original, img_original, img_corrected);
+////	hconcat(img_original, img_original, img_gamma_corrected);
+////
+////	namedWindow("Brightness and contrast adjustments", WINDOW_AUTOSIZE);
+////	namedWindow("Gamma correction", WINDOW_AUTOSIZE);
+////
+////	createTrackbar("Alpha gain (contrast)", "Brightness and contrast adjustments", &alpha, 500, on_linear_transform_alpha_trackbar);
+////	createTrackbar("Beta bias (brightness)", "Brightness and contrast adjustments", &beta, 200, on_linear_transform_beta_trackbar);
+////	createTrackbar("Gamma correction", "Gamma correction", &gamma_cor, 200, on_gamma_correction_trackbar);
+////
+////	while (true)
+////	{
+////		imshow("Brightness and contrast adjustments", img_corrected);
+////		imshow("Gamma correction", img_gamma_corrected);
+////
+////		int c = waitKey(30);
+////		if (c == 27)
+////			break;
+////	}
+////
+////	imwrite("linear_transform_correction.png", img_corrected);
+////	imwrite("gamma_correction.png", img_gamma_corrected);
+//#pragma endregion
 
-#pragma region Apply Gamma-correction functions
-
-	Mat dst(src.rows, src.cols, src.type());
-	GammaCorrection(src, dst, 0.5);
-
-	imshow("2", dst);
-	cv::cvtColor(dst, GrayImg, cv::COLOR_BGR2GRAY);
-	if (!all_output) { imshow("2 - Filtered GrayImg", GrayImg); }
-//	img_original = src;
-//	img_corrected = Mat(img_original.rows, img_original.cols * 2, img_original.type());
-//	img_gamma_corrected = Mat(img_original.rows, img_original.cols * 2, img_original.type());
-//
-//	hconcat(img_original, img_original, img_corrected);
-//	hconcat(img_original, img_original, img_gamma_corrected);
-//
-//	namedWindow("Brightness and contrast adjustments", WINDOW_AUTOSIZE);
-//	namedWindow("Gamma correction", WINDOW_AUTOSIZE);
-//
-//	createTrackbar("Alpha gain (contrast)", "Brightness and contrast adjustments", &alpha, 500, on_linear_transform_alpha_trackbar);
-//	createTrackbar("Beta bias (brightness)", "Brightness and contrast adjustments", &beta, 200, on_linear_transform_beta_trackbar);
-//	createTrackbar("Gamma correction", "Gamma correction", &gamma_cor, 200, on_gamma_correction_trackbar);
-//
-//	while (true)
-//	{
-//		imshow("Brightness and contrast adjustments", img_corrected);
-//		imshow("Gamma correction", img_gamma_corrected);
-//
-//		int c = waitKey(30);
-//		if (c == 27)
-//			break;
-//	}
-//
-//	imwrite("linear_transform_correction.png", img_corrected);
-//	imwrite("gamma_correction.png", img_gamma_corrected);
-#pragma endregion
+	cvtColor(src, GrayImg, CV_BGR2GRAY);
 
 	Mat linePixelsTempGraySrc3 = GrayImg;
 
 	Mat components = GetConnectedComponent(GrayImg);
+	//Mat RemovedNadirImage = RemoveNadir(GrayImg);
 	
-	if (all_output) { imshow("3 - components", components); }
+//#pragma region Histogram Equilization
+//	char* source_window = "Source image";
+//	char* equalized_window = "Equalized Image";
+//	Mat dstHE;
+//	/// Convert to grayscale
+//	//cvtColor(src, src, CV_BGR2GRAY);
+//
+//	/// Apply Histogram Equalization
+//	equalizeHist(GrayScaleCroppedImage, dstHE);
+//
+//	/// Display results
+//	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
+//	namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
+//
+//	imshow(source_window, GrayScaleCroppedImage);
+//	imshow(equalized_window, dstHE);
+//#pragma endregion
+
+	//if (all_output) { imshow("3 - components", components); }
 
 	//if (all_output){ imshow("maskImages[0]", Mat(maskImages[0]));
 	Mat tempSrc1 = imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg", CV_LOAD_IMAGE_UNCHANGED);
@@ -540,14 +633,19 @@ int main(int argc, char *argv[])
 	ofstream AngleTest_DataFile;
 	//AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
 
+	int maskElements = nFltrLabels2 - 1;
 	///Loop through each component
-	for (size_t mi = 1; mi < 2 /*nFltrLabels2*/; mi++)
+	for (size_t mi = 1; mi < maskElements; mi++)
 	{
 		std::string smi = std::to_string(mi);
 		//system("cls");
 		//if (!all_output) {cout << "component= " << mi;}
 		//testMaskiRead = imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
-		if (!all_output) { imshow("mask_i" + smi, testMaskiRead); }
+
+		if (mi == 2440)
+		{
+			if (!all_output) { cout << "component= " << mi; }
+		}
 		if (true)
 		{
 		/*	ComponentsLoop << "		Component Nr. = " << mi << "\n";*/
@@ -555,7 +653,7 @@ int main(int argc, char *argv[])
 			//{
 			Mat tempComponent = imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
 				//maskImages.at(mi);
-			if (!all_output) { imshow("4 - component- " + smi, tempComponent); }
+			if (all_output) { imshow("4 - component- " + smi, tempComponent); }
 			//if (all_output){ imwrite("4_component_" + smi + ".bmp", tempComponent);
 			Mat GrayComponents;
 			//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
@@ -738,7 +836,7 @@ int main(int argc, char *argv[])
 				}
 			}
 			//KeepingTrackOfContainers_DataFile.close();
-			AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
+			AngleTest_DataFile.open("AngleTest_DataFile.txt");
 			if (!all_output) { AngleTest_DataFile << mes.angle << endl; }
 			//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
 			//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
@@ -768,10 +866,11 @@ int main(int argc, char *argv[])
 			//{
 			Mat tempPoints;
 			findNonZero(imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED), tempPoints);
+			//if (!all_output) { cout << "tempPoints = " << tempPoints << "\n"; }
 			Points.push_back(tempPoints);
 			//}
 			Point2f vtx[4];
-			RotatedRect box = minAreaRect(Points[mi]); //only the first Mat Points
+			RotatedRect box = minAreaRect(Points[mi-1]); //only the first Mat Points
 			//if (!all_output){ AngleTest_DataFile << "RotatedRect box = minAreaRect(Points[mi])" << box.angle << "\n";}
 			//if (!all_output) { AngleTest_DataFile << "###########################################################" << "\n"; }
 			AngleTest_DataFile.close();
