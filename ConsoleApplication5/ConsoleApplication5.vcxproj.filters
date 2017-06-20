@@ -96,6 +96,9 @@
     <ClCompile Include="Example_KMeans_Clustering.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MouseClick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectedComponents03.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DrawlinesFromPointOnLine1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseClick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -95,15 +95,24 @@ Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;
 int nFltrLabels2 = -1;
 Mat testMaskiRead;
 Mat GrayScaleCroppedImage;
+Mat cropedLeftImage;
+Mat cropedRightImage;
 
+Point pt1, pt2;
+Mat src_gray;
+int clickCounter = 0, lineCounter = 0, pixelCounter = 0, drawCounter = 0;
 //----------------------------------------------------  
 #pragma endregion
 
 
 template <typename T>
-Mat plotGraph(std::vector<T>& vals, int YRange[2])
+cv::Mat plotGraph(std::vector<T>& vals, int YRange[2])
 {
-
+	//for (size_t i = 0; i < plotData.size(); i++)
+	//{
+	//	std::vector<T>& vals = plotData[i].numbers;
+	//	int YRange[2] = plotData[i].range;
+	//}
 	auto it = minmax_element(vals.begin(), vals.end());
 	float scale = 1. / ceil(*it.second - *it.first);
 	float bias = *it.first;
@@ -113,9 +122,109 @@ Mat plotGraph(std::vector<T>& vals, int YRange[2])
 	for (int i = 0; i < (int)vals.size() - 1; i++)
 	{
 		cv::line(image, cv::Point(i, rows - 1 - (vals[i] - bias)*scale*YRange[1]), cv::Point(i + 1, rows - 1 - (vals[i + 1] - bias)*scale*YRange[1]), Scalar(255, 0, 0), 1);
+		//cv::line(image, cv::Point(i, rows - 1 - (vals[i] - 1.23)*scale*YRange[1]), cv::Point(i + 1, rows - 1 - (vals[i + 1] - 1.23)*scale*YRange[1]), Scalar(0, 0, 255), 1);
 	}
 
 	return image;
+}
+
+void PickupPixels()
+{
+	//To pick up pixels under line
+	cv::LineIterator it(src_gray, pt1, pt2, 8);
+	//To store pixel picked up, from under line
+	std::vector<double> buf(it.count);
+	Mat temp = src_gray;
+	LineIterator it2 = it;
+
+	vector<int> numbers(it.count);
+
+	for (int i = 0; i < it.count; i++, ++it)
+	{
+		double val = (double)src_gray.at<uchar>(it.pos());
+		buf[i] = val;
+		numbers.push_back(val);
+		cout << "position= " << it.pos() << ",  value= " << val << "\n";
+
+	}
+	//000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+	//if (remove("Profile_DataFile.txt") != 0)
+	//	perror("Error deleting file");
+	//else
+	//	puts("File successfully deleted");
+
+	//				ofstream Profile_DataFile;
+	//				Profile_DataFile.open("Profile_DataFile.txt");
+	//				Profile_DataFile << Mat(numbers) << "\n";
+	//							//ContainerFile.open("ContainerFile_" + smi + ".txt");
+	//							//for (int i = 0; i < numbers.size(); i++)
+	//							//{
+	//							//	Profile_DataFile << "Profile[" << i << "].value= " << numbers.at(i) << "\n";
+	//							//}
+	//				Profile_DataFile.close();
+	//000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+#pragma region Plot-Mat
+	/*vector<int> numbers(100);*/
+	//std::iota(numbers.begin(), numbers.end(), 0);
+
+	int range[2] = { 0, it.count };
+	cv::Mat lineGraph = plotGraph(numbers, range);
+
+	imshow("plot", lineGraph);
+#pragma endregion
+}
+
+void MyLine(Mat img, Point start, Point end)
+{
+	//cout << "baseLine1= " << baseLine1 << ",  baseLine2= " << baseLine2 << "\n";
+	//system("cls");
+
+	if (clickCounter ==/*1*/2)
+	{
+		clickCounter = 0;
+	}
+
+	//cout << "Drawing line ([" << pt1.x << ", " << pt1.y << "], [" << pt2.x << ", " << pt2.y << "])" << endl;
+
+	int thickness = 2;
+	int lineType = 8;
+
+	//double angle_value_R = atan(angle_value_D*(PI/180));
+	//end.x = (int)round(start.x + length * cos(angle_value_D * CV_PI / 180.0));
+	//end.y = (int)round(start.y + length * sin(angle_value_D * CV_PI / 180.0));
+
+	////Direction vector going from 'start' to 'end'
+	//Point v;
+	//v.x = end.x - start.x;
+	//v.y = end.y - start.y;
+
+	////normalize v
+	//int mag = sqrt(v.x*v.x + v.y*v.y);
+	//v.x = v.x / mag;
+	//v.y = v.y / mag;
+
+	////rotate and swap
+	//int tempX = -v.x;
+	//v.x = v.y;
+	//v.y = tempX;
+
+	////new line at 'end' pointing in v-direction
+	//Point C;
+	//C.x = end.x + v.x * length;
+	//C.y = end.y + v.y * length;
+
+	line(img,
+		Point(start.x, start.y),
+		Point(end.x, end.y),
+		Scalar(255, 0, 0),
+		thickness,
+		lineType);
+
+	lineCounter++;
+	drawCounter++;
+	//cout << "centre= " << (Point(start.x, start.y) + Point(end.x, end.y)) / 2 << "\n";
+	PickupPixels();
+	imshow("Drawn Image", img);
 }
 
 #pragma region ExtractNadirAreas
@@ -159,7 +268,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	//connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
 	//connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
 	//connectedComponentsWithStats << "size of FltrLabelImage= " << FltrLabelImage.size() << std::endl;
-	//if (all_output){ imshow("FltrLabelImage2", FltrLabelImage2);
+	if (all_output) { imshow("FltrLabelImage2", FltrLabelImage); }
 	std::vector<cv::Vec3b> FltrColors(nFltrLabels);
 	FltrColors[0] = cv::Vec3b(0, 0, 0);
 	//connectedComponentsWithStats << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
@@ -261,8 +370,8 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
 	//Mat image;
 	//Mat croppedImage = image(myROI);
-	Mat cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
-	Mat cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
+	cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
+	cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
 	if (!all_output) { imshow("Remove Nadir (2)- cropedLeftImage", cropedLeftImage); }
 	if (!all_output) { imshow("Remove Nadir (3) - cropedRightImage", cropedRightImage); }
 	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
@@ -278,29 +387,30 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 #pragma endregion
 
 	imwrite("Grayscale_image_without_Nadir.bmp", croppedImage);
+	src_gray = croppedImage;
 
 	Mat FltrLabelImage2;
 	Mat FltrStats2, FltrCentroids2;
 
 	GrayScaleCroppedImage = croppedImage;
 
-#pragma region Histogram Equilization
-	char* source_window = "Source image";
-	char* equalized_window = "Equalized Image";
-	Mat dstHE;
-	/// Convert to grayscale
-	//cvtColor(src, src, CV_BGR2GRAY);
-
-	/// Apply Histogram Equalization
-	equalizeHist(GrayScaleCroppedImage, dstHE);
-
-	/// Display results
-	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
-	namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
-
-	imshow(source_window, GrayScaleCroppedImage);
-	imshow(equalized_window, dstHE);
-#pragma endregion
+//#pragma region Histogram Equilization
+//	char* source_window = "Source image";
+//	char* equalized_window = "Equalized Image";
+//	Mat dstHE;
+//	/// Convert to grayscale
+//	//cvtColor(src, src, CV_BGR2GRAY);
+//
+//	/// Apply Histogram Equalization
+//	equalizeHist(GrayScaleCroppedImage, dstHE);
+//
+//	/// Display results
+//	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
+//	namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
+//
+//	imshow(source_window, GrayScaleCroppedImage);
+//	imshow(equalized_window, dstHE);
+//#pragma endregion
 
 	Mat FltrBinaryImg2 = threshval < 128 ? (GrayScaleCroppedImage < threshval) : (GrayScaleCroppedImage > threshval);
 	imwrite("B&W_image_without_Nadir.bmp", FltrBinaryImg2);
@@ -386,7 +496,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 //	double nadirCenterX = BinaryNadirImage.size().width / 2; 
 //	Point nadirCenterPoint = Point(nadirCenterX, 1);
 //	if (!all_output) { cout << "NadirCenter point= " << nadirCenterX << "\n"; }
-//	Mat tempNadirSrc = imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg");
+//	Mat tempNadirSrc = imread(file);
 //	circle(tempNadirSrc, nadirCenterPoint, 1, Scalar(255, 0, 0), 1, 8, 0);
 //	imshow("Centre of Nadir", tempNadirSrc);
 //
@@ -520,9 +630,13 @@ int main(int argc, char *argv[])
 	//file_output = 0;
 	//imshow_output = 0;
 	//imwrite_output = 0;
+	string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
+	//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
+	//string file = "20161215 02.33_368.jpg";
+	//string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
 
 	if (all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
-	src = cv::imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg");
+	src = cv::imread(file);
 	if (src.empty())
 	{
 		//if (!all_output) { cout << "src image is null" << "\n"; }
@@ -535,21 +649,26 @@ int main(int argc, char *argv[])
 	//src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
 	//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
 	//src = cv::imread("double ripple example_RR.jpg");
-	//if (!all_output) { imshow("0 - Source Img", src); }
+	Mat tempSourceImage = src;
+	if (!all_output) { imshow("0 - Source Img", src); }
 	if (all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
 
+#pragma region Image pre-processing
 	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
-	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
-	////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
-	////if (all_output){ imshow("0 - src", src);
-	////srcImg = src;
-	//bilateralFilter(src, srcImg, 15, 80, 80);
-	//blur(src, srcImg, Size(5, 5), Point(-1, -1));
-	//if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
-	//if (all_output) { imshow("1 - blur srcImg", srcImg); }
-	//cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-	//if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
-	//if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }
+////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
+////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
+////if (all_output){ imshow("0 - src", src);
+////srcImg = src;
+//bilateralFilter(src, srcImg, 15, 80, 80);
+blur(src, srcImg, Size(5, 5), Point(-1, -1));
+//if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
+Mat tempFilteredImage = srcImg;
+if (!all_output) { imshow("1 - blur srcImg", srcImg); }
+//cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
+//if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
+//if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
+#pragma endregion
+
 
 //#pragma region Apply Gamma-correction functions
 //
@@ -587,11 +706,14 @@ int main(int argc, char *argv[])
 ////	imwrite("gamma_correction.png", img_gamma_corrected);
 //#pragma endregion
 
-	cvtColor(src, GrayImg, CV_BGR2GRAY);
+	cvtColor(srcImg, GrayImg, CV_BGR2GRAY);
 
 	Mat linePixelsTempGraySrc3 = GrayImg;
 
+#pragma region Components and nadir removal
 	Mat components = GetConnectedComponent(GrayImg);
+#pragma endregion
+
 	//Mat RemovedNadirImage = RemoveNadir(GrayImg);
 	
 //#pragma region Histogram Equilization
@@ -615,7 +737,7 @@ int main(int argc, char *argv[])
 	//if (all_output) { imshow("3 - components", components); }
 
 	//if (all_output){ imshow("maskImages[0]", Mat(maskImages[0]));
-	Mat tempSrc1 = imread("20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg", CV_LOAD_IMAGE_UNCHANGED);
+	Mat tempSrc1 = imread(file, CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
