@@ -46,6 +46,7 @@
     <ClCompile Include="PlotAtOrientation.cpp" />
     <ClCompile Include="plot_sample.cpp" />
     <ClCompile Include="test.cpp" />
+    <ClCompile Include="TestGraphUtils.cpp" />
     <ClCompile Include="TestWatershed.cpp" />
   </ItemGroup>
   <ItemGroup>
