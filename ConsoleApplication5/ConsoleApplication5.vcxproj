@@ -39,6 +39,7 @@
     <ClCompile Include="minarea.cpp" />
     <ClCompile Include="minAreaRectSample.cpp" />
     <ClCompile Include="MouseClick.cpp" />
+    <ClCompile Include="MyDemHistTest.cpp" />
     <ClCompile Include="MyDrawLineOnImage.cpp" />
     <ClCompile Include="MyEdgeDetector.cpp" />
     <ClCompile Include="MyFloodFillZoom.cpp" />
