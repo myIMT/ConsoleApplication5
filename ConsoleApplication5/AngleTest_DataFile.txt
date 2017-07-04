@@ -1,1 +1,4 @@
-135
+Component 1 has angle 180 with centroid [40, 1]
+Component 1 has angle 180 with centroid [40, 1]
+Component 1 has angle 180 with centroid [40, 1]
+Component 1 has angle 180 with centroid [40, 1]

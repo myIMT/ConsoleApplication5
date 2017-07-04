@@ -679,81 +679,83 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 #pragma endregion
 	//connectedComponentsWithStats.close();
 
-#pragma region RemoveNadir
-	ExtractNadirAreas(a);
-	/*Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;*/
-	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
-		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
-		{
-			secondBiggestAreaIndex = FltrLabel;
-			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-		}
+//#pragma region RemoveNadir
+//	ExtractNadirAreas(a);
+//	/*Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;*/
+//	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
+//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
+//		{
+//			secondBiggestAreaIndex = FltrLabel;
+//			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+//			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+//			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+//			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+//		}
+//
+//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
+//		{
+//			thirdBiggestAreaIndex = FltrLabel;
+//			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+//			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+//			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+//			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+//		}
+//	}
+//
+//	if (secondBiggestAreaX > thirdBiggestAreaX)
+//	{
+//		int tempIndex = secondBiggestAreaIndex;
+//		int tempX = secondBiggestAreaX;
+//		int tempY = secondBiggestAreaY;
+//		int tempWidth = secondBiggestAreaWidth;
+//		int tempHeight = secondBiggestAreaHeight;
+//
+//		secondBiggestAreaIndex = thirdBiggestAreaIndex;
+//		secondBiggestAreaX = thirdBiggestAreaX;
+//		secondBiggestAreaY = thirdBiggestAreaY;
+//		secondBiggestAreaWidth = thirdBiggestAreaWidth;
+//		secondBiggestAreaHeight = thirdBiggestAreaHeight;
+//
+//		thirdBiggestAreaIndex = tempIndex;
+//
+//		thirdBiggestAreaIndex = tempIndex;
+//		thirdBiggestAreaX = tempX;
+//		thirdBiggestAreaY = tempY;
+//		thirdBiggestAreaWidth = tempWidth;
+//		thirdBiggestAreaHeight = tempHeight;
+//	}
+//
+//	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
+//	//if (!all_output) { imshow("Remove Nadir (1)", nadirMat); }
+//	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
+//	/*if (all_output){ imshow("nadirMat", nadirMat);*/
+//	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
+//	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+//	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+//	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
+//	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
+//	//Rect rect(x, y, width, height)
+//	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
+//	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
+//	//Mat image;
+//	//Mat croppedImage = image(myROI);
+//	cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
+//	cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
+//	if (!all_output) { imshow("Remove Nadir (2)- cropedLeftImage", cropedLeftImage); }
+//	if (!all_output) { imshow("Remove Nadir (3) - cropedRightImage", cropedRightImage); }
+//	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
+//	//cv::Mat small_image;
+//	//cv::Mat big_image;
+//	//...
+//	//	//Somehow fill small_image and big_image with your data
+//	//	...
+//	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
+//	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
+//	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
+//	if (!all_output) { imshow("Remove Nadir (3) - croppedImage", croppedImage); }
 
-		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
-		{
-			thirdBiggestAreaIndex = FltrLabel;
-			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-		}
-	}
-
-	if (secondBiggestAreaX > thirdBiggestAreaX)
-	{
-		int tempIndex = secondBiggestAreaIndex;
-		int tempX = secondBiggestAreaX;
-		int tempY = secondBiggestAreaY;
-		int tempWidth = secondBiggestAreaWidth;
-		int tempHeight = secondBiggestAreaHeight;
-
-		secondBiggestAreaIndex = thirdBiggestAreaIndex;
-		secondBiggestAreaX = thirdBiggestAreaX;
-		secondBiggestAreaY = thirdBiggestAreaY;
-		secondBiggestAreaWidth = thirdBiggestAreaWidth;
-		secondBiggestAreaHeight = thirdBiggestAreaHeight;
-
-		thirdBiggestAreaIndex = tempIndex;
-
-		thirdBiggestAreaIndex = tempIndex;
-		thirdBiggestAreaX = tempX;
-		thirdBiggestAreaY = tempY;
-		thirdBiggestAreaWidth = tempWidth;
-		thirdBiggestAreaHeight = tempHeight;
-	}
-
-	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
-	//if (!all_output) { imshow("Remove Nadir (1)", nadirMat); }
-	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
-	/*if (all_output){ imshow("nadirMat", nadirMat);*/
-	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
-	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
-	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
-	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
-	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
-	//Rect rect(x, y, width, height)
-	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
-	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
-	//Mat image;
-	//Mat croppedImage = image(myROI);
-	cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
-	cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
-	if (!all_output) { imshow("Remove Nadir (2)- cropedLeftImage", cropedLeftImage); }
-	if (!all_output) { imshow("Remove Nadir (3) - cropedRightImage", cropedRightImage); }
-	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
-	//cv::Mat small_image;
-	//cv::Mat big_image;
-	//...
-	//	//Somehow fill small_image and big_image with your data
-	//	...
-	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
-	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
-	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
-	if (!all_output) { imshow("Remove Nadir (3) - croppedImage", croppedImage); }
-#pragma endregion
+	Mat croppedImage = GrayScaleSrcImg;
+//#pragma endregion
 
 	imwrite("Grayscale_image_without_Nadir.bmp", croppedImage);
 	src_gray = croppedImage;
@@ -852,7 +854,7 @@ void SetNadirToBlack(Mat nadirRemoveImage)
 		printf("ODD!\n");
 #pragma endregion
 
-	int value = 200;
+	int value = 12;
 	int middle = nadirRemovedGray.cols / 2;
 	Mat lrImage = nadirRemovedGray;
 	Mat testImage;
@@ -900,6 +902,67 @@ void SetNadirToBlack(Mat nadirRemoveImage)
 	testImage = lrImage;
 	if (!all_output) { imshow("Nadir removed image", testImage); }
 #pragma endregion
+}
+
+void ColumnsAnalysis(Mat SourceImage)
+{
+	/*Mat src = imread("salt.tif", 1);*/
+	Mat filteredImage;
+
+	//Apply median filter
+	medianBlur(SourceImage, filteredImage, 15);
+	imshow("source", SourceImage);
+	if (!all_output) { imwrite("GrayScaleImageColumns.bmp", SourceImage); }
+	imshow("result", filteredImage);
+	if (!all_output) { imwrite("BlurredGrayScaleImageColumns.bmp", filteredImage); }
+	ofstream columnMatData_DataFile;
+	columnMatData_DataFile.open("columnMatData_DataFile.csv");
+	columnMatData_DataFile << filteredImage << "\n";
+	columnMatData_DataFile.close();
+
+	struct columns {
+		int col;
+		int values;
+	};
+	vector<Mat> columnData;
+
+	//columnData.push_back(columns);
+	ofstream columnData_DataFile;
+	columnData_DataFile.open("columnData_DataFile.csv");
+
+	for (size_t i = 0; i < filteredImage.cols; i++)
+	{
+		//if (!all_output) { cout << "i= " << i << " -- value= " << filteredImage.col(i) << "\n"; }
+		if (!all_output) { columnData_DataFile << "i= " << i << " -- value= " << filteredImage.col(i) << "\n"; }
+		columnData.push_back(filteredImage.col(i));
+		//columnData.push_back(columns());												/*Initialise container*/
+		//columnData[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/
+		//container[containerCount].i = i;											///Store row position
+		//container[containerCount].j = j;											///Store column position
+		//container[containerCount].angle = newAngle.ptr<float>(i)[j];				///Store new Angle value
+		//container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);
+	}	
+	columnData_DataFile.close();
+
+	int sum;
+	ofstream columnSumData_DataFile;
+	columnSumData_DataFile.open("columnSumData_DataFile.txt");
+	for (size_t j = 0; j < columnData.size(); j++)
+	{
+		Mat tempCol = columnData.at(j);
+		sum = 0;
+		for (size_t k = 0; k < tempCol.size().height; k++)
+		{
+			//if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; }
+
+			if (tempCol.at<uchar>(k, 0) <=15)
+			{
+				sum += tempCol.at<uchar>(k, 0);
+			}
+		}
+		if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; }
+	}
+	columnSumData_DataFile.close();
 }
 
 void CalcHist(Mat histSrc)
@@ -1150,8 +1213,9 @@ int main(int argc, char *argv[])
 	//imwrite_output = 0;
 	//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
 	//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
-	string file = "20161215 02.33_368.jpg";
-	//string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
+	//string file = "20161215 02.33_368.jpg";
+	string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
+	//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
 
 	if (all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
 	src = cv::imread(file);
@@ -1171,26 +1235,26 @@ int main(int argc, char *argv[])
 	if (!all_output) { imshow("0 - Source Img", src); }
 	if (all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
 
-#pragma region Image pre-processing
-	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
-////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
-////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
-////if (all_output){ imshow("0 - src", src);
-////srcImg = src;
-//bilateralFilter(src, srcImg, 15, 80, 80);
-blur(src, srcImg, Size(5, 5), Point(-1, -1));
-//GaussianBlur(src, srcImg, Size(5, 5), 5);
-	//int value = 128;
-	//threshold(src, srcImg, value, 255, CV_THRESH_OTSU);
-	//cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
-//	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; }
-////if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
-//Mat tempFilteredImage = srcImg;
-//if (!all_output) { imshow("1 - filtered image - srcImg", srcImg); }
-//cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-//if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
-//if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
-#pragma endregion
+//#pragma region Image pre-processing
+//	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
+//////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
+//////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
+//////if (all_output){ imshow("0 - src", src);
+//srcImg = src;
+////bilateralFilter(src, srcImg, 15, 80, 80);
+////blur(src, srcImg, Size(5, 5), Point(-1, -1));
+////GaussianBlur(src, srcImg, Size(5, 5), 5);
+//	//int value = 128;
+//	//threshold(src, srcImg, value, 255, CV_THRESH_OTSU);
+//	//cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
+////	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; }
+//////if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
+////Mat tempFilteredImage = srcImg;
+////if (!all_output) { imshow("1 - filtered image - srcImg", srcImg); }
+////cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
+////if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
+////if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
+//#pragma endregion
 
 
 //#pragma region Apply Gamma-correction functions
@@ -1229,17 +1293,19 @@ blur(src, srcImg, Size(5, 5), Point(-1, -1));
 ////	imwrite("gamma_correction.png", img_gamma_corrected);
 //#pragma endregion
 
-	cvtColor(srcImg, GrayImg, CV_BGR2GRAY);
+	cvtColor(src, GrayImg, CV_BGR2GRAY);
+	ColumnsAnalysis(GrayImg);
 	Mat GrayscaleImage = GrayImg;
-	if (!all_output) { imshow("GrayscaleImage", GrayscaleImage); }
+	//if (!all_output) { imshow("GrayscaleImage", GrayscaleImage); }
 
-	Mat linePixelsTempGraySrc3 = GrayImg;
-	SetNadirToBlack(GrayImg);
+	//Mat linePixelsTempGraySrc3 = GrayImg;
+	//SetNadirToBlack(GrayImg);
 	//CalcHist(src);
 	//CalcHistEq();
-#pragma region Components and nadir removal
-	//Mat components = GetConnectedComponent(GrayImg);
-#pragma endregion
+
+//#pragma region Components /*and nadir removal*/
+//	Mat components = GetConnectedComponent(GrayImg);
+//#pragma endregion
 
 	//Mat RemovedNadirImage = RemoveNadir(GrayImg);
 	
@@ -1284,7 +1350,7 @@ blur(src, srcImg, Size(5, 5), Point(-1, -1));
 //	//ofstream ComponentAngle;
 //	//ComponentAngle.open("ComponentAngle.txt");
 //	ofstream AngleTest_DataFile;
-//	//AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
+//	AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
 //
 //	int maskElements = nFltrLabels2 - 1;
 //	///Loop through each component
@@ -1348,15 +1414,16 @@ blur(src, srcImg, Size(5, 5), Point(-1, -1));
 //
 //			Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
 //
+//#pragma region CannyEdge Calculation-Angle per Component Calculation
 //			///Walk along cannyEdge rows
 //			for (size_t i = 0; i < cannyEdge.rows; i++)
 //			{
 //				///Walk along cannyEdge rows & columns
 //				for (size_t j = 0; j < cannyEdge.cols; j++)
 //				{
-//	/*				ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";*/
-//					//Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
-//					///if cannyEdge pixel intensity id non-zero
+//					/*				ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";*/
+//									//Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+//									///if cannyEdge pixel intensity id non-zero
 //					if ((int)cannyEdge.at<uchar>(i, j) != 0)
 //					{
 //						//ComponentsLoop << "				Non-Zero Canny pixel value (coordinates - (x,y) ) = " << i << ", " << j << "\n";
@@ -1375,6 +1442,8 @@ blur(src, srcImg, Size(5, 5), Point(-1, -1));
 //					}
 //				}
 //			}
+//#pragma endregion
+//
 //			//ComponentsLoop << "Finished walking on Canny Edge" << "\n";
 //			//ComponentsLoop << "\n";
 //			//ComponentsLoop << "\n";
@@ -1489,8 +1558,9 @@ blur(src, srcImg, Size(5, 5), Point(-1, -1));
 //				}
 //			}
 //			//KeepingTrackOfContainers_DataFile.close();
-//			AngleTest_DataFile.open("AngleTest_DataFile.txt");
-//			if (!all_output) { AngleTest_DataFile << mes.angle << endl; }
+//			//AngleTest_DataFile.open("AngleTest_DataFile.txt");
+//			if (!all_output) { AngleTest_DataFile << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; }
+//			if (!all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; }
 //			//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
 //			//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
 //			//ComponentAngle << "Angle (mes)- " << smi << "\n";
