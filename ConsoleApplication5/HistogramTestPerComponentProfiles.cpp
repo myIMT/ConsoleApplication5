@@ -29,7 +29,7 @@ const std::string keys =
 int threshval = 60;
 int bw_constant = 128;
 vector<Vec4i> hierarchy;
-Mat src, srcImg, GrayImg, hist, cannyEdge, detected_edges, angle_src_gray, grad_x, grad_y, abs_grad_x, abs_grad_y;
+Mat src, srcImg, srcImg1, srcImg2, srcImg3, srcImg4, GrayImg, hist, cannyEdge, detected_edges, angle_src_gray, grad_x, grad_y, abs_grad_x, abs_grad_y;
 
 int ddepth = CV_32FC1;// CV_16S;
 int scale = 1;
@@ -944,25 +944,121 @@ void ColumnsAnalysis(Mat SourceImage)
 	}	
 	columnData_DataFile.close();
 
-	int sum;
+	struct columnSumStruct
+	{
+		int value;
+		int columnNo;
+	};
+	vector<columnSumStruct> columnSum;
+
+	vector<int> columnThresSum;
+	int sum, thresSum;
+
+	//
+	ofstream columnThresSumData_DataFile;
+	columnThresSumData_DataFile.open("columnThresSumData_DataFile.txt");
+
 	ofstream columnSumData_DataFile;
 	columnSumData_DataFile.open("columnSumData_DataFile.txt");
+
 	for (size_t j = 0; j < columnData.size(); j++)
 	{
 		Mat tempCol = columnData.at(j);
 		sum = 0;
+		thresSum = 0;
+
 		for (size_t k = 0; k < tempCol.size().height; k++)
 		{
 			//if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; }
+			sum += tempCol.at<uchar>(k, 0);;
 
 			if (tempCol.at<uchar>(k, 0) <=15)
 			{
-				sum += tempCol.at<uchar>(k, 0);
+				thresSum += tempCol.at<uchar>(k, 0);
 			}
 		}
+		columnSum.push_back(columnSumStruct());
+		columnSum[j].value = sum;
+		columnSum[j].columnNo = j;
+
+		columnThresSum.push_back(thresSum);
+
+		if (!all_output) { columnThresSumData_DataFile << "col= " << j << "-- value= " << thresSum << "\n"; }
 		if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; }
 	}
+	columnThresSumData_DataFile.close();
 	columnSumData_DataFile.close();
+
+	int h = columnSum.size() /2;
+	//int h2 = 0;
+
+	int leftWalkerZero = 2;
+	bool firstLeftWalkerZero = false;
+	int rightWalkerZero = 2;
+	Mat nadirChangedImage = filteredImage;
+	// walk left
+	for (int h1 = h; h1 < columnSum.size(); h1--)
+	{
+		/*if (!all_output) { cout << "walking left: " << h1 << "\n"; }*/
+		if (columnSum[h1].value == 0)
+		{
+			firstLeftWalkerZero = true;
+			leftWalkerZero = 1;
+			//if (!all_output) { cout << "walking left: " << h1 << "\n"; }
+		}
+
+		if (leftWalkerZero == 2 && firstLeftWalkerZero == true)
+		{
+			leftWalkerZero = 1;
+		}
+		else if (leftWalkerZero == 2 && firstLeftWalkerZero == false)
+		{
+			for (int m = 0; m < columnData.at(h1).rows; m++)
+			{
+				//if (!all_output) { cout << "columnData.at(h1).rows = " << columnData.at(h1).rows << "\n"; }
+				//if (!all_output) { cout << "columnData.at(h1).cols = " << columnData.at(h1).cols << "\n"; }
+				for (int o = 0; o < nadirChangedImage.size().width; o++)
+				{
+					for (int p = 0; p < nadirChangedImage.size().height; p++)
+					{
+						if (h1 == )
+						{
+
+						}
+						nadirChangedImage.at<uchar>(, m) = 0;
+					}
+				}
+				nadirChangedImage.at<uchar>(m, 0) = 0;
+			}
+		}
+		else
+		{
+			leftWalkerZero = 0;
+		}
+
+		if (columnSum[h1].value != 0)
+		{
+
+		}
+	}
+
+	imshow("nadirChangeImage", nadirChangedImage);
+	// walk right
+	for (int h1 = h; h1 < columnSum.size(); h1++)
+	{
+		//if (!all_output) { cout << "walking right: " << h1 << "\n"; }
+		if (columnSum[h1].value == 0)
+		{
+			rightWalkerZero = 1;
+			//if (!all_output) { cout << "walking right is " << rightWalkerZero << " with sum value = " << h1 << "\n"; }
+		}
+		else
+		{
+			rightWalkerZero = 0;;
+			//if (!all_output) { cout << "walking right is " << rightWalkerZero << " with sum value = " << h1 << "\n"; }
+			//nothing
+		}
+	}
 }
 
 void CalcHist(Mat histSrc)
@@ -1211,10 +1307,10 @@ int main(int argc, char *argv[])
 	//file_output = 0;
 	//imshow_output = 0;
 	//imwrite_output = 0;
-	//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
+	string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
 	//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
 	//string file = "20161215 02.33_368.jpg";
-	string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
+	//string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
 	//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
 
 	if (all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
@@ -1241,16 +1337,19 @@ int main(int argc, char *argv[])
 //////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
 //////if (all_output){ imshow("0 - src", src);
 //srcImg = src;
-////bilateralFilter(src, srcImg, 15, 80, 80);
-////blur(src, srcImg, Size(5, 5), Point(-1, -1));
-////GaussianBlur(src, srcImg, Size(5, 5), 5);
-//	//int value = 128;
-//	//threshold(src, srcImg, value, 255, CV_THRESH_OTSU);
-//	//cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
+//bilateralFilter(src, srcImg1, 15, 80, 80);
+//blur(src, srcImg, Size(5, 5), Point(-1, -1));
+//GaussianBlur(src, srcImg2, Size(5, 5), 5);
+//int value = 128;
+//threshold(src, srcImg3, value, 255, CV_THRESH_OTSU);
+////cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
 ////	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; }
 //////if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
 ////Mat tempFilteredImage = srcImg;
-////if (!all_output) { imshow("1 - filtered image - srcImg", srcImg); }
+//if (!all_output) { imshow("bilateralFilter - filtered image - srcImg", srcImg1); }
+//if (!all_output) { imshow("blur - filtered image - srcImg", srcImg); }
+//if (!all_output) { imshow("GaussianBlur - filtered image - srcImg", srcImg2); }
+//if (!all_output) { imshow("threshold128 - filtered image - srcImg", srcImg3); }
 ////cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
 ////if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
 ////if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
