@@ -989,62 +989,88 @@ void ColumnsAnalysis(Mat SourceImage)
 	columnThresSumData_DataFile.close();
 	columnSumData_DataFile.close();
 
-	int h = columnSum.size() /2;
+	//centre of image
+	int c = columnSum.size() /2;
 	//int h2 = 0;
 
 	int leftWalkerZero = 2;
 	bool firstLeftWalkerZero = false;
 	int rightWalkerZero = 2;
 	Mat nadirChangedImage = filteredImage;
-	// walk left
-	for (int h1 = h; h1 < columnSum.size(); h1--)
+	vector<int> leftNadir;
+	float percentageValue = 2;
+	int extraWidth = nadirChangedImage.size().width*percentageValue /100;
+	int percentageWidth = 0;
+	vector<int> leftNadirPlusExtra;
+
+#pragma region walk left
+	for (int h1 = c; h1 < columnSum.size(); h1--)
 	{
 		/*if (!all_output) { cout << "walking left: " << h1 << "\n"; }*/
 		if (columnSum[h1].value == 0)
 		{
+			leftNadir.push_back(h1);
 			firstLeftWalkerZero = true;
 			leftWalkerZero = 1;
-			//if (!all_output) { cout << "walking left: " << h1 << "\n"; }
+			/*if (!all_output) { cout << "h1 = " << h1 << " , walking left: SUM = " << columnSum[h1].value << "\n"; }*/
 		}
 
-		if (leftWalkerZero == 2 && firstLeftWalkerZero == true)
-		{
-			leftWalkerZero = 1;
-		}
-		else if (leftWalkerZero == 2 && firstLeftWalkerZero == false)
-		{
-			for (int m = 0; m < columnData.at(h1).rows; m++)
-			{
-				//if (!all_output) { cout << "columnData.at(h1).rows = " << columnData.at(h1).rows << "\n"; }
-				//if (!all_output) { cout << "columnData.at(h1).cols = " << columnData.at(h1).cols << "\n"; }
-				for (int o = 0; o < nadirChangedImage.size().width; o++)
-				{
-					for (int p = 0; p < nadirChangedImage.size().height; p++)
-					{
-						if (h1 == )
-						{
+		//if (h1 == leftNadir.back() - extraWidth)
+		//{
+		//	if (!all_output) { cout << "percentageWidth = " << c << "\n"; }
+		//}
 
-						}
-						nadirChangedImage.at<uchar>(, m) = 0;
-					}
-				}
-				nadirChangedImage.at<uchar>(m, 0) = 0;
-			}
-		}
-		else
-		{
-			leftWalkerZero = 0;
-		}
+		//if (leftWalkerZero == 2 && firstLeftWalkerZero == true)
+		//{
+		//	leftWalkerZero = 1;
+		//}
+		//else if (leftWalkerZero == 2 && firstLeftWalkerZero == false)
+		//{
+		//	for (int m = 0; m < columnData.at(h1).rows; m++)
+		//	{
+		//		//if (!all_output) { cout << "columnData.at(h1).rows = " << columnData.at(h1).rows << "\n"; }
+		//		//if (!all_output) { cout << "columnData.at(h1).cols = " << columnData.at(h1).cols << "\n"; }
+		//		for (int o = 0; o < nadirChangedImage.size().width; o++)
+		//		{
+		//			for (int p = 0; p < nadirChangedImage.size().height; p++)
+		//			{
+		//				//if (h1 == )
+		//				//{
 
-		if (columnSum[h1].value != 0)
-		{
+		//				//}
+		//				//nadirChangedImage.at<uchar>(, m) = 0;
+		//			}
+		//		}
+		//		nadirChangedImage.at<uchar>(m, 0) = 0;
+		//	}
+		//}
+		//else
+		//{
+		//	leftWalkerZero = 0;
+		//}
 
-		}
+		//if (columnSum[h1].value != 0)
+		//{
+
+		//}
 	}
 
+
+	//if (!all_output) { cout << "h1 = " << h1 << "\n"; }
+	if (!all_output) { cout << "leftNadir.back() - extraWidth = " << leftNadir.back() - extraWidth << "\n"; }
+	if (!all_output) { cout << "columnSum[leftNadir.back() - extraWidth] = " << columnSum[leftNadir.back() - extraWidth].value << "\n"; }
+	for (int h2 = leftNadir.back(); h2 >= leftNadir.back() - extraWidth; h2--)
+	{
+		leftNadirPlusExtra.push_back(h2);
+		if (!all_output) { cout << "h2 = " << h2 << "\n"; }
+		if (!all_output) { cout << "columnSum[h2] = " << columnSum[h2].value << "\n"; }
+	}
+#pragma endregion
+
 	imshow("nadirChangeImage", nadirChangedImage);
-	// walk right
-	for (int h1 = h; h1 < columnSum.size(); h1++)
+
+#pragma region walk right
+	for (int h1 = c; h1 < columnSum.size(); h1++)
 	{
 		//if (!all_output) { cout << "walking right: " << h1 << "\n"; }
 		if (columnSum[h1].value == 0)
@@ -1059,6 +1085,8 @@ void ColumnsAnalysis(Mat SourceImage)
 			//nothing
 		}
 	}
+#pragma endregion
+
 }
 
 void CalcHist(Mat histSrc)
