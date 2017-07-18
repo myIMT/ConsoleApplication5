@@ -107,6 +107,11 @@ vector<vector<int>> values;
 bool distanceSet = false;
 Point distancePoint1, distancePoint2, distancePoint3, heigthPoint;
 double distancePoint;
+
+vector<int> leftNadir;
+vector<int> rightNadir;
+vector<int> leftNadirPlusExtra;
+vector<int> rightNadirPlusExtra;
 //----------------------------------------------------  
 #pragma endregion
 
@@ -596,22 +601,44 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 	}
 }
 
-#pragma region ExtractNadirAreas
-void ExtractNadirAreas(vector<int> a)
+//void ExtractNadirAreas(vector<int> a)
+void ExtractNadirAreas(Mat SourceImage, int leftColNo, int rightColNo)
 {
-	//if (all_output){ cout << "size of a = " << a.size() << endl;};
-	sort(a.begin(), a.end());	/// Sort vector of components-areas
-	reverse(a.begin(), a.end());	/// Reverse sorted vector of components-areas
-	//if (all_output){ cout << "a-vector-sorted with +4= " << endl;};	/// Print sorted-reversed component-areas
-	for (size_t i = 0; i != a.size(); ++i)
-		//if (all_output){ cout << a[i] << " ";};
-	//if (all_output){ cout << "\n"; //if (all_output){ cout << "\n"; //if (all_output){ cout << "\n";}
-	secondBiggestArea = a[1];	//if (all_output){ cout << "second biggest = " << a[1] << "\n";}
-	//secondBiggestAreaIndex = a.size()-1;	//if (all_output){ cout << "second biggest Index = " << a.size() - 1 << "\n";}
-	thirdBiggestArea = a[2];	//if (all_output){ cout << "third biggest = " << a[2] << "\n";}
-	//thirdBiggestAreaIndex = a.size() - 2;	//if (all_output){ cout << "third biggest Index = " << a.size() - 2 << "\n";}
+	if (!all_output) { imshow("SourceImage", SourceImage); };
+
+	int x0 = 0;
+	int y0 = 0;
+	int x1 = leftColNo; 
+	int y1 = SourceImage.size().height;;
+	int x2 = rightColNo;
+	int y2 = y1;
+	int x3 = SourceImage.size().width;
+	int y3 = y1;
+
+	Rect myLeftROI(x0, y0, x1, SourceImage.size().height);
+	Rect myRightROI(x2, y0, SourceImage.size().width - rightColNo, SourceImage.size().height);
+
+	Mat croppedLeftImage = SourceImage(myLeftROI);
+	Mat croppedRightImage = SourceImage(myRightROI);
+
+	if (!all_output) {imshow("croppedLeftImage", croppedLeftImage);};
+	if (!all_output) {imshow("croppedRightImage", croppedRightImage);};
+
+
+
+
+	////if (all_output){ cout << "size of a = " << a.size() << endl;};
+	//sort(a.begin(), a.end());	/// Sort vector of components-areas
+	//reverse(a.begin(), a.end());	/// Reverse sorted vector of components-areas
+	////if (all_output){ cout << "a-vector-sorted with +4= " << endl;};	/// Print sorted-reversed component-areas
+	//for (size_t i = 0; i != a.size(); ++i)
+	//	//if (all_output){ cout << a[i] << " ";};
+	////if (all_output){ cout << "\n"; //if (all_output){ cout << "\n"; //if (all_output){ cout << "\n";}
+	//secondBiggestArea = a[1];	//if (all_output){ cout << "second biggest = " << a[1] << "\n";}
+	////secondBiggestAreaIndex = a.size()-1;	//if (all_output){ cout << "second biggest Index = " << a.size() - 1 << "\n";}
+	//thirdBiggestArea = a[2];	//if (all_output){ cout << "third biggest = " << a[2] << "\n";}
+	////thirdBiggestAreaIndex = a.size() - 2;	//if (all_output){ cout << "third biggest Index = " << a.size() - 2 << "\n";}
 }
-#pragma endregion
 
 /// <summary>                                                            
 /// Calculates components                           
@@ -833,7 +860,7 @@ Mat GetConnectedComponent(Mat GrayScaleSrcImg)
 			FltrPixel2 = FltrColors2[FltrLabel2];
 		}
 	}
-	if (!all_output) {imshow(nFltrLabels2String + "-Connected Components", FltrDst2);}
+	//if (!all_output) {imshow(nFltrLabels2String + "-Connected Components", FltrDst2);}
 	if (!all_output) { imwrite(nFltrLabels2String + "-Connected Components.bmp", FltrDst2); }
 
 
@@ -900,7 +927,7 @@ void SetNadirToBlack(Mat nadirRemoveImage)
 
 	}
 	testImage = lrImage;
-	if (!all_output) { imshow("Nadir removed image", testImage); }
+	if (all_output) { imshow("Nadir removed image", testImage); };
 #pragma endregion
 }
 
@@ -911,10 +938,10 @@ void ColumnsAnalysis(Mat SourceImage)
 
 	//Apply median filter
 	medianBlur(SourceImage, filteredImage, 15);
-	imshow("source", SourceImage);
-	if (!all_output) { imwrite("GrayScaleImageColumns.bmp", SourceImage); }
-	imshow("result", filteredImage);
-	if (!all_output) { imwrite("BlurredGrayScaleImageColumns.bmp", filteredImage); }
+	if (all_output) {imshow("source", SourceImage);};
+	if (!all_output) { imwrite("GrayScaleImageColumns.bmp", SourceImage); };
+	if (all_output) { imshow("result", filteredImage); };
+	if (!all_output) { imwrite("BlurredGrayScaleImageColumns.bmp", filteredImage); };
 	ofstream columnMatData_DataFile;
 	columnMatData_DataFile.open("columnMatData_DataFile.csv");
 	columnMatData_DataFile << filteredImage << "\n";
@@ -997,17 +1024,21 @@ void ColumnsAnalysis(Mat SourceImage)
 	bool firstLeftWalkerZero = false;
 	int rightWalkerZero = 2;
 	Mat nadirChangedImage = filteredImage;
-	vector<int> leftNadir;
-	float percentageValue = 2;
+	//vector<int> leftNadir;
+	//vector<int> rightNadir;
+	float percentageValue = 5;
+	int zeroThreshold = 1000;
 	int extraWidth = nadirChangedImage.size().width*percentageValue /100;
 	int percentageWidth = 0;
-	vector<int> leftNadirPlusExtra;
+	//vector<int> leftNadirPlusExtra;
+	//vector<int> rightNadirPlusExtra;
 
 #pragma region walk left
+	//starting at the centre - walk left
 	for (int h1 = c; h1 < columnSum.size(); h1--)
 	{
-		/*if (!all_output) { cout << "walking left: " << h1 << "\n"; }*/
-		if (columnSum[h1].value == 0)
+		//if the pixel-intensity sum per column equals zero - record that column number 
+		if (columnSum[h1].value <= zeroThreshold)
 		{
 			leftNadir.push_back(h1);
 			firstLeftWalkerZero = true;
@@ -1056,10 +1087,14 @@ void ColumnsAnalysis(Mat SourceImage)
 	}
 
 
-	//if (!all_output) { cout << "h1 = " << h1 << "\n"; }
+	//leftNadir = recording of column numbers for all column-pixel-intensity-zero-sums
+	//extraWidth = 2 % of total width (to add to last column-pixel-intensity-zero-sum recording)
+	//leftNadir.back = last column-pixel-intensity-zero-sum recording
 	if (!all_output) { cout << "leftNadir.back() - extraWidth = " << leftNadir.back() - extraWidth << "\n"; }
 	if (!all_output) { cout << "columnSum[leftNadir.back() - extraWidth] = " << columnSum[leftNadir.back() - extraWidth].value << "\n"; }
-	for (int h2 = leftNadir.back(); h2 >= leftNadir.back() - extraWidth; h2--)
+
+	//starting at last recording, add extraWidth steps
+	for (int h2 = leftNadir.back()-1; h2 >= leftNadir.back() - extraWidth; h2--)
 	{
 		leftNadirPlusExtra.push_back(h2);
 		if (!all_output) { cout << "h2 = " << h2 << "\n"; }
@@ -1067,26 +1102,37 @@ void ColumnsAnalysis(Mat SourceImage)
 	}
 #pragma endregion
 
-	imshow("nadirChangeImage", nadirChangedImage);
+	//imshow("nadirChangeImage", nadirChangedImage);
 
 #pragma region walk right
-	for (int h1 = c; h1 < columnSum.size(); h1++)
+	//for (int h1 = c; h1 < columnSum.size(); h1++)
+
+	//starting at the centre - walk right
+	for (int h3 = c; h3 < columnSum.size(); h3++)
 	{
-		//if (!all_output) { cout << "walking right: " << h1 << "\n"; }
-		if (columnSum[h1].value == 0)
+		//if the pixel-intensity sum per column equals zero - record that column number 
+		if (columnSum[h3].value <= zeroThreshold)
 		{
-			rightWalkerZero = 1;
-			//if (!all_output) { cout << "walking right is " << rightWalkerZero << " with sum value = " << h1 << "\n"; }
+			rightNadir.push_back(h3);
 		}
-		else
-		{
-			rightWalkerZero = 0;;
-			//if (!all_output) { cout << "walking right is " << rightWalkerZero << " with sum value = " << h1 << "\n"; }
-			//nothing
-		}
+	}
+
+
+	//rightNadir = recording of column numbers for all column-pixel-intensity-zero-sums
+	//extraWidth = 2 % of total width (to add to last column-pixel-intensity-zero-sum recording)
+	//rightNadir.back = last column-pixel-intensity-zero-sum recording
+	if (!all_output) { cout << "rightNadir.back() - extraWidth = " << rightNadir.back() + extraWidth << "\n"; }
+	if (!all_output) { cout << "columnSum[rightNadir.back() - extraWidth] = " << columnSum[rightNadir.back() + extraWidth].value << "\n"; }
+
+	//starting at last recording, add extraWidth steps
+	for (int h4 = rightNadir.back() + 1; h4 <= rightNadir.back() + extraWidth; h4++)
+	{
+		rightNadirPlusExtra.push_back(h4);
 	}
 #pragma endregion
 
+	//imshow("nadirChangeImage", nadirChangedImage);
+	ExtractNadirAreas(SourceImage, leftNadirPlusExtra.back(), rightNadirPlusExtra.back());
 }
 
 void CalcHist(Mat histSrc)
@@ -1095,7 +1141,8 @@ void CalcHist(Mat histSrc)
 	cvtColor(histSrc, gray, CV_BGR2GRAY);
 
 	//Mat gray = imread("image.jpg", 0);
-	namedWindow("Gray", 1);    imshow("Gray", gray);
+	namedWindow("Gray", 1);    
+	if (all_output) { imshow("Gray", gray); };
 
 	// Initialize parameters
 	int histSize = 256;    // bin size
@@ -1136,7 +1183,8 @@ void CalcHist(Mat histSrc)
 		//	Scalar::all(0), -1, 8, 0);
 	}
 
-	namedWindow("Result", 1);    imshow("Result", histImage);
+	namedWindow("Result", 1);    
+	if (all_output) { imshow("Result", histImage); };
 
 	waitKey(0);
 }
@@ -1356,7 +1404,7 @@ int main(int argc, char *argv[])
 	//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
 	//src = cv::imread("double ripple example_RR.jpg");
 	Mat tempSourceImage = src;
-	if (!all_output) { imshow("0 - Source Img", src); }
+	if (all_output) { imshow("0 - Source Img", src); }
 	if (all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
 
 //#pragma region Image pre-processing
