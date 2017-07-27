@@ -92,7 +92,7 @@ bool imwrite_output = false;
 bool all_output = false;
 
 Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;
-int nFltrLabels2 = -1;
+int nFltrLabels2;
 Mat testMaskiRead;
 Mat GrayScaleCroppedImage;
 Mat cropedLeftImage;
@@ -112,6 +112,11 @@ vector<int> leftNadir;
 vector<int> rightNadir;
 vector<int> leftNadirPlusExtra;
 vector<int> rightNadirPlusExtra;
+
+Mat LeftImage;
+Mat RightImage;
+vector<Mat> LeftAndRightImages;
+vector<int> MasksCount;
 //----------------------------------------------------  
 #pragma endregion
 
@@ -604,7 +609,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 //void ExtractNadirAreas(vector<int> a)
 void ExtractNadirAreas(Mat SourceImage, int leftColNo, int rightColNo)
 {
-	if (!all_output) { imshow("SourceImage", SourceImage); };
+	if (all_output) { imshow("SourceImage", SourceImage); };
 
 	int x0 = 0;
 	int y0 = 0;
@@ -624,7 +629,10 @@ void ExtractNadirAreas(Mat SourceImage, int leftColNo, int rightColNo)
 	if (!all_output) {imshow("croppedLeftImage", croppedLeftImage);};
 	if (!all_output) {imshow("croppedRightImage", croppedRightImage);};
 
-
+	LeftImage = croppedLeftImage;
+	RightImage = croppedRightImage;
+	LeftAndRightImages.push_back(LeftImage);
+	LeftAndRightImages.push_back(RightImage);
 
 
 	////if (all_output){ cout << "size of a = " << a.size() << endl;};
@@ -644,228 +652,244 @@ void ExtractNadirAreas(Mat SourceImage, int leftColNo, int rightColNo)
 /// Calculates components                           
 /// </summary>                                                           
 /// <param name="GrayScaleSrcImg">Grayscale image (Mat) of original image.</param> 
-Mat GetConnectedComponent(Mat GrayScaleSrcImg)
+Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 {
-	if (all_output){ cout << "03 - CALCULATING COMPONENTS ON BLURRED GRAYSCALE SOURCE IMAGE ('GrayImg')" << "\n";}
-
-	cv::Mat FltrBinaryImg = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
-	if (all_output){ cout << "04 - CONVERTING BLURRED GRAYSCALE SOURCE IMAGE TO BINARY: 'FltrBinaryImg'" << "\n";}
-
-	cv::Mat FltrLabelImage;
-	cv::Mat FltrStats, FltrCentroids;
-
-	int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 8, CV_32S);
-	if (all_output){ cout << "05 - CALCULATING CONNECTEDCOMPONENTSWITHSTATS ON 'FltrBinaryImg': 'FltrLabelImage'" << "\n";}
-#pragma region connectedComponentsWithStats
-	//ofstream connectedComponentsWithStats;
-	//connectedComponentsWithStats.open("connectedComponentsWithStats.txt");
-	if (all_output){ cout << "06 - WRITING CONNECTEDCOMPONENTSWITHSTATS RESULTS TO FILE: 'connectedComponentsWithStats.txt'" << "\n";}
-	//if (all_output){ imshow("Labels", FltrLabelImage);
-	//connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
-	//connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
-	//connectedComponentsWithStats << "size of FltrLabelImage= " << FltrLabelImage.size() << std::endl;
-	if (all_output) { imshow("FltrLabelImage2", FltrLabelImage); }
-	std::vector<cv::Vec3b> FltrColors(nFltrLabels);
-	FltrColors[0] = cv::Vec3b(0, 0, 0);
-	//connectedComponentsWithStats << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
-	//vector<vector<Point>> contours;
-	//vector<Vec4i> hierarchy;
-	vector<int> a;
-
-	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
-		FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
-		CompStats.push_back(connectedComponentsWithStatsStruct());												/*Initialise container*/
-		
-		//connectedComponentsWithStats << "Component " << FltrLabel << std::endl;
-		CompStats[CompStructCount].COMP_STRUCT_NR = FltrLabel;
-
-		//connectedComponentsWithStats << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
-		CompStats[CompStructCount].CC_STAT_LEFT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-
-		//connectedComponentsWithStats << "CC_STAT_TOP    = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
-		CompStats[CompStructCount].CC_STAT_TOP = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-
-		//connectedComponentsWithStats << "CC_STAT_WIDTH  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
-		CompStats[CompStructCount].CC_STAT_WIDTH = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-
-		//connectedComponentsWithStats << "CC_STAT_HEIGHT = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
-		CompStats[CompStructCount].CC_STAT_HEIGHT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-
-		//connectedComponentsWithStats << "CC_STAT_AREA   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
-		CompStats[CompStructCount].CC_STAT_AREA = FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA);
-
-		//connectedComponentsWithStats << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
-		CompStats[CompStructCount].CC_STAT_CENTROID_X = FltrCentroids.at<double>(FltrLabel, 0);
-		CompStats[CompStructCount].CC_STAT_CENTROID_Y = FltrCentroids.at<double>(FltrLabel, 1);
-
-		a.push_back(FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA));
-
-		CompStructCount++;
-	}
-	if (all_output){ cout << "07 - STORING EACH COMPONENT'S AREA IN (GLOBAL DECLARED) VECTOR: 'a'" << "\n";}
-#pragma endregion
-	//connectedComponentsWithStats.close();
-
-//#pragma region RemoveNadir
-//	ExtractNadirAreas(a);
-//	/*Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;*/
-//	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
-//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
-//		{
-//			secondBiggestAreaIndex = FltrLabel;
-//			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-//			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-//			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-//			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-//		}
-//
-//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
-//		{
-//			thirdBiggestAreaIndex = FltrLabel;
-//			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
-//			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
-//			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
-//			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
-//		}
-//	}
-//
-//	if (secondBiggestAreaX > thirdBiggestAreaX)
-//	{
-//		int tempIndex = secondBiggestAreaIndex;
-//		int tempX = secondBiggestAreaX;
-//		int tempY = secondBiggestAreaY;
-//		int tempWidth = secondBiggestAreaWidth;
-//		int tempHeight = secondBiggestAreaHeight;
-//
-//		secondBiggestAreaIndex = thirdBiggestAreaIndex;
-//		secondBiggestAreaX = thirdBiggestAreaX;
-//		secondBiggestAreaY = thirdBiggestAreaY;
-//		secondBiggestAreaWidth = thirdBiggestAreaWidth;
-//		secondBiggestAreaHeight = thirdBiggestAreaHeight;
-//
-//		thirdBiggestAreaIndex = tempIndex;
-//
-//		thirdBiggestAreaIndex = tempIndex;
-//		thirdBiggestAreaX = tempX;
-//		thirdBiggestAreaY = tempY;
-//		thirdBiggestAreaWidth = tempWidth;
-//		thirdBiggestAreaHeight = tempHeight;
-//	}
-//
-//	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
-//	//if (!all_output) { imshow("Remove Nadir (1)", nadirMat); }
-//	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
-//	/*if (all_output){ imshow("nadirMat", nadirMat);*/
-//	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
-//	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
-//	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
-//	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
-//	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
-//	//Rect rect(x, y, width, height)
-//	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
-//	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
-//	//Mat image;
-//	//Mat croppedImage = image(myROI);
-//	cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
-//	cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
-//	if (!all_output) { imshow("Remove Nadir (2)- cropedLeftImage", cropedLeftImage); }
-//	if (!all_output) { imshow("Remove Nadir (3) - cropedRightImage", cropedRightImage); }
-//	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
-//	//cv::Mat small_image;
-//	//cv::Mat big_image;
-//	//...
-//	//	//Somehow fill small_image and big_image with your data
-//	//	...
-//	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
-//	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
-//	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
-//	if (!all_output) { imshow("Remove Nadir (3) - croppedImage", croppedImage); }
-
-	Mat croppedImage = GrayScaleSrcImg;
-//#pragma endregion
-
-	imwrite("Grayscale_image_without_Nadir.bmp", croppedImage);
-	src_gray = croppedImage;
-
-	Mat FltrLabelImage2;
-	Mat FltrStats2, FltrCentroids2;
-
-	GrayScaleCroppedImage = croppedImage;
-
-//#pragma region Histogram Equilization
-//	char* source_window = "Source image";
-//	char* equalized_window = "Equalized Image";
-//	Mat dstHE;
-//	/// Convert to grayscale
-//	//cvtColor(src, src, CV_BGR2GRAY);
-//
-//	/// Apply Histogram Equalization
-//	equalizeHist(GrayScaleCroppedImage, dstHE);
-//
-//	/// Display results
-//	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
-//	namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
-//
-//	imshow(source_window, GrayScaleCroppedImage);
-//	imshow(equalized_window, dstHE);
-//#pragma endregion
-
-	Mat FltrBinaryImg2 = threshval < 128 ? (GrayScaleCroppedImage < threshval) : (GrayScaleCroppedImage > threshval);
-	imwrite("B&W_image_without_Nadir.bmp", FltrBinaryImg2);
-	nFltrLabels2 = cv::connectedComponentsWithStats(FltrBinaryImg2, FltrLabelImage2, FltrStats2, FltrCentroids2, 8, CV_32S);
-
-	if (all_output){ cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n";}
-	if (all_output){ cout << "09 -  -- ASSUMING TWO BLACK STRIPS ARE ALWAYS THE 2ND AND 3RD LARGEST COMPONENTS" << "\n";}
-
-	std::string nFltrLabels2String = std::to_string(nFltrLabels2);
-
-	cv::Mat FltrLabelImage3;
-
-	FltrLabelImage3 = FltrLabelImage2;
-	//normalize(FltrLabelImage2, FltrLabelImage3, 0, 255, NORM_MINMAX, CV_8U);
-	//if (all_output){ imshow("FltrLabelImage2", FltrLabelImage2);
-
-	//std::vector<cv::Vec3b> FltrColors(nFltrLabels);
-	//FltrColors[0] = cv::Vec3b(0, 0, 0);;
-	if (all_output){ cout << "10 - STORE ALL COMPONENTS'S IN (GLOBALLY DECLARED) VECTOR: 'maskImages'" << "\n";}
-	if (all_output){ cout << "11 - STORE ALL COMPONENTS'S CENTROID IN (GLOBALLY DECLARED) VECTOR: 'maskCentroid'" << "\n";}
-
-	//AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
-	//ofstream masksVector_DataFile;
-	//masksVector_DataFile.open("masksVector_DataFile.txt", ios::app);
-	std::vector<cv::Vec3b> FltrColors2(nFltrLabels2);
-	FltrColors2[0] = cv::Vec3b(0, 0, 0);
-
-	for (int FltrLabel2 = 1; FltrLabel2 < nFltrLabels2; ++FltrLabel2) 
+	Mat GrayScaleSrcImg, resultantImage;
+	for (int mats = 0; mats < myLeftAndRightImages.size(); mats++)
 	{
-		std::string mask_index = std::to_string(FltrLabel2);
-		FltrColors2[FltrLabel2] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
-		//FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
-		Mat mask_i = FltrLabelImage3 == FltrLabel2;
-		if (mask_i.empty())      // please, *always check* resource-loading.
+		std::string smats = std::to_string(mats);
+
+		if (all_output) { imshow("myLeftAndRightImages[" + smats + "]", myLeftAndRightImages.at(mats)); };
+
+		GrayScaleSrcImg = myLeftAndRightImages.at(mats);
+		if (!all_output) { cout << "03 - CALCULATING COMPONENTS ON BLURRED GRAYSCALE SOURCE IMAGE ('GrayImg')" << "\n"; };
+
+		cv::Mat FltrBinaryImg = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
+		if (!all_output) { cout << "04 - CONVERTING BLURRED GRAYSCALE SOURCE IMAGE TO BINARY: 'FltrBinaryImg'" << "\n"; };
+
+		cv::Mat FltrLabelImage;
+		cv::Mat FltrStats, FltrCentroids;
+
+		int nFltrLabels = cv::connectedComponentsWithStats(FltrBinaryImg, FltrLabelImage, FltrStats, FltrCentroids, 8, CV_32S);
+		if (!all_output) { cout << "05 - CALCULATING CONNECTEDCOMPONENTSWITHSTATS ON 'FltrBinaryImg': 'FltrLabelImage'" << "\n"; };
+#pragma region connectedComponentsWithStats
+		ofstream connectedComponentsWithStats;
+		connectedComponentsWithStats.open("connectedComponentsWithStats.txt");
+		if (!all_output) { cout << "06 - WRITING CONNECTEDCOMPONENTSWITHSTATS RESULTS TO FILE: 'connectedComponentsWithStats.txt'" << "\n"; };
+		//if (all_output){ imshow("Labels", FltrLabelImage);
+		//connectedComponentsWithStats << "nFltrLabels= " << nFltrLabels << std::endl;
+		//connectedComponentsWithStats << "size of original image= " << FltrBinaryImg.size() << std::endl;
+		//connectedComponentsWithStats << "size of FltrLabelImage= " << FltrLabelImage.size() << std::endl;
+		if (all_output) { imshow("FltrLabelImage2", FltrLabelImage); }
+		std::vector<cv::Vec3b> FltrColors(nFltrLabels);
+		FltrColors[0] = cv::Vec3b(0, 0, 0);
+		//connectedComponentsWithStats << "(Filter) Number of connected components = " << nFltrLabels << std::endl << std::endl;
+		//vector<vector<Point>> contours;
+		//vector<Vec4i> hierarchy;
+		vector<int> a;
+
+		for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
+			FltrColors[FltrLabel] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+			CompStats.push_back(connectedComponentsWithStatsStruct());												/*Initialise container*/
+
+			connectedComponentsWithStats << "Component " << FltrLabel << std::endl;
+			CompStats[CompStructCount].COMP_STRUCT_NR = FltrLabel;
+
+			connectedComponentsWithStats << "CC_STAT_LEFT   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT) << std::endl;
+			CompStats[CompStructCount].CC_STAT_LEFT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+
+			connectedComponentsWithStats << "CC_STAT_TOP    = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP) << std::endl;
+			CompStats[CompStructCount].CC_STAT_TOP = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+
+			connectedComponentsWithStats << "CC_STAT_WIDTH  = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH) << std::endl;
+			CompStats[CompStructCount].CC_STAT_WIDTH = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+
+			connectedComponentsWithStats << "CC_STAT_HEIGHT = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT) << std::endl;
+			CompStats[CompStructCount].CC_STAT_HEIGHT = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+
+			connectedComponentsWithStats << "CC_STAT_AREA   = " << FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) << std::endl;
+			CompStats[CompStructCount].CC_STAT_AREA = FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA);
+
+			connectedComponentsWithStats << "CENTER   = (" << FltrCentroids.at<double>(FltrLabel, 0) << "," << FltrCentroids.at<double>(FltrLabel, 1) << ")" << std::endl << std::endl;
+			CompStats[CompStructCount].CC_STAT_CENTROID_X = FltrCentroids.at<double>(FltrLabel, 0);
+			CompStats[CompStructCount].CC_STAT_CENTROID_Y = FltrCentroids.at<double>(FltrLabel, 1);
+
+			a.push_back(FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA));
+
+			CompStructCount++;
+		}
+		if (!all_output) { cout << "07 - STORING EACH COMPONENT'S AREA IN (GLOBAL DECLARED) VECTOR: 'a'" << "\n"; };
+#pragma endregion
+		connectedComponentsWithStats.close();
+
+		//#pragma region RemoveNadir
+		//	ExtractNadirAreas(a);
+		//	/*Mat secondBiggestAreaMat, thirdBiggestAreaMat, nadirMat;*/
+		//	for (int FltrLabel = 0; FltrLabel < nFltrLabels; ++FltrLabel) {
+		//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == secondBiggestArea)
+		//		{
+		//			secondBiggestAreaIndex = FltrLabel;
+		//			secondBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+		//			secondBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+		//			secondBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+		//			secondBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+		//		}
+		//
+		//		if (FltrStats.at<int>(FltrLabel, cv::CC_STAT_AREA) == thirdBiggestArea)
+		//		{
+		//			thirdBiggestAreaIndex = FltrLabel;
+		//			thirdBiggestAreaX = FltrStats.at<int>(FltrLabel, cv::CC_STAT_LEFT);
+		//			thirdBiggestAreaY = FltrStats.at<int>(FltrLabel, cv::CC_STAT_TOP);
+		//			thirdBiggestAreaWidth = FltrStats.at<int>(FltrLabel, cv::CC_STAT_WIDTH);
+		//			thirdBiggestAreaHeight = FltrStats.at<int>(FltrLabel, cv::CC_STAT_HEIGHT);
+		//		}
+		//	}
+		//
+		//	if (secondBiggestAreaX > thirdBiggestAreaX)
+		//	{
+		//		int tempIndex = secondBiggestAreaIndex;
+		//		int tempX = secondBiggestAreaX;
+		//		int tempY = secondBiggestAreaY;
+		//		int tempWidth = secondBiggestAreaWidth;
+		//		int tempHeight = secondBiggestAreaHeight;
+		//
+		//		secondBiggestAreaIndex = thirdBiggestAreaIndex;
+		//		secondBiggestAreaX = thirdBiggestAreaX;
+		//		secondBiggestAreaY = thirdBiggestAreaY;
+		//		secondBiggestAreaWidth = thirdBiggestAreaWidth;
+		//		secondBiggestAreaHeight = thirdBiggestAreaHeight;
+		//
+		//		thirdBiggestAreaIndex = tempIndex;
+		//
+		//		thirdBiggestAreaIndex = tempIndex;
+		//		thirdBiggestAreaX = tempX;
+		//		thirdBiggestAreaY = tempY;
+		//		thirdBiggestAreaWidth = tempWidth;
+		//		thirdBiggestAreaHeight = tempHeight;
+		//	}
+		//
+		//	compare(FltrLabelImage, secondBiggestAreaIndex, nadirMat, CMP_EQ);
+		//	//if (!all_output) { imshow("Remove Nadir (1)", nadirMat); }
+		//	compare(FltrLabelImage, thirdBiggestAreaIndex, nadirMat, CMP_EQ);
+		//	/*if (all_output){ imshow("nadirMat", nadirMat);*/
+		//	//Rect roi(secondBiggestAreaX,secondBiggestAreaY, secondBiggestAreaWidth, secondBiggestAreaHeight);
+		//	Mat CopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+		//	Mat LeftCopyOfGrayScaleSrcImg = GrayScaleSrcImg;
+		//	Mat RightOfCopyGrayScaleSrcImg = GrayScaleSrcImg;
+		//	//if (all_output){ imshow("Original Image", GrayScaleSrcImg); 
+		//	//Rect rect(x, y, width, height)
+		//	Rect myLeftROI(0, 0, secondBiggestAreaX, GrayScaleSrcImg.size().height);
+		//	Rect myRightROI((thirdBiggestAreaX + thirdBiggestAreaWidth), 0, GrayScaleSrcImg.size().width - (thirdBiggestAreaX + thirdBiggestAreaWidth), GrayScaleSrcImg.size().height);
+		//	//Mat image;
+		//	//Mat croppedImage = image(myROI);
+		//	cropedLeftImage = LeftCopyOfGrayScaleSrcImg(myLeftROI);
+		//	cropedRightImage = RightOfCopyGrayScaleSrcImg(myRightROI);
+		//	if (!all_output) { imshow("Remove Nadir (2)- cropedLeftImage", cropedLeftImage); }
+		//	if (!all_output) { imshow("Remove Nadir (3) - cropedRightImage", cropedRightImage); }
+		//	Mat croppedImage = Mat(cropedLeftImage.size().height, (cropedLeftImage.size().width + cropedRightImage.size().width), cropedRightImage.type(), Scalar(0, 0, 0));;
+		//	//cv::Mat small_image;
+		//	//cv::Mat big_image;
+		//	//...
+		//	//	//Somehow fill small_image and big_image with your data
+		//	//	...
+		//	//	small_image.copyTo(big_image(cv::Rect(x, y, small_image.cols, small_image.rows)));
+		//	cropedLeftImage.copyTo(croppedImage(Rect(0, 0, cropedLeftImage.cols, cropedLeftImage.rows)));
+		//	cropedRightImage.copyTo(croppedImage(Rect(cropedLeftImage.size().width, 0, cropedRightImage.cols, cropedRightImage.rows)));
+		//	if (!all_output) { imshow("Remove Nadir (3) - croppedImage", croppedImage); }
+
+		Mat croppedImage = GrayScaleSrcImg;
+		//#pragma endregion
+
+		imwrite("Grayscale_image_without_Nadir.bmp", croppedImage);
+		src_gray = croppedImage;
+
+		Mat FltrLabelImage2;
+		Mat FltrStats2, FltrCentroids2;
+
+		GrayScaleCroppedImage = croppedImage;
+
+		//#pragma region Histogram Equilization
+		//	char* source_window = "Source image";
+		//	char* equalized_window = "Equalized Image";
+		//	Mat dstHE;
+		//	/// Convert to grayscale
+		//	//cvtColor(src, src, CV_BGR2GRAY);
+		//
+		//	/// Apply Histogram Equalization
+		//	equalizeHist(GrayScaleCroppedImage, dstHE);
+		//
+		//	/// Display results
+		//	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
+		//	namedWindow(equalized_window, CV_WINDOW_AUTOSIZE);
+		//
+		//	imshow(source_window, GrayScaleCroppedImage);
+		//	imshow(equalized_window, dstHE);
+		//#pragma endregion
+
+		Mat FltrBinaryImg2 = threshval < 128 ? (GrayScaleCroppedImage < threshval) : (GrayScaleCroppedImage > threshval);
+		imwrite("B&W_image_without_Nadir.bmp", FltrBinaryImg2);
+		nFltrLabels2 = cv::connectedComponentsWithStats(FltrBinaryImg2, FltrLabelImage2, FltrStats2, FltrCentroids2, 8, CV_32S);
+		MasksCount.push_back(nFltrLabels2);
+		/*nFltrLabels2 = MasksCount.at(mats);*/
+
+		if (!all_output) { cout << "08 - ATTEMPT TO READ SOURCE IMAGE AND SPLIT IT IN TWO HALVES" << "\n"; };
+		if (!all_output) { cout << "09 -  -- ASSUMING TWO BLACK STRIPS ARE ALWAYS THE 2ND AND 3RD LARGEST COMPONENTS" << "\n"; };
+
+		std::string nFltrLabels2String = std::to_string(nFltrLabels2);
+
+		cv::Mat FltrLabelImage3;
+
+		FltrLabelImage3 = FltrLabelImage2;
+		//normalize(FltrLabelImage2, FltrLabelImage3, 0, 255, NORM_MINMAX, CV_8U);
+		//if (all_output){ imshow("FltrLabelImage2", FltrLabelImage2);
+
+		//std::vector<cv::Vec3b> FltrColors(nFltrLabels);
+		//FltrColors[0] = cv::Vec3b(0, 0, 0);;
+		if (!all_output) { cout << "10 - STORE ALL COMPONENTS'S IN (GLOBALLY DECLARED) VECTOR: 'maskImages'" << "\n"; };
+		if (!all_output) { cout << "11 - STORE ALL COMPONENTS'S CENTROID IN (GLOBALLY DECLARED) VECTOR: 'maskCentroid'" << "\n"; };
+
+		//AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
+		//ofstream masksVector_DataFile;
+		//masksVector_DataFile.open("masksVector_DataFile.txt", ios::app);
+		std::vector<cv::Vec3b> FltrColors2(nFltrLabels2);
+		FltrColors2[0] = cv::Vec3b(0, 0, 0);
+
+		for (int FltrLabel2 = 1; FltrLabel2 < nFltrLabels2; ++FltrLabel2)
 		{
-			cerr << "mask_i is empty - can't be loaded!" << endl; 
-			continue;
+			std::string mask_index = std::to_string(FltrLabel2);
+			FltrColors2[FltrLabel2] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
+			//FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
+			Mat mask_i = FltrLabelImage3 == FltrLabel2;
+			if (mask_i.empty())      // please, *always check* resource-loading.
+			{
+				cerr << "mask_i is empty - can't be loaded!" << endl;
+				continue;
+			}
+			//maskImages.push_back(mask_i);
+			imwrite("mask_i" + smats + mask_index + ".bmp", mask_i);
+			maskCentroid.push_back(Point(FltrCentroids.at<double>(FltrLabel2, 0), FltrCentroids2.at<double>(FltrLabel2, 1)));
 		}
-		//maskImages.push_back(mask_i);
-		imwrite("mask_i" + mask_index + ".bmp", mask_i);
-		maskCentroid.push_back(Point(FltrCentroids.at<double>(FltrLabel2, 0), FltrCentroids2.at<double>(FltrLabel2, 1)));
-	}
-	//
-	cv::Mat FltrDst2(croppedImage.size(), CV_8UC3);
-	for (int r = 0; r < FltrDst2.rows; ++r) {
-		for (int c = 0; c < FltrDst2.cols; ++c) {
-			int FltrLabel2 = FltrLabelImage3.at<int>(r, c);
-			cv::Vec3b &FltrPixel2 = FltrDst2.at<cv::Vec3b>(r, c);
-			FltrPixel2 = FltrColors2[FltrLabel2];
+		//
+		cv::Mat FltrDst2(croppedImage.size(), CV_8UC3);
+		for (int r = 0; r < FltrDst2.rows; ++r) {
+			for (int c = 0; c < FltrDst2.cols; ++c) {
+				int FltrLabel2 = FltrLabelImage3.at<int>(r, c);
+				cv::Vec3b &FltrPixel2 = FltrDst2.at<cv::Vec3b>(r, c);
+				FltrPixel2 = FltrColors2[FltrLabel2];
+			}
 		}
-	}
-	//if (!all_output) {imshow(nFltrLabels2String + "-Connected Components", FltrDst2);}
-	if (!all_output) { imwrite(nFltrLabels2String + "-Connected Components.bmp", FltrDst2); }
+		if (all_output) { imshow(nFltrLabels2String + "-Connected Components", FltrDst2); };
+		if (!all_output) { imwrite(nFltrLabels2String + "-Connected Components.bmp", FltrDst2); };
 
 
-	return FltrDst2;
-	if (all_output){ cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n";}
+		resultantImage = FltrDst2;
+		if (!all_output) { cout << "12 - RETURNING IMAGE OF ALL COMPONENTS: 'FltrDst'" << "\n"; };
+	}
+	if (MasksCount.size() >1)
+	{
+		nFltrLabels2 = MasksCount.at(0) + MasksCount.at(1);
+	}
+	return resultantImage;
 }
 
 void SetNadirToBlack(Mat nadirRemoveImage)
@@ -890,8 +914,8 @@ void SetNadirToBlack(Mat nadirRemoveImage)
 	{
 		for (int lr = middle; lr > 0; lr--)
 		{
-			/*		if (!all_output) { cout << "BEFORE -- (r, lr)= (" << r << "," << lr << ")" << "\n"; }
-			if (!all_output) { cout << "BEFORE -- (double)lrImage.at<uchar>(r, lr)= " << (double)lrImage.at<uchar>(r, lr) << "\n"; }*/
+			/*		if (!all_output) { cout << "BEFORE -- (r, lr)= (" << r << "," << lr << ")" << "\n"; };
+			if (!all_output) { cout << "BEFORE -- (double)lrImage.at<uchar>(r, lr)= " << (double)lrImage.at<uchar>(r, lr) << "\n"; };*/
 
 			/*lrImage.at<uchar>(r, lr) = 0;*/
 			//if (lr == (lr-5))
@@ -900,15 +924,15 @@ void SetNadirToBlack(Mat nadirRemoveImage)
 			//}
 			if ((double)lrImage.at<uchar>(r, lr) <= value)
 			{
-				/*	if (!all_output) { cout << "(r, lr)= (" << r << "," << lr << ")" << "\n"; }
-				if (!all_output) { cout << "(double)lrImage.at<uchar>(r, lr)= " << (double)lrImage.at<uchar>(r, lr) << "\n"; }*/
+				/*	if (!all_output) { cout << "(r, lr)= (" << r << "," << lr << ")" << "\n"; };
+				if (!all_output) { cout << "(double)lrImage.at<uchar>(r, lr)= " << (double)lrImage.at<uchar>(r, lr) << "\n"; };*/
 				lrImage.at<uchar>(r, lr) = 0;
 			}
 			else
 			{
-				/*		if (!all_output) { cout << "NOT >= 128" << "\n"; }*/
-				/*		if (!all_output) { cout << "AFTER -- (r, lr)= (" << r << "," << lr << ")" << "\n"; }
-				if (!all_output) { cout << "AFTER -- (double)lrImage.at<uchar>(r, lr)= " << (double)lrImage.at<uchar>(r, lr) << "\n"; }*/
+				/*		if (!all_output) { cout << "NOT >= 128" << "\n"; };*/
+				/*		if (!all_output) { cout << "AFTER -- (r, lr)= (" << r << "," << lr << ")" << "\n"; };
+				if (!all_output) { cout << "AFTER -- (double)lrImage.at<uchar>(r, lr)= " << (double)lrImage.at<uchar>(r, lr) << "\n"; };*/
 			}
 		}
 
@@ -939,9 +963,9 @@ void ColumnsAnalysis(Mat SourceImage)
 	//Apply median filter
 	medianBlur(SourceImage, filteredImage, 15);
 	if (all_output) {imshow("source", SourceImage);};
-	if (!all_output) { imwrite("GrayScaleImageColumns.bmp", SourceImage); };
-	if (all_output) { imshow("result", filteredImage); };
-	if (!all_output) { imwrite("BlurredGrayScaleImageColumns.bmp", filteredImage); };
+	if (all_output) { imwrite("GrayScaleImageColumns.bmp", SourceImage); };
+	if (!all_output) { imshow("filteredImage", filteredImage); };
+	if (all_output) { imwrite("BlurredGrayScaleImageColumns.bmp", filteredImage); };
 	ofstream columnMatData_DataFile;
 	columnMatData_DataFile.open("columnMatData_DataFile.csv");
 	columnMatData_DataFile << filteredImage << "\n";
@@ -959,8 +983,8 @@ void ColumnsAnalysis(Mat SourceImage)
 
 	for (size_t i = 0; i < filteredImage.cols; i++)
 	{
-		//if (!all_output) { cout << "i= " << i << " -- value= " << filteredImage.col(i) << "\n"; }
-		if (!all_output) { columnData_DataFile << "i= " << i << " -- value= " << filteredImage.col(i) << "\n"; }
+		//if (!all_output) { cout << "i= " << i << " -- value= " << filteredImage.col(i) << "\n"; };
+		if (all_output) { columnData_DataFile << "i= " << i << " -- value= " << filteredImage.col(i) << "\n"; };
 		columnData.push_back(filteredImage.col(i));
 		//columnData.push_back(columns());												/*Initialise container*/
 		//columnData[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/
@@ -996,7 +1020,7 @@ void ColumnsAnalysis(Mat SourceImage)
 
 		for (size_t k = 0; k < tempCol.size().height; k++)
 		{
-			//if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; }
+			//if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; };
 			sum += tempCol.at<uchar>(k, 0);;
 
 			if (tempCol.at<uchar>(k, 0) <=15)
@@ -1010,8 +1034,8 @@ void ColumnsAnalysis(Mat SourceImage)
 
 		columnThresSum.push_back(thresSum);
 
-		if (!all_output) { columnThresSumData_DataFile << "col= " << j << "-- value= " << thresSum << "\n"; }
-		if (!all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; }
+		if (all_output) { columnThresSumData_DataFile << "col= " << j << "-- value= " << thresSum << "\n"; };
+		if (all_output) { columnSumData_DataFile << "col= " << j << "-- value= " << sum << "\n"; };
 	}
 	columnThresSumData_DataFile.close();
 	columnSumData_DataFile.close();
@@ -1043,12 +1067,12 @@ void ColumnsAnalysis(Mat SourceImage)
 			leftNadir.push_back(h1);
 			firstLeftWalkerZero = true;
 			leftWalkerZero = 1;
-			/*if (!all_output) { cout << "h1 = " << h1 << " , walking left: SUM = " << columnSum[h1].value << "\n"; }*/
+			/*if (!all_output) { cout << "h1 = " << h1 << " , walking left: SUM = " << columnSum[h1].value << "\n"; };*/
 		}
 
 		//if (h1 == leftNadir.back() - extraWidth)
 		//{
-		//	if (!all_output) { cout << "percentageWidth = " << c << "\n"; }
+		//	if (!all_output) { cout << "percentageWidth = " << c << "\n"; };
 		//}
 
 		//if (leftWalkerZero == 2 && firstLeftWalkerZero == true)
@@ -1059,8 +1083,8 @@ void ColumnsAnalysis(Mat SourceImage)
 		//{
 		//	for (int m = 0; m < columnData.at(h1).rows; m++)
 		//	{
-		//		//if (!all_output) { cout << "columnData.at(h1).rows = " << columnData.at(h1).rows << "\n"; }
-		//		//if (!all_output) { cout << "columnData.at(h1).cols = " << columnData.at(h1).cols << "\n"; }
+		//		//if (!all_output) { cout << "columnData.at(h1).rows = " << columnData.at(h1).rows << "\n"; };
+		//		//if (!all_output) { cout << "columnData.at(h1).cols = " << columnData.at(h1).cols << "\n"; };
 		//		for (int o = 0; o < nadirChangedImage.size().width; o++)
 		//		{
 		//			for (int p = 0; p < nadirChangedImage.size().height; p++)
@@ -1090,15 +1114,15 @@ void ColumnsAnalysis(Mat SourceImage)
 	//leftNadir = recording of column numbers for all column-pixel-intensity-zero-sums
 	//extraWidth = 2 % of total width (to add to last column-pixel-intensity-zero-sum recording)
 	//leftNadir.back = last column-pixel-intensity-zero-sum recording
-	if (!all_output) { cout << "leftNadir.back() - extraWidth = " << leftNadir.back() - extraWidth << "\n"; }
-	if (!all_output) { cout << "columnSum[leftNadir.back() - extraWidth] = " << columnSum[leftNadir.back() - extraWidth].value << "\n"; }
+	if (all_output) { cout << "leftNadir.back() - extraWidth = " << leftNadir.back() - extraWidth << "\n"; };
+	if (all_output) { cout << "columnSum[leftNadir.back() - extraWidth] = " << columnSum[leftNadir.back() - extraWidth].value << "\n"; };
 
 	//starting at last recording, add extraWidth steps
 	for (int h2 = leftNadir.back()-1; h2 >= leftNadir.back() - extraWidth; h2--)
 	{
 		leftNadirPlusExtra.push_back(h2);
-		if (!all_output) { cout << "h2 = " << h2 << "\n"; }
-		if (!all_output) { cout << "columnSum[h2] = " << columnSum[h2].value << "\n"; }
+		if (all_output) { cout << "h2 = " << h2 << "\n"; };
+		if (all_output) { cout << "columnSum[h2] = " << columnSum[h2].value << "\n"; };
 	}
 #pragma endregion
 
@@ -1121,8 +1145,8 @@ void ColumnsAnalysis(Mat SourceImage)
 	//rightNadir = recording of column numbers for all column-pixel-intensity-zero-sums
 	//extraWidth = 2 % of total width (to add to last column-pixel-intensity-zero-sum recording)
 	//rightNadir.back = last column-pixel-intensity-zero-sum recording
-	if (!all_output) { cout << "rightNadir.back() - extraWidth = " << rightNadir.back() + extraWidth << "\n"; }
-	if (!all_output) { cout << "columnSum[rightNadir.back() - extraWidth] = " << columnSum[rightNadir.back() + extraWidth].value << "\n"; }
+	if (all_output) { cout << "rightNadir.back() - extraWidth = " << rightNadir.back() + extraWidth << "\n"; };
+	if (all_output) { cout << "columnSum[rightNadir.back() - extraWidth] = " << columnSum[rightNadir.back() + extraWidth].value << "\n"; };
 
 	//starting at last recording, add extraWidth steps
 	for (int h4 = rightNadir.back() + 1; h4 <= rightNadir.back() + extraWidth; h4++)
@@ -1230,7 +1254,7 @@ void CalcHistEq()
 //{
 //	Mat BinaryNadirImage = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
 //
-//	if (!all_output) { cout << "BinaryNadirImage.size().width= " << BinaryNadirImage.size().width << "\n"; }
+//	if (!all_output) { cout << "BinaryNadirImage.size().width= " << BinaryNadirImage.size().width << "\n"; };
 //
 //	double c;
 //	double cc;
@@ -1251,7 +1275,7 @@ void CalcHistEq()
 //
 //	double nadirCenterX = BinaryNadirImage.size().width / 2; 
 //	Point nadirCenterPoint = Point(nadirCenterX, 1);
-//	if (!all_output) { cout << "NadirCenter point= " << nadirCenterX << "\n"; }
+//	if (!all_output) { cout << "NadirCenter point= " << nadirCenterX << "\n"; };
 //  if (!all_output) { imshow("Centre of Nadir", tempNadirSrc);}
 //	Mat tempNadirSrc = imread(file);
 //	circle(tempNadirSrc, nadirCenterPoint, 1, Scalar(255, 0, 0), 1, 8, 0);
@@ -1389,23 +1413,23 @@ int main(int argc, char *argv[])
 	//string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
 	//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
 
-	if (all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
+	if (!all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
 	src = cv::imread(file);
 	if (src.empty())
 	{
-		//if (!all_output) { cout << "src image is null" << "\n"; }
+		//if (!all_output) { cout << "src image is null" << "\n"; };
 	}
 	else
 	{
-		//if (!all_output) { cout << "src image is NOT null" << "\n"; }
+		//if (!all_output) { cout << "src image is NOT null" << "\n"; };
 	}
 	//src = cv::imread("20161215 02.33_368R2.jpg");
 	//src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
 	//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
 	//src = cv::imread("double ripple example_RR.jpg");
 	Mat tempSourceImage = src;
-	if (all_output) { imshow("0 - Source Img", src); }
-	if (all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
+	if (!all_output) { imshow("0 - Source Img", src); }
+	if (!all_output){ cout << "00 - READING SOURCE IMAGE: 'src'" << "\n";}
 
 #pragma region Image pre-processing
 //	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
@@ -1419,15 +1443,15 @@ int main(int argc, char *argv[])
 //int value = 128;
 //threshold(src, srcImg3, value, 255, CV_THRESH_OTSU);
 ////cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
-////	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; }
-//////if (all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
+////	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; };
+//////if (!all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
 ////Mat tempFilteredImage = srcImg;
 //if (!all_output) { imshow("bilateralFilter - filtered image - srcImg", srcImg1); }
 //if (!all_output) { imshow("blur - filtered image - srcImg", srcImg); }
 //if (!all_output) { imshow("GaussianBlur - filtered image - srcImg", srcImg2); }
 //if (!all_output) { imshow("threshold128 - filtered image - srcImg", srcImg3); }
 ////cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-////if (all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
+////if (!all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
 ////if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
 #pragma endregion
 
@@ -1469,7 +1493,9 @@ int main(int argc, char *argv[])
 #pragma endregion
 
 	cvtColor(src, GrayImg, CV_BGR2GRAY);
-	//ColumnsAnalysis(GrayImg);
+
+	ColumnsAnalysis(GrayImg);
+
 	Mat GrayscaleImage = GrayImg;
 	//if (!all_output) { imshow("GrayscaleImage", GrayscaleImage); }
 
@@ -1479,7 +1505,7 @@ int main(int argc, char *argv[])
 	//CalcHistEq();
 
 #pragma region Components /*and nadir removal*/
-	Mat components = GetConnectedComponent(GrayImg);
+	Mat components = GetConnectedComponent(LeftAndRightImages);
 #pragma endregion
 
 	//Mat RemovedNadirImage = RemoveNadir(GrayImg);
@@ -1512,25 +1538,27 @@ int main(int argc, char *argv[])
 	//Mat tempSrc1 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");   
 #pragma endregion
 
-
 #pragma region MyRegion
-	if (all_output){ cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n";}
+	if (!all_output){ cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n";}
 	//ofstream ComponentsLoop;
 	//ComponentsLoop.open("ComponentsLoop.txt");
 
 	//ofstream Bin_Analysis;
 	//Bin_Analysis.open("Bin_Analysis.csv");
-	if (all_output){ cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n";}
+	if (!all_output){ cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n";}
 
 	//ofstream ComponentAngle;
 	//ComponentAngle.open("ComponentAngle.txt");
 	ofstream AngleTest_DataFile;
 	AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
 
+	//temp variable - to by-pass background mask
 	int maskElements = nFltrLabels2 - 1;
 
 #pragma region Loop through each component
-	for (size_t mi = 1; mi < maskElements; mi++)
+	//start with "mi=0 till mi<maskElement"
+	//then just add a check inside for loop to skip mi=0 to ensure u address all elements of maskElement
+	for (size_t mi = 1; mi < 3/*maskElements*/; mi++)
 	{
 		std::string smi = std::to_string(mi);
 		//system("cls");
@@ -1738,8 +1766,8 @@ int main(int argc, char *argv[])
 			}
 			//KeepingTrackOfContainers_DataFile.close();
 			//AngleTest_DataFile.open("AngleTest_DataFile.txt");
-			if (!all_output) { AngleTest_DataFile << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; }
-			if (!all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; }
+			if (all_output) { AngleTest_DataFile << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
+			if (all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
 			//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
 			//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
 			//ComponentAngle << "Angle (mes)- " << smi << "\n";
@@ -1765,13 +1793,13 @@ int main(int argc, char *argv[])
 			//{
 			Mat tempPoints;
 			findNonZero(imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED), tempPoints);
-			//if (!all_output) { cout << "tempPoints = " << tempPoints << "\n"; }
+			//if (!all_output) { cout << "tempPoints = " << tempPoints << "\n"; };
 			Points.push_back(tempPoints);
 			//}
 			Point2f vtx[4];
 			RotatedRect box = minAreaRect(Points[mi - 1]); //only the first Mat Points
 			//if (!all_output){ AngleTest_DataFile << "RotatedRect box = minAreaRect(Points[mi])" << box.angle << "\n";}
-			//if (!all_output) { AngleTest_DataFile << "###########################################################" << "\n"; }
+			//if (!all_output) { AngleTest_DataFile << "###########################################################" << "\n"; };
 			AngleTest_DataFile.close();
 			box.points(vtx);
 			/*Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);*/
@@ -2184,49 +2212,49 @@ int main(int argc, char *argv[])
 //imshow("grayscale image", src_gray);
 //setMouseCallback("0 - Source Img", CallBackFunc, NULL);
 
-	if (all_output){ cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";}
+	if (!all_output){ cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";}
 
-	if (all_output){ cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";}
+	if (!all_output){ cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";}
 
-	if (all_output){ cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n";}
-	if (all_output){ cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n";}
-	if (all_output){ cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n";}
-	if (all_output){ cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n";}
-	if (all_output){ cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n";}
-	if (all_output){ cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n";}
-	if (all_output){ cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n";}
-	if (all_output){ cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n";}
-	if (all_output){ cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n";}
-	if (all_output){ cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n";}
+	if (!all_output){ cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n";}
+	if (!all_output){ cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n";}
+	if (!all_output){ cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n";}
+	if (!all_output){ cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n";}
+	if (!all_output){ cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n";}
+	if (!all_output){ cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n";}
+	if (!all_output){ cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n";}
+	if (!all_output){ cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n";}
+	if (!all_output){ cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n";}
+	if (!all_output){ cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n";}
 
-	if (all_output){ cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n";}
+	if (!all_output){ cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n";}
 
-	if (all_output){ cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n";}
+	if (!all_output){ cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n";}
 
-	if (all_output){ cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n";}
+	if (!all_output){ cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n";}
 
-	if (all_output){ cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n";}
+	if (!all_output){ cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n";}
 
-	if (all_output){ cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n";}
+	if (!all_output){ cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n";}
 
-	if (all_output){ cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n";}
-	if (all_output){ cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n";}
-	if (all_output){ cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n";}
+	if (!all_output){ cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n";}
+	if (!all_output){ cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n";}
+	if (!all_output){ cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n";}
 
 
-	if (all_output){ cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";}
-	if (all_output){ cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n";}
-	if (all_output){ cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n";}
+	if (!all_output){ cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";}
+	if (!all_output){ cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n";}
+	if (!all_output){ cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n";}
 
-	if (all_output){ cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";}
-	if (all_output){ cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n";}
-	if (all_output){ cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n";}
-	if (all_output){ cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n";}
+	if (!all_output){ cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";}
+	if (!all_output){ cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n";}
+	if (!all_output){ cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n";}
+	if (!all_output){ cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n";}
 
-	if (all_output){ cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n";}
-	if (all_output){ cout << "43 -  -- -- XXX" << "\n";}
-	if (all_output){ cout << "44 -  -- -- YYY" << "\n";}
-	if (all_output){ cout << "45 -  -- -- ZZZ" << "\n";}
+	if (!all_output){ cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n";}
+	if (!all_output){ cout << "43 -  -- -- XXX" << "\n";}
+	if (!all_output){ cout << "44 -  -- -- YYY" << "\n";}
+	if (!all_output){ cout << "45 -  -- -- ZZZ" << "\n";}
 	//ComponentsLoop.close();
 	//ComponentAngle.close();
 	//if (all_output){ imshow("Plot Image", src);
