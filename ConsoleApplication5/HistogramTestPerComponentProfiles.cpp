@@ -853,10 +853,19 @@ Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 		//masksVector_DataFile.open("masksVector_DataFile.txt", ios::app);
 		std::vector<cv::Vec3b> FltrColors2(nFltrLabels2);
 		FltrColors2[0] = cv::Vec3b(0, 0, 0);
-
+		int tempCount;
 		for (int FltrLabel2 = 1; FltrLabel2 < nFltrLabels2; ++FltrLabel2)
 		{
-			std::string mask_index = std::to_string(FltrLabel2);
+			if (MasksCount.size()>1)
+			{
+				tempCount = MasksCount.at(0) + FltrLabel2;
+			}
+			else
+			{
+				tempCount = FltrLabel2;
+			}
+
+			std::string mask_index = std::to_string(tempCount);
 			FltrColors2[FltrLabel2] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
 			//FltrColors[FltrLabel] = cv::Vec3b((255), (255), (255));
 			Mat mask_i = FltrLabelImage3 == FltrLabel2;
@@ -866,7 +875,7 @@ Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 				continue;
 			}
 			//maskImages.push_back(mask_i);
-			imwrite("mask_i" + smats + mask_index + ".bmp", mask_i);
+			imwrite("mask_i" + mask_index + ".bmp", mask_i);
 			maskCentroid.push_back(Point(FltrCentroids.at<double>(FltrLabel2, 0), FltrCentroids2.at<double>(FltrLabel2, 1)));
 		}
 		//
@@ -1558,7 +1567,7 @@ int main(int argc, char *argv[])
 #pragma region Loop through each component
 	//start with "mi=0 till mi<maskElement"
 	//then just add a check inside for loop to skip mi=0 to ensure u address all elements of maskElement
-	for (size_t mi = 1; mi < 3/*maskElements*/; mi++)
+	for (size_t mi = 1; mi < maskElements; mi++)
 	{
 		std::string smi = std::to_string(mi);
 		//system("cls");
