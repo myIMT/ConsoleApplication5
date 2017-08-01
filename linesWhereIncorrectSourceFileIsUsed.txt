@@ -1,0 +1,14 @@
+line=1504,GrayImg --> line=1511,linePixelsTempGraySrc3(FIXED) --> line=1783,tempGraySrc(FIXED) --> line=1788,tempGraySrc --> line=1912,tempSrc3 --> line=2045,linePixelsTempGraySrc3 --> line=2081,linePixelsTempGraySrc3
+
+line=1517,components
+
+line=1543,tempSrc1(FIXED) --> line=1817,tempSrc1 --> line=1821,tempSrc1
+
+line=1792,tempSrc2(FIXED) --> line=1818,tempSrc2 --> line=1829,tempSrc2 --> line=1866,tempSrc2 --> line=1867,tempSrc2 --> line=1873,tempSrc2 --> line=2142,tempSrc2 --> line=2198,tempSrc2 --> line=2199,tempSrc2 --> line-2200,tempSrc2
+
+line=1827,plotImage(FIXED) --> line=1828,plotImage
+
+line=1911,tempGraySrc3 --> line=1996,tempGraySrc3 --> line=2005,tempGraySrc3 --> line=2007,tempGraySrc3 --> line=2016,tempGraySrc3--> line-2023,tempGraySrc3 --> line-2024,tempGraySrc3
+
+maskCentroid ****
+fix line 1440 ***
