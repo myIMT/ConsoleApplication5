@@ -626,8 +626,8 @@ void ExtractNadirAreas(Mat SourceImage, int leftColNo, int rightColNo)
 	Mat croppedLeftImage = SourceImage(myLeftROI);
 	Mat croppedRightImage = SourceImage(myRightROI);
 
-	if (!all_output) {imshow("croppedLeftImage", croppedLeftImage);};
-	if (!all_output) {imshow("croppedRightImage", croppedRightImage);};
+	if (all_output) {imshow("croppedLeftImage", croppedLeftImage);};
+	if (all_output) {imshow("croppedRightImage", croppedRightImage);};
 
 	LeftImage = croppedLeftImage;
 	RightImage = croppedRightImage;
@@ -856,14 +856,14 @@ Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 		int tempCount;
 		for (int FltrLabel2 = 1; FltrLabel2 < nFltrLabels2; ++FltrLabel2)
 		{
-			if (MasksCount.size()>1)
-			{
-				tempCount = MasksCount.at(0) + FltrLabel2;
-			}
-			else
-			{
-				tempCount = FltrLabel2;
-			}
+			//if (MasksCount.size()>1)
+			//{
+			//	tempCount = MasksCount.at(0) + FltrLabel2;
+			//}
+			//else
+			//{
+			//	tempCount = FltrLabel2;
+			//}
 
 			std::string mask_index = std::to_string(FltrLabel2);
 			FltrColors2[FltrLabel2] = cv::Vec3b((std::rand() & 255), (std::rand() & 255), (std::rand() & 255));
@@ -888,7 +888,7 @@ Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 			}
 		}
 		if (all_output) { imshow(nFltrLabels2String + "-Connected Components", FltrDst2); };
-		if (!all_output) { imwrite(nFltrLabels2String + "-Connected Components.bmp", FltrDst2); };
+		if (!all_output) { imwrite(mats + "-" + nFltrLabels2String + "-Connected Components.bmp", FltrDst2); };
 
 
 		resultantImage = FltrDst2;
@@ -973,7 +973,7 @@ void ColumnsAnalysis(Mat SourceImage)
 	medianBlur(SourceImage, filteredImage, 15);
 	if (all_output) {imshow("source", SourceImage);};
 	if (all_output) { imwrite("GrayScaleImageColumns.bmp", SourceImage); };
-	if (!all_output) { imshow("filteredImage", filteredImage); };
+	if (all_output) { imshow("filteredImage", filteredImage); };
 	if (all_output) { imwrite("BlurredGrayScaleImageColumns.bmp", filteredImage); };
 	ofstream columnMatData_DataFile;
 	columnMatData_DataFile.open("columnMatData_DataFile.csv");
@@ -1259,6 +1259,26 @@ void CalcHistEq()
 	waitKey(0);
 }
 
+bool ComponentTouchImageEdge(Mat CompMat)
+{
+	///Walk along cannyEdge rows
+	for (size_t i = 0; i < CompMat.rows; i++)
+	{
+		// Walk along CompMat rows & columns
+		for (size_t j = 0; j < CompMat.cols; j++)
+		{
+			// if cannyEdge pixel intensity is non-zero
+			if ((int)CompMat.at<uchar>(i, j) != 0)
+			{
+				if ((i == 0) || (i == CompMat.size().width) || (j == 0) || (j ==CompMat.size().height-1))
+				{
+					return true;
+				}
+				else return false;
+			}
+		}
+	}
+}
 //Mat RemoveNadir(Mat GrayScaleSrcImg)
 //{
 //	Mat BinaryNadirImage = threshval < 128 ? (GrayScaleSrcImg < threshval) : (GrayScaleSrcImg > threshval);
@@ -1411,57 +1431,52 @@ void GammaCorrection(Mat& src, Mat& dst, float fGamma)
 /// <param name="">xxx.</param> 
 int main(int argc, char *argv[])
 {
+		//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
+		//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
+		//string file = "20161215 02.33_368.jpg";
+		string file = "20140612_MINEGARDEN_SURVEY2_00_14_50.jpg";
+		//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
 
-	//cout_output = 0;
-	//file_output = 0;
-	//imshow_output = 0;
-	//imwrite_output = 0;
-	string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
-	//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
-	//string file = "20161215 02.33_368.jpg";
-	//string file = "20140612_MINEGARDEN_SURVEY_00_14_50.jpg";
-	//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
-
-	if (!all_output){ cout << "--------------------------------------- START ---------------------------------------" << "\n";}
-	src = cv::imread(file);
-	if (src.empty())
-	{
-		//if (!all_output) { cout << "src image is null" << "\n"; };
-	}
-	else
-	{
-		//if (!all_output) { cout << "src image is NOT null" << "\n"; };
-	}
-	//src = cv::imread("20161215 02.33_368R2.jpg");
-	//src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
-	//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
-	//src = cv::imread("double ripple example_RR.jpg");
-	Mat tempSourceImage = src;
-	if (!all_output) { imshow("0 - Source Img", src); };
-	if (!all_output) { cout << "00 - READING SOURCE IMAGE: 'src'" << "\n"; };
+		if (!all_output) { cout << "--------------------------------------- START ---------------------------------------" << "\n"; }
+		src = cv::imread(file);
+		if (src.empty())
+		{
+			//if (!all_output) { cout << "src image is null" << "\n"; };
+		}
+		else
+		{
+			//if (!all_output) { cout << "src image is NOT null" << "\n"; };
+		}
+		//src = cv::imread("20161215 02.33_368R2.jpg");
+		//src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
+		//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
+		//src = cv::imread("double ripple example_RR.jpg");
+		Mat tempSourceImage = src;
+		if (!all_output) { imshow("0 - Source Img", src); };
+		if (!all_output) { cout << "00 - READING SOURCE IMAGE: 'src'" << "\n"; };
 
 #pragma region Image pre-processing
-//	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
-//////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
-//////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
-//////if (all_output){ imshow("0 - src", src);
-//srcImg = src;
-//bilateralFilter(src, srcImg1, 15, 80, 80);
-//blur(src, srcImg, Size(5, 5), Point(-1, -1));
-//GaussianBlur(src, srcImg2, Size(5, 5), 5);
-//int value = 128;
-//threshold(src, srcImg3, value, 255, CV_THRESH_OTSU);
-////cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
-////	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; };
-//////if (!all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
-////Mat tempFilteredImage = srcImg;
-//if (!all_output) { imshow("bilateralFilter - filtered image - srcImg", srcImg1); }
-//if (!all_output) { imshow("blur - filtered image - srcImg", srcImg); }
-//if (!all_output) { imshow("GaussianBlur - filtered image - srcImg", srcImg2); }
-//if (!all_output) { imshow("threshold128 - filtered image - srcImg", srcImg3); }
-////cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
-////if (!all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
-////if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
+		//	////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg");
+		//////src = cv::imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg");
+		//////Mat src = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg"); 
+		//////if (all_output){ imshow("0 - src", src);
+		//srcImg = src;
+		//bilateralFilter(src, srcImg1, 15, 80, 80);
+		//blur(src, srcImg, Size(5, 5), Point(-1, -1));
+		//GaussianBlur(src, srcImg2, Size(5, 5), 5);
+		//int value = 128;
+		//threshold(src, srcImg3, value, 255, CV_THRESH_OTSU);
+		////cvAdaptiveThreshold(src, srcImg, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 13, 1);
+		////	if (!all_output) { cout << "CV_THRESH_OTSU value = '" << value << "\n"; };
+		//////if (!all_output){ cout << "01 - BLURRING SOURCE IMAGE: 'srcImg'" << "\n";}
+		////Mat tempFilteredImage = srcImg;
+		//if (!all_output) { imshow("bilateralFilter - filtered image - srcImg", srcImg1); }
+		//if (!all_output) { imshow("blur - filtered image - srcImg", srcImg); }
+		//if (!all_output) { imshow("GaussianBlur - filtered image - srcImg", srcImg2); }
+		//if (!all_output) { imshow("threshold128 - filtered image - srcImg", srcImg3); }
+		////cv::cvtColor(srcImg, GrayImg, cv::COLOR_BGR2GRAY);
+		////if (!all_output){ cout << "02 - CONVERTING 'srcImg' TO GRAYSCALE " << "\n";}
+		////if (!all_output) { imshow("2 - Blur GrayImg", GrayImg); }  
 #pragma endregion
 
 
@@ -1501,24 +1516,24 @@ int main(int argc, char *argv[])
 ////	imwrite("gamma_correction.png", img_gamma_corrected);
 #pragma endregion
 
-	cvtColor(src, GrayImg, CV_BGR2GRAY);
+		cvtColor(src, GrayImg, CV_BGR2GRAY);
 
-	ColumnsAnalysis(GrayImg);
+		ColumnsAnalysis(GrayImg);
 
-	//Mat GrayscaleImage = GrayImg;
-	//if (!all_output) { imshow("GrayscaleImage", GrayscaleImage); }
+		//Mat GrayscaleImage = GrayImg;
+		//if (!all_output) { imshow("GrayscaleImage", GrayscaleImage); }
 
-	//Mat linePixelsTempGraySrc3 = GrayImg;
-	//SetNadirToBlack(GrayImg);
-	//CalcHist(src);
-	//CalcHistEq();
+		//Mat linePixelsTempGraySrc3 = GrayImg;
+		//SetNadirToBlack(GrayImg);
+		//CalcHist(src);
+		//CalcHistEq();
 
 #pragma region Components /*and nadir removal*/
-	Mat components = GetConnectedComponent(LeftAndRightImages);
+		Mat components = GetConnectedComponent(LeftAndRightImages);
 #pragma endregion
 
-	//Mat RemovedNadirImage = RemoveNadir(GrayImg);
-	
+		//Mat RemovedNadirImage = RemoveNadir(GrayImg);
+
 #pragma region Histogram Equilization
 //	char* source_window = "Source image";
 //	char* equalized_window = "Equalized Image";
@@ -1548,668 +1563,653 @@ int main(int argc, char *argv[])
 #pragma endregion
 
 #pragma region MyRegion
-	if (!all_output){ cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n";}
-	//ofstream ComponentsLoop;
-	//ComponentsLoop.open("ComponentsLoop.txt");
+		if (!all_output) { cout << "13 - STORING LOOPING-OVER-CANNY-IMAGES RESULTS IN TEXT FILE: 'ComponentsLoop.txt'" << "\n"; }
+		//ofstream ComponentsLoop;
+		//ComponentsLoop.open("ComponentsLoop.txt");
 
-	//ofstream Bin_Analysis;
-	//Bin_Analysis.open("Bin_Analysis.csv");
-	if (!all_output){ cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n";}
+		//ofstream Bin_Analysis;
+		//Bin_Analysis.open("Bin_Analysis.csv");
+		if (!all_output) { cout << "14 - STORING BIN ANALYSIS RESULTS IN TEXT FILE: 'Bin_Analysis.CSV'" << "\n"; }
 
-	//ofstream ComponentAngle;
-	//ComponentAngle.open("ComponentAngle.txt");
-	ofstream AngleTest_DataFile;
-	AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
+		//ofstream ComponentAngle;
+		//ComponentAngle.open("ComponentAngle.txt");
+		ofstream AngleTest_DataFile;
+		AngleTest_DataFile.open("AngleTest_DataFile.txt", ios::app);
 
-	//temp variable - to by-pass background mask
-	int maskElements = nFltrLabels2 - 1;
+		//temp variable - to by-pass background mask
+		//int maskElements = nFltrLabels2 - 1;
 
 #pragma region Loop through each component
-	//start with "mi=0 till mi<maskElement"
-	//then just add a check inside for loop to skip mi=0 to ensure u address all elements of maskElement
-	for (int LRimages = 0; LRimages < LeftAndRightImages.size(); LRimages++)
-	{
-		std::string sLRimages = std::to_string(LRimages);
-		Mat linePixelsTempGraySrc3 = LeftAndRightImages.at(LRimages);
-		Mat tempSrc1 = LeftAndRightImages.at(LRimages);
-		Mat tempGraySrc = LeftAndRightImages.at(LRimages);;
+		//start with "mi=0 till mi<maskElement"
+		//then just add a check inside for loop to skip mi=0 to ensure u address all elements of maskElement
 
 
-		for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
+		// Loop through both left and right image (after nadir removal)
+		for (int LRimages = 0; LRimages < LeftAndRightImages.size(); LRimages++)
 		{
-			std::string smi = std::to_string(mi);
-			//system("cls");
-			//if (!all_output) {cout << "component= " << mi;}
-			//testMaskiRead = imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
+			std::string sLRimages = std::to_string(LRimages);
+			Mat linePixelsTempGraySrc3 = LeftAndRightImages.at(LRimages);
+			Mat tempSrc1 = LeftAndRightImages.at(LRimages);
+			Mat tempGraySrc = LeftAndRightImages.at(LRimages);
 
-#pragma region TempTest
-			if (mi == 2440)
-			{
-				if (!all_output) { cout << "component= " << mi; }
-			}
-#pragma endregion
+			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
-			if (true)
+			// Loop through all component's perleft and right image
+			for (size_t mi = 1; mi < 3 /*MasksCount.at(LRimages)*/; mi++)
 			{
-				/*	ComponentsLoop << "		Component Nr. = " << mi << "\n";*/
-					//if (mi== 17 ||mi == 16 ||mi == 13 || mi == 9)
-					//{
+				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
-				//maskImages.at(mi);
-				if (all_output) { imshow("4 - component- " + smi, tempComponent); };
-				//if (all_output){ imwrite("4_component_" + smi + ".bmp", tempComponent);
-				Mat GrayComponents;
-				//cvtColor(tempComponent, GrayComponents, COLOR_BGR2GRAY);
-				//if (all_output){ imshow("GrayComponents", GrayComponents);
-				GrayComponents = tempComponent;
-				Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
-				Sobel(GrayComponents, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+				if (!all_output) { imshow("4 - component- " + smi, tempComponent); };
 
-				Mat Mag(GrayComponents.size(), CV_32FC1);
-				Mat Angle(GrayComponents.size(), CV_32FC1);
-				cartToPolar(grad_x, grad_y, Mag, Angle, true);
-				//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
-				//ofstream Angle_DataFile;
-				//Angle_DataFile.open("Angle_DataFile_" + smi + ".csv");
-				//Angle_DataFile << Angle << "\n";
-				//Angle_DataFile.close();
-				//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
+				// If component is touching image edge
+				if (ComponentTouchImageEdge(tempComponent))
+				{
 
-				std::array<std::vector<int>, 72> vvv{ {} };
-				struct element {
-					int bin;
-					int i;
-					int j;
-					int angle;
-					int value;
-				};
-				vector<element> container;
-				int containerCount = 0;
+				}
+				else
+				{
+					Mat GrayComponents;
+					GrayComponents = tempComponent;
+					Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+					Sobel(GrayComponents, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+					Mat Mag(GrayComponents.size(), CV_32FC1);
+					Mat Angle(GrayComponents.size(), CV_32FC1);
+					cartToPolar(grad_x, grad_y, Mag, Angle, true);
+					//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
+					//ofstream Angle_DataFile;
+					//Angle_DataFile.open("Angle_DataFile_" + smi + ".csv");
+					//Angle_DataFile << Angle << "\n";
+					//Angle_DataFile.close();
+					//////77777777777777777777777777777777777777777777777777777777777777777777777777777777777
 
-				Canny(GrayComponents, cannyEdge, 100, 200);
-				if (all_output) { imshow("5 - component cannyEdge - " + smi, cannyEdge); }
-				//if (all_output){ imwrite("5_component_cannyEdge" + smi + ".bmp", cannyEdge);
-				//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
-				//ofstream cannyEdge_DataFile;
-				//cannyEdge_DataFile.open("cannyEdge_DataFile_" + smi + ".csv");
-				//cannyEdge_DataFile << cannyEdge << "\n";
-				//cannyEdge_DataFile.close();
-				//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
+					std::array<std::vector<int>, 72> vvv{ {} };
+					struct element {
+						int bin;
+						int i;
+						int j;
+						int angle;
+						int value;
+					};
+					vector<element> container;
+					int containerCount = 0;
 
-				Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
+					Canny(GrayComponents, cannyEdge, 100, 200);
+					if (all_output) { imshow("5 - component cannyEdge - " + smi, cannyEdge); }
+
+					Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
 
 #pragma region CannyEdge Calculation-Angle per Component Calculation
-				///Walk along cannyEdge rows
-				for (size_t i = 0; i < cannyEdge.rows; i++)
-				{
-					///Walk along cannyEdge rows & columns
-					for (size_t j = 0; j < cannyEdge.cols; j++)
+					///Walk along cannyEdge rows
+					for (size_t i = 0; i < cannyEdge.rows; i++)
 					{
-						/*				ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";*/
-										//Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
-										///if cannyEdge pixel intensity id non-zero
-						if ((int)cannyEdge.at<uchar>(i, j) != 0)
+						///Walk along cannyEdge rows & columns
+						for (size_t j = 0; j < cannyEdge.cols; j++)
 						{
-							//ComponentsLoop << "				Non-Zero Canny pixel value (coordinates - (x,y) ) = " << i << ", " << j << "\n";
-							//ComponentsLoop << "				Storing Non-Zero Canny pixel value in container" << "\n";
+							/*				ComponentsLoop << "			Walk along Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";*/
+											//Bin_Analysis << "Canny Edge (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+											///if cannyEdge pixel intensity id non-zero
+							if ((int)cannyEdge.at<uchar>(i, j) != 0)
+							{
+								//ComponentsLoop << "				Non-Zero Canny pixel value (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+								//ComponentsLoop << "				Storing Non-Zero Canny pixel value in container" << "\n";
 
-							//Bin_Analysis << "Canny Edge Non-zero pixel (coordinates - (x,y) ) = " << i << ", " << j << "\n";
+								//Bin_Analysis << "Canny Edge Non-zero pixel (coordinates - (x,y) ) = " << i << ", " << j << "\n";
 
-							newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							/*Create new Angle matrix*/
-							container.push_back(element());												/*Initialise container*/
-							container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/
-							container[containerCount].i = i;											///Store row position
-							container[containerCount].j = j;											///Store column position
-							container[containerCount].angle = newAngle.ptr<float>(i)[j];				///Store new Angle value
-							container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);			///Store canny pixel intensity
-							containerCount++;
+								newAngle.ptr<float>(i)[j] = Angle.ptr<float>(i)[j];							/*Create new Angle matrix*/
+								container.push_back(element());												/*Initialise container*/
+								container[containerCount].bin = int(newAngle.ptr<float>(i)[j] / binSize);	/*Store bin (newAngle/5)*/
+								container[containerCount].i = i;											///Store row position
+								container[containerCount].j = j;											///Store column position
+								container[containerCount].angle = newAngle.ptr<float>(i)[j];				///Store new Angle value
+								container[containerCount].value = (int)cannyEdge.at<uchar>(i, j);			///Store canny pixel intensity
+								containerCount++;
+							}
 						}
 					}
-				}
 #pragma endregion
 
-				//ComponentsLoop << "Finished walking on Canny Edge" << "\n";
-				//ComponentsLoop << "\n";
-				//ComponentsLoop << "\n";
+					//ComponentsLoop << "Finished walking on Canny Edge" << "\n";
+					//ComponentsLoop << "\n";
+					//ComponentsLoop << "\n";
 
-				//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
-				//ofstream newAngle_DataFile;
-				//newAngle_DataFile.open("newAngle_DataFile" + smi + ".csv");
-				//newAngle_DataFile << newAngle << "\n";
-				//newAngle_DataFile.close();
-				//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
+					//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
+					//ofstream newAngle_DataFile;
+					//newAngle_DataFile.open("newAngle_DataFile" + smi + ".csv");
+					//newAngle_DataFile << newAngle << "\n";
+					//newAngle_DataFile.close();
+					//////8888888888888888888888888888888888888888888888888888888888888888888888888888888
 
-				//Bin_Analysis.close();
-				//////999999999999999999999999999999999999999999999999999999
-				//ofstream ContainerFile;
-				//ContainerFile.open("ContainerFile_" + smi + ".txt");
-				for (int i = 0; i < container.size(); i++)
-				{
-					//ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
-					//ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
-					//ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
-					//ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
-					//ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
-					//ContainerFile << "\n";
-					//ContainerFile << "\n";
-				}
-				//ContainerFile.close();
-				//////999999999999999999999999999999999999999999999999999999
-				int maxCount = 0;
-				struct maxCountStruct {
-					int bin;
-					int angle;
-					int size;
-				};
-				vector<maxCountStruct> maxCountContainer;
-				int temp = 0;
-				struct MaxElementStruct {
-					int bin = 0;
-					int angle = 0;
-					int size = 0;
-				};
-				MaxElementStruct mes;
-
-				//ofstream KeepingTrackOfContainers_DataFile;
-				//KeepingTrackOfContainers_DataFile.open("KeepingTrackOfContainers_DataFile.csv");
-
-				/*ComponentsLoop << "			For every element in container (total size = " << container.size() << ")" << "\n";*/
-				/// Grouping bin values together and counting them
-				/// For every element in container
-				for (size_t l = 0; l < container.size(); l++)
-				{
-					/*ComponentsLoop << "			container[l] = " << l << "\n";*/
-					/// If new container is empty (at start)
-					if (maxCountContainer.empty())
+					//Bin_Analysis.close();
+					//////999999999999999999999999999999999999999999999999999999
+					//ofstream ContainerFile;
+					//ContainerFile.open("ContainerFile_" + smi + ".txt");
+					for (int i = 0; i < container.size(); i++)
 					{
-						/*	ComponentsLoop << "				Initial element (new container empty) in new container[l] = " << l << "\n";*/
-						maxCountContainer.push_back(maxCountStruct());		/// Initialise new container
-						maxCountContainer[l].bin = container[l].bin;		/// Store container bin value in new container bin field
-						maxCountContainer[l].angle = container[l].angle;	/// Store container angle value in new container angle field
-						maxCountContainer[l].size += 1;						/// Increment new container size field (counting elements with similair bin values)
+						//ContainerFile << "container[" << i << "].bin= " << container[i].bin << "\n";
+						//ContainerFile << "container[" << i << "].i= " << container[i].i << "\n";
+						//ContainerFile << "container[" << i << "].j= " << container[i].j << "\n";
+						//ContainerFile << "container[" << i << "].angle= " << container[i].angle << "\n";
+						//ContainerFile << "container[" << i << "].value= " << container[i].value << "\n";
+						//ContainerFile << "\n";
+						//ContainerFile << "\n";
 					}
-					else  /// If not at start (new container contains first element)
+					//ContainerFile.close();
+					//////999999999999999999999999999999999999999999999999999999
+					int maxCount = 0;
+					struct maxCountStruct {
+						int bin;
+						int angle;
+						int size;
+					};
+					vector<maxCountStruct> maxCountContainer;
+					int temp = 0;
+					struct MaxElementStruct {
+						int bin = 0;
+						int angle = 0;
+						int size = 0;
+					};
+					MaxElementStruct mes;
+
+					//ofstream KeepingTrackOfContainers_DataFile;
+					//KeepingTrackOfContainers_DataFile.open("KeepingTrackOfContainers_DataFile.csv");
+
+					/*ComponentsLoop << "			For every element in container (total size = " << container.size() << ")" << "\n";*/
+					/// Grouping bin values together and counting them
+					/// For every element in container
+					for (size_t l = 0; l < container.size(); l++)
 					{
-						/// For every element in new container (new container contains at least one element thus far) & its elements will increase with every loop
-						for (size_t m = 0; m < maxCountContainer.size(); m++)
+						/*ComponentsLoop << "			container[l] = " << l << "\n";*/
+						/// If new container is empty (at start)
+						if (maxCountContainer.empty())
 						{
-							/*ComponentsLoop << "				For every element in new container[m] (as it's filling up ) = " << m << "\n";*/
-
-							//KeepingTrackOfContainers_DataFile << "container iterator (l): " << l << "\n";
-							//KeepingTrackOfContainers_DataFile << "maxCountContainer iterator (m)= " << m << "\n";
-							/// 
-							if (maxCountContainer[m].bin == container[l].bin)
+							/*	ComponentsLoop << "				Initial element (new container empty) in new container[l] = " << l << "\n";*/
+							maxCountContainer.push_back(maxCountStruct());		/// Initialise new container
+							maxCountContainer[l].bin = container[l].bin;		/// Store container bin value in new container bin field
+							maxCountContainer[l].angle = container[l].angle;	/// Store container angle value in new container angle field
+							maxCountContainer[l].size += 1;						/// Increment new container size field (counting elements with similair bin values)
+						}
+						else  /// If not at start (new container contains first element)
+						{
+							/// For every element in new container (new container contains at least one element thus far) & its elements will increase with every loop
+							for (size_t m = 0; m < maxCountContainer.size(); m++)
 							{
-								//ComponentsLoop << "					When container element [l] already exist in new container [m] (don't re-add it, just update it's count ) = " << l << ", " << m << "\n";
-								maxCountContainer[m].size += 1;
-								break;
-							}
-							else if (m == maxCountContainer.size() - 1)
-							{
-								maxCountContainer.push_back(maxCountStruct());
-								maxCountContainer[maxCountContainer.size() - 1].bin = container[l].bin;
-								maxCountContainer[maxCountContainer.size() - 1].angle = container[l].angle;
-								maxCountContainer[maxCountContainer.size() - 1].size += 1;
-								break;
-							}
+								/*ComponentsLoop << "				For every element in new container[m] (as it's filling up ) = " << m << "\n";*/
 
-							//////666666666666666666666666666666666666666666666666666666666666666666666666666666
-							//ofstream maxCountContainer_DataFile;
-							//maxCountContainer_DataFile.open("maxCountContainer_DataFile_" + smi + ".csv");
-							//for (int i = 0; i < maxCountContainer.size(); i++)
-							//{
-							//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].i= " << i << "\n";
-							//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
-							//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
-							//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
-							//	maxCountContainer_DataFile << "\n";
-							//	maxCountContainer_DataFile << "\n";
-							//}
-							//maxCountContainer_DataFile.close();
-							//maxCountContainer_DataFile.close();
-							//////666666666666666666666666666666666666666666666666666666666666666666666666666666
+								//KeepingTrackOfContainers_DataFile << "container iterator (l): " << l << "\n";
+								//KeepingTrackOfContainers_DataFile << "maxCountContainer iterator (m)= " << m << "\n";
+								/// 
+								if (maxCountContainer[m].bin == container[l].bin)
+								{
+									//ComponentsLoop << "					When container element [l] already exist in new container [m] (don't re-add it, just update it's count ) = " << l << ", " << m << "\n";
+									maxCountContainer[m].size += 1;
+									break;
+								}
+								else if (m == maxCountContainer.size() - 1)
+								{
+									maxCountContainer.push_back(maxCountStruct());
+									maxCountContainer[maxCountContainer.size() - 1].bin = container[l].bin;
+									maxCountContainer[maxCountContainer.size() - 1].angle = container[l].angle;
+									maxCountContainer[maxCountContainer.size() - 1].size += 1;
+									break;
+								}
 
-					/*		ComponentsLoop << "		Adjusting element with the highest frequency" << "\n";*/
-							if (maxCountContainer[m].size > temp)	///Find bin with the most elements
-							{
-								temp = maxCountContainer[m].size;
-								mes.bin = (int)maxCountContainer[m].bin;	///Bin with most elements (bin ID)
-								mes.angle = (int)maxCountContainer[m].angle;
-								mes.size = (int)maxCountContainer[m].size;
+								//////666666666666666666666666666666666666666666666666666666666666666666666666666666
+								//ofstream maxCountContainer_DataFile;
+								//maxCountContainer_DataFile.open("maxCountContainer_DataFile_" + smi + ".csv");
+								//for (int i = 0; i < maxCountContainer.size(); i++)
+								//{
+								//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].i= " << i << "\n";
+								//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].bin= " << maxCountContainer[i].bin << "\n";
+								//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].angle= " << maxCountContainer[i].angle << "\n";
+								//	maxCountContainer_DataFile << "maxCountContainer[" << i << "].size= " << maxCountContainer[i].size << "\n";
+								//	maxCountContainer_DataFile << "\n";
+								//	maxCountContainer_DataFile << "\n";
+								//}
+								//maxCountContainer_DataFile.close();
+								//maxCountContainer_DataFile.close();
+								//////666666666666666666666666666666666666666666666666666666666666666666666666666666
+
+						/*		ComponentsLoop << "		Adjusting element with the highest frequency" << "\n";*/
+								if (maxCountContainer[m].size > temp)	///Find bin with the most elements
+								{
+									temp = maxCountContainer[m].size;
+									mes.bin = (int)maxCountContainer[m].bin;	///Bin with most elements (bin ID)
+									mes.angle = (int)maxCountContainer[m].angle;
+									mes.size = (int)maxCountContainer[m].size;
+								}
+								/*	ComponentsLoop << "		Element with highest frequency (" << mes.size << "= " << mes.angle << "\n";*/
 							}
-							/*	ComponentsLoop << "		Element with highest frequency (" << mes.size << "= " << mes.angle << "\n";*/
 						}
 					}
-				}
-				//KeepingTrackOfContainers_DataFile.close();
-				//AngleTest_DataFile.open("AngleTest_DataFile.txt");
-				if (all_output) { AngleTest_DataFile << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
-				if (all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
-				//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
-				//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
-				//ComponentAngle << "Angle (mes)- " << smi << "\n";
-				/*Mat tempGraySrc = GrayImg;*/
-				for (size_t n = 0; n < container.size(); n++)
-				{
-					if (container[n].bin == mes.bin)
+					//KeepingTrackOfContainers_DataFile.close();
+					//AngleTest_DataFile.open("AngleTest_DataFile.txt");
+					if (all_output) { AngleTest_DataFile << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
+					if (all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
+					//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
+					//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
+					//ComponentAngle << "Angle (mes)- " << smi << "\n";
+					/*Mat tempGraySrc = GrayImg;*/
+					for (size_t n = 0; n < container.size(); n++)
 					{
-						tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
+						if (container[n].bin == mes.bin)
+						{
+							tempGraySrc.at<uchar>(container[n].i, container[n].j) = 255;
+						}
 					}
-				}
-				// Using tempSrc2 just for drawing points and lines - to display
-				Mat tempSrc2 = imread("/images/20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg", CV_LOAD_IMAGE_UNCHANGED);
-				//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-				//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-				//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
+					// Using tempSrc2 just for drawing points and lines - for display purposes only
+					Mat tempSrc2 = imread(file, CV_LOAD_IMAGE_UNCHANGED);
+					//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+					//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01R2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+					//Mat tempSrc2 = imread("20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg");
 #pragma region Bounding Box
-				vector<double> lengths(4);
-				double rectSize_b;
-				size_t imgCount = 0;
-				////if (all_output){ cout << "maskImages.size()= " << maskImages.size() << "\n";}
-				//for (imgCount; imgCount < maskImages.size(); imgCount++)
-				//{
-				Mat tempPoints;
-				findNonZero(imread("mask_i" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED), tempPoints);
-				//if (!all_output) { cout << "tempPoints = " << tempPoints << "\n"; };
-				Points.push_back(tempPoints);
-				//}
-				Point2f vtx[4];
-				RotatedRect box = minAreaRect(Points[mi - 1]); //only the first Mat Points
-				//if (!all_output){ AngleTest_DataFile << "RotatedRect box = minAreaRect(Points[mi])" << box.angle << "\n";}
-				//if (!all_output) { AngleTest_DataFile << "###########################################################" << "\n"; };
-				AngleTest_DataFile.close();
-				box.points(vtx);
-				/*Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);*/
-				for (int i = 0; i < 4; i++)
-				{
-					line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-					line(tempSrc2, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
-					lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
-				}
-				if (all_output) { imshow("Bounding Box", tempSrc1); }
-				//if (all_output){ imwrite("Bounding_Box" + smi + ".bmp", tempSrc1);
-				////if (all_output){ cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";}
-				//if (all_output){ cout << "minAreaRect width= " << box.size.width << "\n";}
-				//if (all_output){ cout << "minAreaRect height= " << box.size.height << "\n";}
+					vector<double> lengths(4);
+					double rectSize_b;
+					size_t imgCount = 0;
+					////if (all_output){ cout << "maskImages.size()= " << maskImages.size() << "\n";}
+					//for (imgCount; imgCount < maskImages.size(); imgCount++)
+					//{
+					Mat tempPoints;
+					findNonZero(imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED), tempPoints);
+					//if (!all_output) { cout << "tempPoints = " << tempPoints << "\n"; };
+					Points.push_back(tempPoints);
+					//}
+					Point2f vtx[4];
+					RotatedRect box = minAreaRect(Points[mi - 1]); //only the first Mat Points
+					//if (!all_output){ AngleTest_DataFile << "RotatedRect box = minAreaRect(Points[mi])" << box.angle << "\n";}
+					//if (!all_output) { AngleTest_DataFile << "###########################################################" << "\n"; };
+					AngleTest_DataFile.close();
+					box.points(vtx);
+					/*Mat tempSrc1 = imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);*/
+					for (int i = 0; i < 4; i++)
+					{
+						line(tempSrc1, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+						line(tempSrc2, vtx[i], vtx[(i + 1) % 4], Scalar(0, 255, 0), 1, LINE_AA);
+						lengths.push_back(norm((vtx[(i + 1) % 4]) - (vtx[i])));
+					}
+					if (all_output) { imshow("Bounding Box", tempSrc1); }
+					//if (all_output){ imwrite("Bounding_Box" + smi + ".bmp", tempSrc1);
+					////if (all_output){ cout << "minAreaRect Angle - "<<smi<<"= " << box.angle + 180 << "\n";}
+					//if (all_output){ cout << "minAreaRect width= " << box.size.width << "\n";}
+					//if (all_output){ cout << "minAreaRect height= " << box.size.height << "\n";}
 #pragma endregion
-				Mat plotImage = src;	//plotImage used just to draw - for display purposes
-				circle(plotImage, maskCentroid.at(mi), 1, Scalar(0, 255, 0), 1, 8, 0);
-				circle(tempSrc2, maskCentroid.at(mi), 1, Scalar(0, 255, 0), 1, 8, 0);
+					Mat plotImage = src;	//plotImage used just to draw - for display purposes
+					circle(plotImage, maskCentroid.at(mi), 1, Scalar(0, 255, 0), 1, 8, 0);
+					circle(tempSrc2, maskCentroid.at(mi), 1, Scalar(0, 255, 0), 1, 8, 0);
 
 #pragma region walk in edge angle direction
-				Point2f u, u2, u22, v;
-				Point2f w1, w2;
-				//if (all_output){ cout << "cos((mes.angle)* CV_PI / 180.0)= " << cos((mes.angle)* CV_PI / 180.0) << "\n";}
-				//if (all_output){ cout << "sin((mes.angle)* CV_PI / 180.0)= " << sin((mes.angle)* CV_PI / 180.0) << "\n";}
-				u = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
-				u2 = u;
-				rectSize_b = *max_element(lengths.begin(), lengths.end());
-				double d = 0.1*rectSize_b;
-				double normU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
-				////if (all_output){ cout << "normU= " << normU << "\n";}
-				v = Point2f(u.x / normU, u.y / normU);
-				//Mat tempSrcW1 = src, tempSrcW2 = src;
-				for (size_t i = 0; i < 10; i++)
-				{
-					if (i == 0)
-					{	// starting point = center of mask
-						w1.x = maskCentroid.at(mi).x + v.x*d;	//one side
-						w1.y = maskCentroid.at(mi).y + v.y*d;
+					Point2f u, u2, u22, v;
+					Point2f w1, w2;
+					//if (all_output){ cout << "cos((mes.angle)* CV_PI / 180.0)= " << cos((mes.angle)* CV_PI / 180.0) << "\n";}
+					//if (all_output){ cout << "sin((mes.angle)* CV_PI / 180.0)= " << sin((mes.angle)* CV_PI / 180.0) << "\n";}
+					u = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
+					u2 = u;
+					rectSize_b = *max_element(lengths.begin(), lengths.end());
+					double d = 0.1*rectSize_b;
+					double normU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
+					////if (all_output){ cout << "normU= " << normU << "\n";}
+					v = Point2f(u.x / normU, u.y / normU);
+					//Mat tempSrcW1 = src, tempSrcW2 = src;
+					for (size_t i = 0; i < 10; i++)
+					{
+						if (i == 0)
+						{	// starting point = center of mask
+							w1.x = maskCentroid.at(mi).x + v.x*d;	//one side
+							w1.y = maskCentroid.at(mi).y + v.y*d;
 
-						w2.x = maskCentroid.at(mi).x - v.x*d;	//other side
-						w2.y = maskCentroid.at(mi).y - v.y*d;
+							w2.x = maskCentroid.at(mi).x - v.x*d;	//other side
+							w2.y = maskCentroid.at(mi).y - v.y*d;
+						}
+						else
+						{	// points on either-side of mask center point
+							w1.x = u2.x + v.x*d;		//one side
+							w1.y = u2.y + v.y*d;
+
+							w2.x = u22.x - v.x*d;		//other side
+							w2.y = u22.y - v.y*d;
+						}
+						////if (all_output){ cout << "i - " << i << "2-Plot here= " << w1 << ", " << w2 << "\n";}
+						//circle(plotImage, w1, 1, Scalar(0, 0, 255), 1, 8, 0);
+						//circle(plotImage, w2, 1, Scalar(255, 0, 0), 1, 8, 0);
+
+						circle(tempSrc2, w1, 1, Scalar(55, 55, 55), 1, 8, 0);
+						circle(tempSrc2, w2, 1, Scalar(55, 55, 55), 1, 8, 0);
+						//circle(tempSrcW1, w1, 1, Scalar(0, 0, 0), 1, 8, 0);
+						//circle(tempSrcW2, w2, 1, Scalar(255, 255, 255), 1, 8, 0);
+						u2 = w1;
+						u22 = w2;
 					}
-					else
-					{	// points on either-side of mask center point
-						w1.x = u2.x + v.x*d;		//one side
-						w1.y = u2.y + v.y*d;
+					if (all_output) { imshow("walk in edge angle direction - component nr." + smi, tempSrc2); };
+					//rectangle(tempSrcW1, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(255, 0, 0));
+					//if (all_output){ imshow("tempSrcW1- " + smi, tempSrcW1);
+					//if (all_output){ imwrite("tempSrcW1_" + smi + ".bmp", tempSrcW1);
 
-						w2.x = u22.x - v.x*d;		//other side
-						w2.y = u22.y - v.y*d;
-					}
-					////if (all_output){ cout << "i - " << i << "2-Plot here= " << w1 << ", " << w2 << "\n";}
-					//circle(plotImage, w1, 1, Scalar(0, 0, 255), 1, 8, 0);
-					//circle(plotImage, w2, 1, Scalar(255, 0, 0), 1, 8, 0);
-
-					circle(tempSrc2, w1, 1, Scalar(55, 55, 55), 1, 8, 0);
-					circle(tempSrc2, w2, 1, Scalar(55, 55, 55), 1, 8, 0);
-					//circle(tempSrcW1, w1, 1, Scalar(0, 0, 0), 1, 8, 0);
-					//circle(tempSrcW2, w2, 1, Scalar(255, 255, 255), 1, 8, 0);
-					u2 = w1;
-					u22 = w2;
-				}
-				if (all_output) { imshow("walk in edge angle direction - component nr." + smi, tempSrc2); };
-				//rectangle(tempSrcW1, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(255, 0, 0));
-				//if (all_output){ imshow("tempSrcW1- " + smi, tempSrcW1);
-				//if (all_output){ imwrite("tempSrcW1_" + smi + ".bmp", tempSrcW1);
-
-				//rectangle(tempSrcW2, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(0, 255, 0));
-				//if (all_output){ imshow("tempSrcW2- " + smi, tempSrcW2);
-				//if (all_output){ imwrite("tempSrcW2_" + smi + ".bmp", tempSrcW2);
+					//rectangle(tempSrcW2, cv::Point2f(10, 10), cv::Point2f(src.size().width - 10, src.size().height - 10), cv::Scalar(0, 255, 0));
+					//if (all_output){ imshow("tempSrcW2- " + smi, tempSrcW2);
+					//if (all_output){ imwrite("tempSrcW2_" + smi + ".bmp", tempSrcW2);
 #pragma endregion
 
-				struct buffer {
-					std::vector<double> pixValues;
-					Point2f startPoint;
-					Point2f endPoint;
-					//int j;
-					//int angle;
-					//int value;
-				};
-				vector<buffer> Profiles;
-				int ProfilesCount = 0;
+					struct buffer {
+						std::vector<double> pixValues;
+						Point2f startPoint;
+						Point2f endPoint;
+						//int j;
+						//int angle;
+						//int value;
+					};
+					vector<buffer> Profiles;
+					int ProfilesCount = 0;
 
 #pragma region walk perpendicular in edge angle direction
-				Point2f uu, uu2, uu22, vv, ep11, ep12, ep21, ep22;
-				Point2f ww1, ww2;
-				uu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
-				uu2 = uu;
-				rectSize_b = *max_element(lengths.begin(), lengths.end());
-				//double dd = 0.1*rectSize_b;
-				double normUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
-				vv = Point2f(uu.x / normUU, uu.y / normUU);
-				u = vv;
-				//rotate and swap
-				double tempXX = vv.x;
-				vv.x = -vv.y;
-				vv.y = tempXX;
-				int e = 20;
+					Point2f uu, uu2, uu22, vv, ep11, ep12, ep21, ep22;
+					Point2f ww1, ww2;
+					uu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
+					uu2 = uu;
+					rectSize_b = *max_element(lengths.begin(), lengths.end());
+					//double dd = 0.1*rectSize_b;
+					double normUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
+					vv = Point2f(uu.x / normUU, uu.y / normUU);
+					u = vv;
+					//rotate and swap
+					double tempXX = vv.x;
+					vv.x = -vv.y;
+					vv.y = tempXX;
+					int e = 20;
 
-				Mat tempGraySrc3;
-				cv::cvtColor(src, tempGraySrc3, cv::COLOR_BGR2GRAY);
-				Mat tempSrc3 = tempGraySrc;//imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
-				//Mat linePixelsTempGraySrc3 = tempGraySrc3;
-				int i = -1;
-				/*std::string ii = std::to_string(i);*/
-				Mat imageArray[10];
-				bool beginning = true;
+					Mat tempGraySrc3;
+					cv::cvtColor(src, tempGraySrc3, cv::COLOR_BGR2GRAY);
+					Mat tempSrc3 = tempGraySrc;//imread("20161215 02.33_368L2.jpg", CV_LOAD_IMAGE_UNCHANGED);
+					//Mat linePixelsTempGraySrc3 = tempGraySrc3;
+					int i = -1;
+					/*std::string ii = std::to_string(i);*/
+					Mat imageArray[10];
+					bool beginning = true;
 
-				for (i = -1; i < box.size.width / 2; i++)
-				{
-					std::string ii = std::to_string(i);
-
-					if (i == -1)
+					for (i = -1; i < box.size.width / 2; i++)
 					{
-						ww1.x = maskCentroid.at(mi).x;// +vv.x*d;	//one side
-						ww1.y = maskCentroid.at(mi).y;// +vv.y*d;
+						std::string ii = std::to_string(i);
 
-						ww2.x = maskCentroid.at(mi).x;// -vv.x*d;	//other side
-						ww2.y = maskCentroid.at(mi).y;// -vv.y*d;
+						if (i == -1)
+						{
+							ww1.x = maskCentroid.at(mi).x;// +vv.x*d;	//one side
+							ww1.y = maskCentroid.at(mi).y;// +vv.y*d;
 
-												   //end points of profile
-						ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
-						ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
-						ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
-						ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
+							ww2.x = maskCentroid.at(mi).x;// -vv.x*d;	//other side
+							ww2.y = maskCentroid.at(mi).y;// -vv.y*d;
 
-						ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
-						ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
-						ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
-						ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
-					}
-					else if (i == 0)
-					{	// starting point = center of mask
-						ww1.x = maskCentroid.at(mi).x + vv.x*d;	//one side
-						ww1.y = maskCentroid.at(mi).y + vv.y*d;
+													   //end points of profile
+							ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
+							ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
+							ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
+							ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
 
-						ww2.x = maskCentroid.at(mi).x - vv.x*d;	//other side
-						ww2.y = maskCentroid.at(mi).y - vv.y*d;
+							ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
+							ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
+							ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
+							ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
+						}
+						else if (i == 0)
+						{	// starting point = center of mask
+							ww1.x = maskCentroid.at(mi).x + vv.x*d;	//one side
+							ww1.y = maskCentroid.at(mi).y + vv.y*d;
 
-						//end points of profile
-						ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
-						ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
-						ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
-						ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
+							ww2.x = maskCentroid.at(mi).x - vv.x*d;	//other side
+							ww2.y = maskCentroid.at(mi).y - vv.y*d;
 
-						ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
-						ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
-						ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
-						ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
+							//end points of profile
+							ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
+							ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
+							ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
+							ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
 
-						beginning = false;
-					}
-					else
-					{	// points on either-side of mask center point
-						ww1.x = uu2.x + vv.x*d;		//one side
-						ww1.y = uu2.y + vv.y*d;
+							ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
+							ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
+							ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
+							ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
 
-						ww2.x = uu22.x - vv.x*d;	//other side
-						ww2.y = uu22.y - vv.y*d;
+							beginning = false;
+						}
+						else
+						{	// points on either-side of mask center point
+							ww1.x = uu2.x + vv.x*d;		//one side
+							ww1.y = uu2.y + vv.y*d;
 
-						//end points of profile
-						ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
-						ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
-						ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
-						ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
+							ww2.x = uu22.x - vv.x*d;	//other side
+							ww2.y = uu22.y - vv.y*d;
 
-						ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
-						ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
-						ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
-						ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
-					}
-					circle(tempSrc2, ww2, 1, Scalar(255, 0, 0), 1, 8, 0); //turqoise
-					circle(tempSrc2, ww1, 1, Scalar(55, 0, 0), 1, 8, 0); //
-																			 //circle(tempSrc2, ww2, 1, Scalar(255, 255, 10), 1, 8, 0); //
-					circle(tempSrc2, ep11, 1, Scalar(0, 0, 255), 1, 8, 0); //
-					circle(tempSrc2, ep12, 1, Scalar(0, 0, 255), 1, 8, 0); //
-					circle(tempSrc2, ep21, 1, Scalar(0, 0, 255), 1, 8, 0); //
-					circle(tempSrc2, ep22, 1, Scalar(0, 0, 255), 1, 8, 0); //
+							//end points of profile
+							ep11.x = ww1.x - ((box.size.width + e) / 2) * uu.x;
+							ep11.y = ww1.y - ((box.size.width + e) / 2) * uu.y;
+							ep12.x = ww1.x + ((box.size.width + e) / 2) * uu.x;
+							ep12.y = ww1.y + ((box.size.width + e) / 2) * uu.y;
 
-					uu2 = ww1;
-					uu22 = ww2;
+							ep21.x = ww2.x - ((box.size.width + e) / 2) * uu.x;
+							ep21.y = ww2.y - ((box.size.width + e) / 2) * uu.y;
+							ep22.x = ww2.x + ((box.size.width + e) / 2) * uu.x;
+							ep22.y = ww2.y + ((box.size.width + e) / 2) * uu.y;
+						}
+						circle(tempSrc2, ww2, 1, Scalar(255, 0, 0), 1, 8, 0); //turqoise
+						circle(tempSrc2, ww1, 1, Scalar(55, 0, 0), 1, 8, 0); //
+																				 //circle(tempSrc2, ww2, 1, Scalar(255, 255, 10), 1, 8, 0); //
+						circle(tempSrc2, ep11, 1, Scalar(0, 0, 255), 1, 8, 0); //
+						circle(tempSrc2, ep12, 1, Scalar(0, 0, 255), 1, 8, 0); //
+						circle(tempSrc2, ep21, 1, Scalar(0, 0, 255), 1, 8, 0); //
+						circle(tempSrc2, ep22, 1, Scalar(0, 0, 255), 1, 8, 0); //
+
+						uu2 = ww1;
+						uu22 = ww2;
 
 #pragma region DrawLines
-					int thickness = 0.2;
-					int lineType = 8;
-					line(tempGraySrc3,
-						Point(ep11.x, ep11.y),
-						Point(ep12.x, ep12.y),
-						Scalar(255, 0, 0),
-						thickness,
-						lineType);
+						int thickness = 0.2;
+						int lineType = 8;
+						line(tempGraySrc3,
+							Point(ep11.x, ep11.y),
+							Point(ep12.x, ep12.y),
+							Scalar(255, 0, 0),
+							thickness,
+							lineType);
 
-					profileLinesCount += 1;
-					std::string profileLinesCount1 = std::to_string(profileLinesCount);
-					if (all_output) { imshow("Profile Line-" + profileLinesCount1, tempGraySrc3); };
+						profileLinesCount += 1;
+						std::string profileLinesCount1 = std::to_string(profileLinesCount);
+						if (all_output) { imshow("Profile Line-" + profileLinesCount1, tempGraySrc3); };
 
-					line(tempGraySrc3,
-						Point(ep21.x, ep21.y),
-						Point(ep22.x, ep22.y),
-						Scalar(255, 0, 0),
-						thickness,
-						lineType);
+						line(tempGraySrc3,
+							Point(ep21.x, ep21.y),
+							Point(ep22.x, ep22.y),
+							Scalar(255, 0, 0),
+							thickness,
+							lineType);
 
-					profileLinesCount += 1;
-					std::string profileLinesCount2 = std::to_string(profileLinesCount);
-					if (all_output) { imshow("Profile Line-" + profileLinesCount2, tempGraySrc3); };
+						profileLinesCount += 1;
+						std::string profileLinesCount2 = std::to_string(profileLinesCount);
+						if (all_output) { imshow("Profile Line-" + profileLinesCount2, tempGraySrc3); };
 #pragma endregion
 
 #pragma region LinePixels
 
-					// grabs pixels along the line (pt1, pt2)
-					// from 8-bit 3-channel image to the buffer
-					LineIterator it1B(tempGraySrc3, Point(ep11), Point(ep12), 8);		// Lines before centroid
-					LineIterator it1A(tempGraySrc3, Point(ep21), Point(ep22), 8);		// Lines after centroid
-					//LineIterator it2(tempSrc3, Point(ep21), Point(ep22), 8);
-					LineIterator it11B = it1B;
-					LineIterator it11A = it1A;
-					//LineIterator it22 = it2;
-					//vector<Vec3b> buf(it.count);
+						// grabs pixels along the line (pt1, pt2)
+						// from 8-bit 3-channel image to the buffer
+						LineIterator it1B(tempGraySrc3, Point(ep11), Point(ep12), 8);		// Lines before centroid
+						LineIterator it1A(tempGraySrc3, Point(ep21), Point(ep22), 8);		// Lines after centroid
+						//LineIterator it2(tempSrc3, Point(ep21), Point(ep22), 8);
+						LineIterator it11B = it1B;
+						LineIterator it11A = it1A;
+						//LineIterator it22 = it2;
+						//vector<Vec3b> buf(it.count);
 
-					//ofstream file;
-					vector<float> pixelsOnLineB;
-					vector<float> pixelsOnLineA;
-					vector<vector<float>> pixels;
+						//ofstream file;
+						vector<float> pixelsOnLineB;
+						vector<float> pixelsOnLineA;
+						vector<vector<float>> pixels;
 
-					Mat linePixel;
-					//float pixelsUnderLine[it1.count];
+						Mat linePixel;
+						//float pixelsUnderLine[it1.count];
 
-					// Record pixels under line B (Before centroid)
-					for (int l = 0; l < it1B.count; l++, ++it1B)
-					{
-						Profiles.push_back(buffer());
-						Profiles[ProfilesCount].startPoint = ep11;
-						Profiles[ProfilesCount].endPoint = ep12;
-						double valB = (double)linePixelsTempGraySrc3.at<uchar>(it1B.pos());
-						pixelsOnLineB.push_back(valB);
-						linePixel.push_back(valB);
-						//5555555555555555555555555555555555555555555555555555555555555555
-			/*			ofstream tempGraySrc3DataFile;
-						tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + profileLinesCount1 + "B.csv");
-						tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
-						tempGraySrc3DataFile << "\n";
-						tempGraySrc3DataFile << "\n";
-						tempGraySrc3DataFile.close();*/
-						//55555555555555555555555555555555555555555555555555555555555555555555
+						// Record pixels under line B (Before centroid)
+						for (int l = 0; l < it1B.count; l++, ++it1B)
+						{
+							Profiles.push_back(buffer());
+							Profiles[ProfilesCount].startPoint = ep11;
+							Profiles[ProfilesCount].endPoint = ep12;
+							double valB = (double)linePixelsTempGraySrc3.at<uchar>(it1B.pos());
+							pixelsOnLineB.push_back(valB);
+							linePixel.push_back(valB);
+							//5555555555555555555555555555555555555555555555555555555555555555
+				/*			ofstream tempGraySrc3DataFile;
+							tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + profileLinesCount1 + "B.csv");
+							tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
+							tempGraySrc3DataFile << "\n";
+							tempGraySrc3DataFile << "\n";
+							tempGraySrc3DataFile.close();*/
+							//55555555555555555555555555555555555555555555555555555555555555555555
 
-						////if (all_output){ cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep11.x, ep11.y) << ", "<< Point(ep12.x, ep12.y) << "\n";
-						////if (all_output){ cout << "it1.pos() = " << Point(ep11.x, ep11.y) << ", " << it1B.pos() << "\n";
-						////if (all_output){ cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1B.pos()) << "\n";}
-						Profiles[ProfilesCount].pixValues.push_back(valB);// (double)tempSrc3.at<uchar>(it1.pos());
+							////if (all_output){ cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep11.x, ep11.y) << ", "<< Point(ep12.x, ep12.y) << "\n";
+							////if (all_output){ cout << "it1.pos() = " << Point(ep11.x, ep11.y) << ", " << it1B.pos() << "\n";
+							////if (all_output){ cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1B.pos()) << "\n";}
+							Profiles[ProfilesCount].pixValues.push_back(valB);// (double)tempSrc3.at<uchar>(it1.pos());
 
-						//double val = (double)src_gray.at<uchar>(it.pos());
-						//buf[i] = val;
+							//double val = (double)src_gray.at<uchar>(it.pos());
+							//buf[i] = val;
 
-						//std::string L = std::to_string(l);
-						//file.open("buf_" + format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint) + ".csv", ios::app);
-						//file.open("buf_" + L + ".csv", ios::app);
-						//file << Profiles[ProfilesCount].startPoint << "\n";
-						//file << Profiles[ProfilesCount].endPoint << "\n";
-						//file << Mat(Profiles[ProfilesCount].pixValues) << "\n";
-						//file.close();
-						ProfilesCount += 1;
-					}
+							//std::string L = std::to_string(l);
+							//file.open("buf_" + format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint) + ".csv", ios::app);
+							//file.open("buf_" + L + ".csv", ios::app);
+							//file << Profiles[ProfilesCount].startPoint << "\n";
+							//file << Profiles[ProfilesCount].endPoint << "\n";
+							//file << Mat(Profiles[ProfilesCount].pixValues) << "\n";
+							//file.close();
+							ProfilesCount += 1;
+						}
 
-					// Record pixels under line A (After centroid)
-					for (int l = 0; l < it1A.count; l++, ++it1A)
-					{
-						Profiles.push_back(buffer());
-						Profiles[ProfilesCount].startPoint = ep21;
-						Profiles[ProfilesCount].endPoint = ep22;
-						double valA = (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos());
-						pixelsOnLineA.push_back(valA);
-						linePixel.push_back(valA);
-						//5555555555555555555555555555555555555555555555555555555555555555
-			/*			ofstream tempGraySrc3DataFile;
-						tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + profileLinesCount2 + "A.csv");
-						tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
-						tempGraySrc3DataFile << "\n";
-						tempGraySrc3DataFile << "\n";
-						tempGraySrc3DataFile.close();*/
-						//55555555555555555555555555555555555555555555555555555555555555555555
-						////if (all_output){ cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep21.x, ep21.y) << ", " << Point(ep22.x, ep22.y) << "\n";}
-						////if (all_output){ cout << "it1.pos() = " << Point(ep21.x, ep21.y) << ", " << it1A.pos() << "\n";}
-						////if (all_output){ cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos()) << "\n";}
-						Profiles[ProfilesCount].pixValues.push_back(valA);// (double)tempSrc3.at<uchar>(it1.pos());
+						// Record pixels under line A (After centroid)
+						for (int l = 0; l < it1A.count; l++, ++it1A)
+						{
+							Profiles.push_back(buffer());
+							Profiles[ProfilesCount].startPoint = ep21;
+							Profiles[ProfilesCount].endPoint = ep22;
+							double valA = (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos());
+							pixelsOnLineA.push_back(valA);
+							linePixel.push_back(valA);
+							//5555555555555555555555555555555555555555555555555555555555555555
+				/*			ofstream tempGraySrc3DataFile;
+							tempGraySrc3DataFile.open("linePixelsTempGraySrc3" + profileLinesCount2 + "A.csv");
+							tempGraySrc3DataFile << linePixelsTempGraySrc3 << "\n";
+							tempGraySrc3DataFile << "\n";
+							tempGraySrc3DataFile << "\n";
+							tempGraySrc3DataFile.close();*/
+							//55555555555555555555555555555555555555555555555555555555555555555555
+							////if (all_output){ cout << "Point(ep11.x, ep11.y), Point(ep12.x, ep12.y) = " << Point(ep21.x, ep21.y) << ", " << Point(ep22.x, ep22.y) << "\n";}
+							////if (all_output){ cout << "it1.pos() = " << Point(ep21.x, ep21.y) << ", " << it1A.pos() << "\n";}
+							////if (all_output){ cout << "(double)tempGraySrc3.at<uchar>(it1.pos()) = " << (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos()) << "\n";}
+							Profiles[ProfilesCount].pixValues.push_back(valA);// (double)tempSrc3.at<uchar>(it1.pos());
 
-																		  //double val = (double)src_gray.at<uchar>(it.pos());
-																		  //buf[i] = val;
+																			  //double val = (double)src_gray.at<uchar>(it.pos());
+																			  //buf[i] = val;
 
-						//std::string L = std::to_string(l);
-						//file.open("buf_" + format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint) + ".csv", ios::app);
-						//file.open("buf_" + L + ".csv", ios::app);
-						//file << Profiles[ProfilesCount].startPoint << "\n";
-						//file << Profiles[ProfilesCount].endPoint << "\n";
-						//file << Mat(Profiles[ProfilesCount].pixValues) << "\n";
-						//file.close();
-						ProfilesCount += 1;
-					}
+							//std::string L = std::to_string(l);
+							//file.open("buf_" + format("(%d,%d)", Profiles[ProfilesCount].startPoint, Profiles[ProfilesCount].endPoint) + ".csv", ios::app);
+							//file.open("buf_" + L + ".csv", ios::app);
+							//file << Profiles[ProfilesCount].startPoint << "\n";
+							//file << Profiles[ProfilesCount].endPoint << "\n";
+							//file << Mat(Profiles[ProfilesCount].pixValues) << "\n";
+							//file.close();
+							ProfilesCount += 1;
+						}
 #pragma endregion
 
-					//4444444444444444444444444444444444444444444444444444444444444444444
+						//4444444444444444444444444444444444444444444444444444444444444444444
 
-					if (pixelsOnLineB.empty())
-					{
-						////if (all_output){ cout << "pixelsOnLine is empty" << "\n";}
-					}
-					else
-					{
-						//ofstream PixelsOnLineBFile;
-						//PixelsOnLineBFile.open("PiixelsOnLineB" + profileLinesCount1 + ".csv");
-						//PixelsOnLineBFile << Mat(pixelsOnLineB) << "\n";;
-						//PixelsOnLineBFile << "\n";
-						//PixelsOnLineBFile << "\n";
-						//PixelsOnLineBFile.close();
-					}
+						if (pixelsOnLineB.empty())
+						{
+							////if (all_output){ cout << "pixelsOnLine is empty" << "\n";}
+						}
+						else
+						{
+							//ofstream PixelsOnLineBFile;
+							//PixelsOnLineBFile.open("PiixelsOnLineB" + profileLinesCount1 + ".csv");
+							//PixelsOnLineBFile << Mat(pixelsOnLineB) << "\n";;
+							//PixelsOnLineBFile << "\n";
+							//PixelsOnLineBFile << "\n";
+							//PixelsOnLineBFile.close();
+						}
 
-					if (pixelsOnLineA.empty())
-					{
-						//if (all_output){ cout << "pixelsOnLineA is empty" << "\n";}
+						if (pixelsOnLineA.empty())
+						{
+							//if (all_output){ cout << "pixelsOnLineA is empty" << "\n";}
+						}
+						else
+						{
+							/*		ofstream PixelsOnLineAFile;
+									PixelsOnLineAFile.open("PixelsOnLineA" + profileLinesCount2 + ".csv");
+									PixelsOnLineAFile << Mat(pixelsOnLineA) << "\n";;
+									PixelsOnLineAFile << "\n";
+									PixelsOnLineAFile << "\n";
+									PixelsOnLineAFile.close();*/
+						}
+						//4444444444444444444444444444444444444444444444444444444444444444444
 					}
-					else
-					{
-						/*		ofstream PixelsOnLineAFile;
-								PixelsOnLineAFile.open("PixelsOnLineA" + profileLinesCount2 + ".csv");
-								PixelsOnLineAFile << Mat(pixelsOnLineA) << "\n";;
-								PixelsOnLineAFile << "\n";
-								PixelsOnLineAFile << "\n";
-								PixelsOnLineAFile.close();*/
-					}
-					//4444444444444444444444444444444444444444444444444444444444444444444
-				}
-				if (all_output) { imshow("walk perpendicular in edge angle direction - component nr." + smi, tempSrc2); }
+					if (all_output) { imshow("walk perpendicular in edge angle direction - component nr." + smi, tempSrc2); }
 #pragma endregion  
 
 #pragma region EPs
-				Point2f uuu, uuu2, uuu22, vvvv, ep1, ep2;
-				Point2f www1, www2;
-				uuu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
-				uuu2 = uuu;
-				rectSize_b = *max_element(lengths.begin(), lengths.end());
-				//double dd = 0.1*rectSize_b;
-				double normUUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
-				vvvv = Point2f(uuu.x / normUUU, uuu.y / normUUU);
-				//rotate and swap
-				Point2d vvvvv;
-				double tempXXX = vvvv.x;
-				vvvvv.x = -vvvv.y;
-				vvvvv.y = tempXXX;
-				for (size_t i = 0; i < 10; i++)
-				{
-					if (i == 0)
+					Point2f uuu, uuu2, uuu22, vvvv, ep1, ep2;
+					Point2f www1, www2;
+					uuu = Point2f(cos((mes.angle)* CV_PI / 180.0), sin((mes.angle)* CV_PI / 180.0));
+					uuu2 = uuu;
+					rectSize_b = *max_element(lengths.begin(), lengths.end());
+					//double dd = 0.1*rectSize_b;
+					double normUUU = sqrt(cos((mes.angle)* CV_PI / 180.0)*cos((mes.angle)* CV_PI / 180.0) + sin((mes.angle)* CV_PI / 180.0)*sin((mes.angle)* CV_PI / 180.0));
+					vvvv = Point2f(uuu.x / normUUU, uuu.y / normUUU);
+					//rotate and swap
+					Point2d vvvvv;
+					double tempXXX = vvvv.x;
+					vvvvv.x = -vvvv.y;
+					vvvvv.y = tempXXX;
+					for (size_t i = 0; i < 10; i++)
 					{
-						www1.x = maskCentroid.at(mi).x + vvvv.x*d;
-						www1.y = maskCentroid.at(mi).y + vvvv.y*d;
-						//ep1.x = www1.x-(box.size.width/2)*(vvvv.x*d);
-						//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
-						//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
-						//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+						if (i == 0)
+						{
+							www1.x = maskCentroid.at(mi).x + vvvv.x*d;
+							www1.y = maskCentroid.at(mi).y + vvvv.y*d;
+							//ep1.x = www1.x-(box.size.width/2)*(vvvv.x*d);
+							//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+							//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
+							//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
 
-						www2.x = maskCentroid.at(mi).x - vvvvv.x*d;
-						www2.y = maskCentroid.at(mi).y - vvvvv.y*d;
-						ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
-						ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
-						ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
-						ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
+							www2.x = maskCentroid.at(mi).x - vvvvv.x*d;
+							www2.y = maskCentroid.at(mi).y - vvvvv.y*d;
+							ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
+							ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
+							ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
+							ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
+						}
+						else
+						{
+							www1.x = uuu2.x + vvvv.x*d;
+							www1.y = uuu2.y + vvvv.y*d;
+							//ep1.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
+							//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+							//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
+							//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
+							////if (all_output){ cout << "minAreaRect Angle= " << box.angle + 180 << "\n";}
+							www2.x = uuu22.x - vvvv.x*d;
+							www2.y = uuu22.y - vvvv.y*d;
+							ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
+							ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
+							ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
+							ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
+							////if (all_output){ cout << "ww2= " << ww2 << "\n";}
+						}
+						////if (all_output){ cout << "i - " << i << "1-Plot here= " << ww1 << ", " << ww2 << "\n";}
+						//circle(src, ww1, 1, Scalar(0, 255, 255), 1, 8, 0); //yellow
+						//circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
+						//circle(tempSrc2, www1, 1, Scalar(255, 255, 10), 1, 8, 0); //
+						circle(tempSrc2, www2, 1, Scalar(255, 255, 100), 1, 8, 0); //
+						circle(tempSrc2, ep1, 1, Scalar(255, 255, 200), 1, 8, 0);
+						circle(tempSrc2, ep2, 1, Scalar(255, 255, 10), 1, 8, 0);
+						uuu2 = www1;
+						uuu22 = www2;
 					}
-					else
-					{
-						www1.x = uuu2.x + vvvv.x*d;
-						www1.y = uuu2.y + vvvv.y*d;
-						//ep1.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
-						//ep1.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
-						//ep2.x = www1.x - (box.size.width / 2)*(vvvv.x*d);
-						//ep2.y = www1.y - (box.size.width / 2)*(vvvv.y*d);
-						////if (all_output){ cout << "minAreaRect Angle= " << box.angle + 180 << "\n";}
-						www2.x = uuu22.x - vvvv.x*d;
-						www2.y = uuu22.y - vvvv.y*d;
-						ep1.x = www2.x - (box.size.width / 2)*(vvvv.x);
-						ep1.y = www2.y - (box.size.width / 2)*(vvvv.y);
-						ep2.x = www2.x + (box.size.width / 2)*(vvvv.x);
-						ep2.y = www2.y + (box.size.width / 2)*(vvvv.y);
-						////if (all_output){ cout << "ww2= " << ww2 << "\n";}
-					}
-					////if (all_output){ cout << "i - " << i << "1-Plot here= " << ww1 << ", " << ww2 << "\n";}
-					//circle(src, ww1, 1, Scalar(0, 255, 255), 1, 8, 0); //yellow
-					//circle(plotImage, ww2, 1, Scalar(255, 255, 0), 1, 8, 0); //turqoise
-					//circle(tempSrc2, www1, 1, Scalar(255, 255, 10), 1, 8, 0); //
-					circle(tempSrc2, www2, 1, Scalar(255, 255, 100), 1, 8, 0); //
-					circle(tempSrc2, ep1, 1, Scalar(255, 255, 200), 1, 8, 0);
-					circle(tempSrc2, ep2, 1, Scalar(255, 255, 10), 1, 8, 0);
-					uuu2 = www1;
-					uuu22 = www2;
-				}
-				//if (all_output){ imshow("Profile Lines", tempSrc2);
+					//if (all_output){ imshow("Profile Lines", tempSrc2);
 #pragma endregion
 
 
@@ -2220,63 +2220,69 @@ int main(int argc, char *argv[])
 		//if (all_output){ imshow("Grayscale- component nr." + smi, tempGraySrc3);
 		//if (all_output){ imwrite("Grayscale- component nr." + smi + ".bmp", tempGraySrc3);
 		//} 
+				}
+
 			}
 		}
-	}
 #pragma endregion
 
 #pragma endregion
 
-//imshow("grayscale image", src_gray);
-//setMouseCallback("0 - Source Img", CallBackFunc, NULL);
+		//imshow("grayscale image", src_gray);
+		//setMouseCallback("0 - Source Img", CallBackFunc, NULL);
 
-	if (!all_output){ cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n";}
+		if (!all_output) { cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n"; }
 
-	if (!all_output){ cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n";}
+		if (!all_output) { cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n"; }
 
-	if (!all_output){ cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n";}
-	if (!all_output){ cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n";}
-	if (!all_output){ cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n";}
-	if (!all_output){ cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n";}
-	if (!all_output){ cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n";}
-	if (!all_output){ cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n";}
-	if (!all_output){ cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n";}
-	if (!all_output){ cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n";}
-	if (!all_output){ cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n";}
-	if (!all_output){ cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n";}
+		if (!all_output) { cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n"; }
+		if (!all_output) { cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n"; }
+		if (!all_output) { cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n"; }
+		if (!all_output) { cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n"; }
+		if (!all_output) { cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n"; }
+		if (!all_output) { cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n"; }
+		if (!all_output) { cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n"; }
+		if (!all_output) { cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n"; }
+		if (!all_output) { cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n"; }
+		if (!all_output) { cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n"; }
 
-	if (!all_output){ cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n";}
+		if (!all_output) { cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n"; }
 
-	if (!all_output){ cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n";}
+		if (!all_output) { cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n"; }
 
-	if (!all_output){ cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n";}
+		if (!all_output) { cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n"; }
 
-	if (!all_output){ cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n";}
+		if (!all_output) { cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n"; }
 
-	if (!all_output){ cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n";}
+		if (!all_output) { cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n"; }
 
-	if (!all_output){ cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n";}
-	if (!all_output){ cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n";}
-	if (!all_output){ cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n";}
+		if (!all_output) { cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n"; }
+		if (!all_output) { cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n"; }
+		if (!all_output) { cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n"; }
 
 
-	if (!all_output){ cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";}
-	if (!all_output){ cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n";}
-	if (!all_output){ cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n";}
+		if (!all_output) { cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n"; }
+		if (!all_output) { cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n"; }
+		if (!all_output) { cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n"; }
 
-	if (!all_output){ cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n";}
-	if (!all_output){ cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n";}
-	if (!all_output){ cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n";}
-	if (!all_output){ cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n";}
+		if (!all_output) { cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n"; }
+		if (!all_output) { cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n"; }
+		if (!all_output) { cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n"; }
+		if (!all_output) { cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n"; }
 
-	if (!all_output){ cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n";}
-	if (!all_output){ cout << "43 -  -- -- XXX" << "\n";}
-	if (!all_output){ cout << "44 -  -- -- YYY" << "\n";}
-	if (!all_output){ cout << "45 -  -- -- ZZZ" << "\n";}
-	//ComponentsLoop.close();
-	//ComponentAngle.close();
-	//if (all_output){ imshow("Plot Image", src);
-	//if (all_output){ imshow("Bounding Box", tempSrc1);
-	waitKey(0);
-	return 0;
+		if (!all_output) { cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n"; }
+		if (!all_output) { cout << "43 -  -- -- XXX" << "\n"; }
+		if (!all_output) { cout << "44 -  -- -- YYY" << "\n"; }
+		if (!all_output) { cout << "45 -  -- -- ZZZ" << "\n"; }
+		//ComponentsLoop.close();
+		//ComponentAngle.close();
+		//if (all_output){ imshow("Plot Image", src);
+		//if (all_output){ imshow("Bounding Box", tempSrc1);
+		waitKey(0);
+		return 0;
+	//}
+	//catch (cv::Exception & e)
+	//{
+	//	cerr << e.msg << endl; // output exception message
+	//}
 }

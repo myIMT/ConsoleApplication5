@@ -134,5 +134,8 @@
     <ClInclude Include="MouseClick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HistogramTestPerComponentProfiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

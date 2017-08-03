@@ -58,6 +58,7 @@
     <ClInclude Include="fftw3.h" />
     <ClInclude Include="GraphUtils.h" />
     <ClInclude Include="HistogramTest.h" />
+    <ClInclude Include="HistogramTestPerComponentProfiles.h" />
     <ClInclude Include="MouseClick.h" />
     <ClInclude Include="wavelet2d.h" />
   </ItemGroup>
