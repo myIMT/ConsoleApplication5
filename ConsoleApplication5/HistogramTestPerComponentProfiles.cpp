@@ -117,6 +117,8 @@ Mat LeftImage;
 Mat RightImage;
 vector<Mat> LeftAndRightImages;
 vector<int> MasksCount;
+
+int countComponentsNotTouchingImageEdge;
 //----------------------------------------------------  
 #pragma endregion
 
@@ -887,7 +889,7 @@ Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 				FltrPixel2 = FltrColors2[FltrLabel2];
 			}
 		}
-		if (all_output) { imshow(nFltrLabels2String + "-Connected Components", FltrDst2); };
+		if (!all_output) { imshow(nFltrLabels2String + "-Connected Components", FltrDst2); };
 		if (!all_output) { imwrite(mats + "-" + nFltrLabels2String + "-Connected Components.bmp", FltrDst2); };
 
 
@@ -1270,11 +1272,15 @@ bool ComponentTouchImageEdge(Mat CompMat)
 			// if cannyEdge pixel intensity is non-zero
 			if ((int)CompMat.at<uchar>(i, j) != 0)
 			{
-				if ((i == 0) || (i == CompMat.size().width) || (j == 0) || (j ==CompMat.size().height-1))
+				if ((i == 1) || (i == CompMat.size().width) || (j == 1) || (j ==CompMat.size().height-1))
 				{
 					return true;
 				}
-				else return false;
+				else
+				{
+					countComponentsNotTouchingImageEdge++;
+					return false;
+				}
 			}
 		}
 	}
@@ -1433,8 +1439,8 @@ int main(int argc, char *argv[])
 {
 		//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
 		//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
-		//string file = "20161215 02.33_368.jpg";
-		string file = "20140612_MINEGARDEN_SURVEY2_00_14_50.jpg";
+		string file = "20161215 02.33_368.jpg";
+		//string file = "20140612_MINEGARDEN_SURVEY2_00_14_50.jpg";
 		//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
 
 		if (!all_output) { cout << "--------------------------------------- START ---------------------------------------" << "\n"; }
@@ -1595,12 +1601,13 @@ int main(int argc, char *argv[])
 			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's perleft and right image
-			for (size_t mi = 1; mi < 3 /*MasksCount.at(LRimages)*/; mi++)
+			for (size_t mi = 1; mi < 50 /*MasksCount.at(LRimages)*/; mi++)
 			{
 				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
-				if (!all_output) { imshow("4 - component- " + smi, tempComponent); };
+				if (all_output && LRimages == 0) { imshow("BEFORE_" + sLRimages + "_" + "component_" + smi, tempComponent); };
 
+#pragma region Components laying on image border
 				// If component is touching image edge
 				if (ComponentTouchImageEdge(tempComponent))
 				{
@@ -1608,6 +1615,7 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
+					if (all_output && LRimages == 0) { imshow(sLRimages + "_" + "component_" + smi, tempComponent); };
 					Mat GrayComponents;
 					GrayComponents = tempComponent;
 					Sobel(GrayComponents, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
@@ -1634,7 +1642,7 @@ int main(int argc, char *argv[])
 					int containerCount = 0;
 
 					Canny(GrayComponents, cannyEdge, 100, 200);
-					if (all_output) { imshow("5 - component cannyEdge - " + smi, cannyEdge); }
+					if (!all_output) { imshow("5 - component cannyEdge - " + smi, cannyEdge); }
 
 					Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
 
@@ -1814,7 +1822,7 @@ int main(int argc, char *argv[])
 					Points.push_back(tempPoints);
 					//}
 					Point2f vtx[4];
-					RotatedRect box = minAreaRect(Points[mi - 1]); //only the first Mat Points
+					RotatedRect box = minAreaRect(Points[countComponentsNotTouchingImageEdge - 1]); //only the first Mat Points
 					//if (!all_output){ AngleTest_DataFile << "RotatedRect box = minAreaRect(Points[mi])" << box.angle << "\n";}
 					//if (!all_output) { AngleTest_DataFile << "###########################################################" << "\n"; };
 					AngleTest_DataFile.close();
@@ -2221,6 +2229,8 @@ int main(int argc, char *argv[])
 		//if (all_output){ imwrite("Grayscale- component nr." + smi + ".bmp", tempGraySrc3);
 		//} 
 				}
+#pragma endregion
+
 
 			}
 		}
