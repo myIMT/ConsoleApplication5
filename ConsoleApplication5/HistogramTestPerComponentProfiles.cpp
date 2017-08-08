@@ -1272,13 +1272,13 @@ bool ComponentTouchImageEdge(Mat CompMat)
 			// if cannyEdge pixel intensity is non-zero
 			if ((int)CompMat.at<uchar>(i, j) != 0)
 			{
-				if ((i == 1) || (i == CompMat.size().width) || (j == 1) || (j ==CompMat.size().height-1))
+				if ((i == 0) || (i == CompMat.size().width) || (j == 0) || (j ==CompMat.size().height-1))
 				{
 					return true;
 				}
 				else
 				{
-					countComponentsNotTouchingImageEdge++;
+ 					countComponentsNotTouchingImageEdge++;
 					return false;
 				}
 			}
@@ -1437,9 +1437,9 @@ void GammaCorrection(Mat& src, Mat& dst, float fGamma)
 /// <param name="">xxx.</param> 
 int main(int argc, char *argv[])
 {
-		//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
+		string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg";
 		//string file = "20140612_MINEGARDEN_SURVEY_CylindricalMine01.jpg";
-		string file = "20161215 02.33_368.jpg";
+		//string file = "20161215 02.33_368.jpg";
 		//string file = "20140612_MINEGARDEN_SURVEY2_00_14_50.jpg";
 		//string file = "20140612_Minegarden_Survey_SIDESCAN_Renavigated_R1.jpg";
 
@@ -1601,17 +1601,22 @@ int main(int argc, char *argv[])
 			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's perleft and right image
-			for (size_t mi = 1; mi < 50 /*MasksCount.at(LRimages)*/; mi++)
+			for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
 			{
 				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
-				if (all_output && LRimages == 0) { imshow("BEFORE_" + sLRimages + "_" + "component_" + smi, tempComponent); };
+				if (!all_output && LRimages == 0 && mi == 197) 
+				{ 
+					imshow("BEFORE_" + sLRimages + "_" + "component_" + smi, tempComponent); 
+				};
+
+				if (!all_output) { cout << "LeftAndRightImages= " << sLRimages+ " -- " + "component= " + smi << "\n"; }
 
 #pragma region Components laying on image border
 				// If component is touching image edge
 				if (ComponentTouchImageEdge(tempComponent))
 				{
-
+					if (!all_output) { cout << "Component touching image edge" << "\n"; }
 				}
 				else
 				{
@@ -1642,7 +1647,7 @@ int main(int argc, char *argv[])
 					int containerCount = 0;
 
 					Canny(GrayComponents, cannyEdge, 100, 200);
-					if (!all_output) { imshow("5 - component cannyEdge - " + smi, cannyEdge); }
+					if (all_output) { imshow("5 - component cannyEdge - " + smi, cannyEdge); }
 
 					Mat newAngle = Mat(Angle.size().height, Angle.size().width, Angle.type(), Scalar(0, 0, 0));
 
