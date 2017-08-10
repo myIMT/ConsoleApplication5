@@ -1594,29 +1594,30 @@ int main(int argc, char *argv[])
 		for (int LRimages = 0; LRimages < LeftAndRightImages.size(); LRimages++)
 		{
 			std::string sLRimages = std::to_string(LRimages);
-			Mat linePixelsTempGraySrc3 = LeftAndRightImages.at(LRimages);
+			Mat linePixelsTempGraySrc3;
+			cvtColor(src, linePixelsTempGraySrc3, cv::COLOR_BGR2GRAY);  //LeftAndRightImages.at(LRimages);
 			Mat tempSrc1 = LeftAndRightImages.at(LRimages);
 			Mat tempGraySrc = LeftAndRightImages.at(LRimages);
 
-			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
+			if (all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's perleft and right image
 			for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
 			{
 				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
-				if (!all_output && LRimages == 0 && mi == 197) 
-				{ 
-					imshow("BEFORE_" + sLRimages + "_" + "component_" + smi, tempComponent); 
-				};
+				//if (!all_output && LRimages == 0 && mi == 197) 
+				//{ 
+				//	imshow("BEFORE_" + sLRimages + "_" + "component_" + smi, tempComponent); 
+				//};
 
-				if (!all_output) { cout << "LeftAndRightImages= " << sLRimages+ " -- " + "component= " + smi << "\n"; }
+				if (all_output) { cout << "LeftAndRightImages= " << sLRimages+ " -- " + "component= " + smi << "\n"; }
 
 #pragma region Components laying on image border
 				// If component is touching image edge
 				if (ComponentTouchImageEdge(tempComponent))
 				{
-					if (!all_output) { cout << "Component touching image edge" << "\n"; }
+					if (all_output) { cout << "Component touching image edge" << "\n"; }
 				}
 				else
 				{
@@ -1862,7 +1863,7 @@ int main(int argc, char *argv[])
 					////if (all_output){ cout << "normU= " << normU << "\n";}
 					v = Point2f(u.x / normU, u.y / normU);
 					//Mat tempSrcW1 = src, tempSrcW2 = src;
-					for (size_t i = 0; i < 10; i++)
+					for (size_t i = 0; i < 3; i++)
 					{
 						if (i == 0)
 						{	// starting point = center of mask
@@ -2099,7 +2100,7 @@ int main(int argc, char *argv[])
 							Profiles.push_back(buffer());
 							Profiles[ProfilesCount].startPoint = ep21;
 							Profiles[ProfilesCount].endPoint = ep22;
-							double valA = (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos());
+								double valA = (double)linePixelsTempGraySrc3.at<uchar>(it1A.pos());
 							pixelsOnLineA.push_back(valA);
 							linePixel.push_back(valA);
 							//5555555555555555555555555555555555555555555555555555555555555555
