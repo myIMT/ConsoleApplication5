@@ -889,8 +889,8 @@ Mat GetConnectedComponent(vector<Mat> myLeftAndRightImages)
 				FltrPixel2 = FltrColors2[FltrLabel2];
 			}
 		}
-		if (!all_output) { imshow(nFltrLabels2String + "-Connected Components", FltrDst2); };
-		if (!all_output) { imwrite(mats + "-" + nFltrLabels2String + "-Connected Components.bmp", FltrDst2); };
+		if (all_output) { imshow(nFltrLabels2String + "-Connected Components", FltrDst2); };
+		if (all_output) { imwrite(mats + "-" + nFltrLabels2String + "-Connected Components.bmp", FltrDst2); };
 
 
 		resultantImage = FltrDst2;
@@ -1590,6 +1590,12 @@ int main(int argc, char *argv[])
 		//then just add a check inside for loop to skip mi=0 to ensure u address all elements of maskElement
 
 
+		//333333333333333333333333333333333333333333333333333333333333333333333
+		// This file records wether components are on image boundary or not
+		ofstream ComponentTouchImageEdgeFile;
+		ComponentTouchImageEdgeFile.open("ComponentTouchImageEdgeFile.txt");
+		//333333333333333333333333333333333333333333333333333333333333333333333
+
 		// Loop through both left and right image (after nadir removal)
 		for (int LRimages = 0; LRimages < LeftAndRightImages.size(); LRimages++)
 		{
@@ -1599,7 +1605,7 @@ int main(int argc, char *argv[])
 			Mat tempSrc1 = LeftAndRightImages.at(LRimages);
 			Mat tempGraySrc = LeftAndRightImages.at(LRimages);
 
-			if (all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
+			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's perleft and right image
 			for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
@@ -1617,10 +1623,12 @@ int main(int argc, char *argv[])
 				// If component is touching image edge
 				if (ComponentTouchImageEdge(tempComponent))
 				{
+					ComponentTouchImageEdgeFile << "Component " << smi << " is on image boundary" << "\n";
 					if (all_output) { cout << "Component touching image edge" << "\n"; }
 				}
 				else
 				{
+					ComponentTouchImageEdgeFile << "Component " << smi << " is NOT on image boundary" << "/n";
 					if (all_output && LRimages == 0) { imshow(sLRimages + "_" + "component_" + smi, tempComponent); };
 					Mat GrayComponents;
 					GrayComponents = tempComponent;
@@ -2235,11 +2243,14 @@ int main(int argc, char *argv[])
 		//if (all_output){ imwrite("Grayscale- component nr." + smi + ".bmp", tempGraySrc3);
 		//} 
 				}
+
 #pragma endregion
 
 
 			}
 		}
+
+		ComponentTouchImageEdgeFile.close();
 #pragma endregion
 
 #pragma endregion
