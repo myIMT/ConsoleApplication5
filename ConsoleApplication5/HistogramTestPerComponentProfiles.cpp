@@ -1620,7 +1620,7 @@ int main(int argc, char *argv[])
 				if (all_output) { cout << "LeftAndRightImages= " << sLRimages+ " -- " + "component= " + smi << "\n"; }
 
 #pragma region Components laying on image border
-				// If component is touching image edge
+				// Ignore component if touching image edge
 				if (ComponentTouchImageEdge(tempComponent))
 				{
 					ComponentTouchImageEdgeFile << "Component " << smi << " is on image boundary" << "\n";
@@ -1628,7 +1628,7 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					ComponentTouchImageEdgeFile << "Component " << smi << " is NOT on image boundary" << "/n";
+					ComponentTouchImageEdgeFile << "Component " << smi << " is NOT on image boundary" << "\n";
 					if (all_output && LRimages == 0) { imshow(sLRimages + "_" + "component_" + smi, tempComponent); };
 					Mat GrayComponents;
 					GrayComponents = tempComponent;
