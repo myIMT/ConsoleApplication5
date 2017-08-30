@@ -1,0 +1,14 @@
+container[0].bin= 8
+container[0].i= 538
+container[0].j= 249
+container[0].angle= 44
+container[0].value= 255
+
+
+container[1].bin= 63
+container[1].i= 540
+container[1].j= 249
+container[1].angle= 315
+container[1].value= 255
+
+

@@ -1,0 +1,462 @@
+container[0].bin= 18
+container[0].i= 63
+container[0].j= 231
+container[0].angle= 90
+container[0].value= 255
+
+
+container[1].bin= 3
+container[1].i= 64
+container[1].j= 230
+container[1].angle= 18
+container[1].value= 255
+
+
+container[2].bin= 32
+container[2].i= 64
+container[2].j= 232
+container[2].angle= 161
+container[2].value= 255
+
+
+container[3].bin= 3
+container[3].i= 65
+container[3].j= 230
+container[3].angle= 18
+container[3].value= 255
+
+
+container[4].bin= 39
+container[4].i= 65
+container[4].j= 232
+container[4].angle= 198
+container[4].value= 255
+
+
+container[5].bin= 3
+container[5].i= 66
+container[5].j= 229
+container[5].angle= 18
+container[5].value= 255
+
+
+container[6].bin= 21
+container[6].i= 66
+container[6].j= 233
+container[6].angle= 108
+container[6].value= 255
+
+
+container[7].bin= 0
+container[7].i= 67
+container[7].j= 229
+container[7].angle= 0
+container[7].value= 255
+
+
+container[8].bin= 27
+container[8].i= 67
+container[8].j= 233
+container[8].angle= 135
+container[8].value= 255
+
+
+container[9].bin= 0
+container[9].i= 68
+container[9].j= 229
+container[9].angle= 0
+container[9].value= 255
+
+
+container[10].bin= 44
+container[10].i= 68
+container[10].j= 233
+container[10].angle= 224
+container[10].value= 255
+
+
+container[11].bin= 0
+container[11].i= 69
+container[11].j= 229
+container[11].angle= 0
+container[11].value= 255
+
+
+container[12].bin= 0
+container[12].i= 70
+container[12].j= 229
+container[12].angle= 0
+container[12].value= 255
+
+
+container[13].bin= 30
+container[13].i= 70
+container[13].j= 233
+container[13].angle= 153
+container[13].value= 255
+
+
+container[14].bin= 0
+container[14].i= 71
+container[14].j= 229
+container[14].angle= 0
+container[14].value= 255
+
+
+container[15].bin= 36
+container[15].i= 71
+container[15].j= 233
+container[15].angle= 180
+container[15].value= 255
+
+
+container[16].bin= 0
+container[16].i= 72
+container[16].j= 229
+container[16].angle= 0
+container[16].value= 255
+
+
+container[17].bin= 30
+container[17].i= 72
+container[17].j= 234
+container[17].angle= 153
+container[17].value= 255
+
+
+container[18].bin= 0
+container[18].i= 73
+container[18].j= 229
+container[18].angle= 0
+container[18].value= 255
+
+
+container[19].bin= 30
+container[19].i= 73
+container[19].j= 234
+container[19].angle= 153
+container[19].value= 255
+
+
+container[20].bin= 0
+container[20].i= 74
+container[20].j= 229
+container[20].angle= 0
+container[20].value= 255
+
+
+container[21].bin= 36
+container[21].i= 74
+container[21].j= 234
+container[21].angle= 180
+container[21].value= 255
+
+
+container[22].bin= 0
+container[22].i= 75
+container[22].j= 229
+container[22].angle= 0
+container[22].value= 255
+
+
+container[23].bin= 36
+container[23].i= 75
+container[23].j= 234
+container[23].angle= 180
+container[23].value= 255
+
+
+container[24].bin= 0
+container[24].i= 76
+container[24].j= 229
+container[24].angle= 0
+container[24].value= 255
+
+
+container[25].bin= 36
+container[25].i= 76
+container[25].j= 234
+container[25].angle= 180
+container[25].value= 255
+
+
+container[26].bin= 66
+container[26].i= 77
+container[26].j= 230
+container[26].angle= 333
+container[26].value= 255
+
+
+container[27].bin= 36
+container[27].i= 77
+container[27].j= 234
+container[27].angle= 180
+container[27].value= 255
+
+
+container[28].bin= 63
+container[28].i= 78
+container[28].j= 230
+container[28].angle= 315
+container[28].value= 255
+
+
+container[29].bin= 59
+container[29].i= 78
+container[29].j= 231
+container[29].angle= 296
+container[29].value= 255
+
+
+container[30].bin= 27
+container[30].i= 78
+container[30].j= 235
+container[30].angle= 135
+container[30].value= 255
+
+
+container[31].bin= 18
+container[31].i= 78
+container[31].j= 236
+container[31].angle= 90
+container[31].value= 255
+
+
+container[32].bin= 18
+container[32].i= 78
+container[32].j= 237
+container[32].angle= 90
+container[32].value= 255
+
+
+container[33].bin= 63
+container[33].i= 79
+container[33].j= 232
+container[33].angle= 315
+container[33].value= 255
+
+
+container[34].bin= 27
+container[34].i= 79
+container[34].j= 238
+container[34].angle= 135
+container[34].value= 255
+
+
+container[35].bin= 0
+container[35].i= 80
+container[35].j= 232
+container[35].angle= 0
+container[35].value= 255
+
+
+container[36].bin= 36
+container[36].i= 80
+container[36].j= 238
+container[36].angle= 180
+container[36].value= 255
+
+
+container[37].bin= 0
+container[37].i= 81
+container[37].j= 232
+container[37].angle= 0
+container[37].value= 255
+
+
+container[38].bin= 30
+container[38].i= 81
+container[38].j= 239
+container[38].angle= 153
+container[38].value= 255
+
+
+container[39].bin= 0
+container[39].i= 82
+container[39].j= 232
+container[39].angle= 0
+container[39].value= 255
+
+
+container[40].bin= 30
+container[40].i= 82
+container[40].j= 239
+container[40].angle= 153
+container[40].value= 255
+
+
+container[41].bin= 0
+container[41].i= 83
+container[41].j= 232
+container[41].angle= 0
+container[41].value= 255
+
+
+container[42].bin= 36
+container[42].i= 83
+container[42].j= 239
+container[42].angle= 180
+container[42].value= 255
+
+
+container[43].bin= 0
+container[43].i= 84
+container[43].j= 232
+container[43].angle= 0
+container[43].value= 255
+
+
+container[44].bin= 54
+container[44].i= 84
+container[44].j= 238
+container[44].angle= 270
+container[44].value= 255
+
+
+container[45].bin= 44
+container[45].i= 84
+container[45].j= 239
+container[45].angle= 224
+container[45].value= 255
+
+
+container[46].bin= 0
+container[46].i= 85
+container[46].j= 232
+container[46].angle= 0
+container[46].value= 255
+
+
+container[47].bin= 44
+container[47].i= 85
+container[47].j= 237
+container[47].angle= 224
+container[47].value= 255
+
+
+container[48].bin= 66
+container[48].i= 86
+container[48].j= 233
+container[48].angle= 333
+container[48].value= 255
+
+
+container[49].bin= 36
+container[49].i= 86
+container[49].j= 236
+container[49].angle= 180
+container[49].value= 255
+
+
+container[50].bin= 63
+container[50].i= 87
+container[50].j= 233
+container[50].angle= 315
+container[50].value= 255
+
+
+container[51].bin= 63
+container[51].i= 87
+container[51].j= 234
+container[51].angle= 315
+container[51].value= 255
+
+
+container[52].bin= 36
+container[52].i= 87
+container[52].j= 236
+container[52].angle= 180
+container[52].value= 255
+
+
+container[53].bin= 66
+container[53].i= 88
+container[53].j= 234
+container[53].angle= 333
+container[53].value= 255
+
+
+container[54].bin= 0
+container[54].i= 89
+container[54].j= 234
+container[54].angle= 0
+container[54].value= 255
+
+
+container[55].bin= 0
+container[55].i= 90
+container[55].j= 234
+container[55].angle= 0
+container[55].value= 255
+
+
+container[56].bin= 0
+container[56].i= 91
+container[56].j= 234
+container[56].angle= 0
+container[56].value= 255
+
+
+container[57].bin= 0
+container[57].i= 92
+container[57].j= 234
+container[57].angle= 0
+container[57].value= 255
+
+
+container[58].bin= 66
+container[58].i= 93
+container[58].j= 235
+container[58].angle= 333
+container[58].value= 255
+
+
+container[59].bin= 66
+container[59].i= 94
+container[59].j= 235
+container[59].angle= 333
+container[59].value= 255
+
+
+container[60].bin= 36
+container[60].i= 94
+container[60].j= 237
+container[60].angle= 180
+container[60].value= 255
+
+
+container[61].bin= 0
+container[61].i= 95
+container[61].j= 235
+container[61].angle= 0
+container[61].value= 255
+
+
+container[62].bin= 36
+container[62].i= 95
+container[62].j= 237
+container[62].angle= 180
+container[62].value= 255
+
+
+container[63].bin= 68
+container[63].i= 96
+container[63].j= 235
+container[63].angle= 341
+container[63].value= 255
+
+
+container[64].bin= 54
+container[64].i= 96
+container[64].j= 236
+container[64].angle= 270
+container[64].value= 255
+
+
+container[65].bin= 39
+container[65].i= 96
+container[65].j= 237
+container[65].angle= 198
+container[65].value= 255
+
+

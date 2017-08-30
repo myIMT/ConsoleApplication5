@@ -1,0 +1,35 @@
+container[0].bin= 8
+container[0].i= 112
+container[0].j= 235
+container[0].angle= 44
+container[0].value= 255
+
+
+container[1].bin= 27
+container[1].i= 112
+container[1].j= 236
+container[1].angle= 135
+container[1].value= 255
+
+
+container[2].bin= 0
+container[2].i= 113
+container[2].j= 234
+container[2].angle= 0
+container[2].value= 255
+
+
+container[3].bin= 63
+container[3].i= 114
+container[3].j= 235
+container[3].angle= 315
+container[3].value= 255
+
+
+container[4].bin= 44
+container[4].i= 114
+container[4].j= 236
+container[4].angle= 224
+container[4].value= 255
+
+
