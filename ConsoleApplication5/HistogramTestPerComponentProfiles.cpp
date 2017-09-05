@@ -122,8 +122,8 @@ vector<int> MasksCount;
 
 int countComponentsNotTouchingImageEdge;
 
-vector<int> componentAngles;
-//----------------------------------------------------  
+vector<int> componentAngles, LcomponentAngles, RcomponentAngles;
+////----------------------------------------------------  
 #pragma endregion
 
 
@@ -1315,27 +1315,39 @@ void Histogram(vector<int> myVector)
 	int m = findmax(vals, n); //find max value of data points
 	if (m>n) fsize = m + 1;
 	else fsize = n;
-	vector<int> myFreq;
-	int freq[5]; //declare frequency array with an appropriate size
+	//vector<int> myFreq;
+	int* freq = new int[n];
+	//int freq[fsize]; //declare frequency array with an appropriate size
 					//The size of frequency array can be the size of the vals array
 					//or the max value of the vals array items plus 1
 
-	//for (int i = 0; i<fsize; i++) //initialize frequency array
-	//	freq[i] = 0;
+	for (int i = 0; i<fsize; i++) //initialize frequency array
+		freq[i] = 0;
 
 	//compute frequencies
 	for (int i = 0; i < n; i++)
 		freq[vals[i]]++;
 
 	//print histogram
-	cout << "\n....Histogram....\n\n";
-	//for (int i = 0; i<fsize; i++) {
-	//	cout << left;
-	//	cout << setw(5) << i;
-	//	cout << setw(5) << freq[i];
-	//	for (int j = 1; j <= freq[i]; j++) cout << "*";
-	//	cout << "\n";
-	//}
+	ofstream ComponentAnglesHistogramFile;
+	ComponentAnglesHistogramFile.open("ComponentAnglesHistogramFile.txt");
+
+	ComponentAnglesHistogramFile << "\n....Histogram....\n\n";
+	for (int i = 0; i<fsize; i++) {
+		if (freq[i] !=0)
+		{
+			ComponentAnglesHistogramFile << left;
+			ComponentAnglesHistogramFile << setw(5) << i;
+			ComponentAnglesHistogramFile << setw(5) << freq[i];
+			for (int j = 1; j <= freq[i]; j++) ComponentAnglesHistogramFile << "*";
+			ComponentAnglesHistogramFile << "\n";
+		}
+		else
+		{
+
+		}
+	}
+	ComponentAnglesHistogramFile.close();
 }
 //Mat RemoveNadir(Mat GrayScaleSrcImg)
 //{
@@ -1510,8 +1522,8 @@ int main(int argc, char *argv[])
 		//C:\Users\JW\Documents\Visual Studio 2015\Projects\ConsoleApplication5\ConsoleApplication5\20140612_Minegarden_Survey_SIDESCAN_Renavigated.jpg
 		//src = cv::imread("double ripple example_RR.jpg");
 		Mat tempSourceImage = src;
-		if (!all_output) { imshow("0 - Source Img", src); };
-		if (!all_output) { cout << "00 - READING SOURCE IMAGE: 'src'" << "\n"; };
+		//if (!all_output) { imshow("0 - Source Img", src); };
+		//if (!all_output) { cout << "00 - READING SOURCE IMAGE: 'src'" << "\n"; };
 
 		int myArray[] = { 16, 2, 77, 40, 12071 };
 		int myN = (sizeof(myArray) / sizeof(*myArray));
@@ -1669,7 +1681,7 @@ int main(int argc, char *argv[])
 			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's (per left and right image)
-			for (size_t mi = 1; mi < 35 /*MasksCount.at(LRimages)*/; mi++)
+			for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
 			{
 				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
@@ -1870,7 +1882,17 @@ int main(int argc, char *argv[])
 					if (all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
 					
 					componentAngles.push_back(mes.angle);
-					if (!all_output) { ComponentAnglesFile << smi << "," << mes.angle << "\n"; };
+					if (LRimages == 0)
+					{
+						LcomponentAngles.push_back(mes.angle);
+						if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
+					}
+					else
+					{
+						RcomponentAngles.push_back(mes.angle);
+						if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
+					}
+					//anglesComponent[LRimages]
 					//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
 					//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
 					//ComponentAngle << "Angle (mes)- " << smi << "\n";
@@ -2314,6 +2336,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
+		//vector<int> tet = { 1,2,1,3,4,2,5,2,5,26 };
 		Histogram(componentAngles);
 
 		ComponentTouchImageEdgeFile.close();
@@ -2325,49 +2348,49 @@ int main(int argc, char *argv[])
 		//imshow("grayscale image", src_gray);
 		//setMouseCallback("0 - Source Img", CallBackFunc, NULL);
 
-		if (!all_output) { cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n"; }
+		//if (!all_output) { cout << "15 - RETRIEVING COMPONENTS (ONE-BY-ONE) FROM: 'maskImages'" << "\n"; }
 
-		if (!all_output) { cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n"; }
+		//if (!all_output) { cout << "16 - EACH COMPONENT STORED IN: 'tempComponent'" << "\n"; }
 
-		if (!all_output) { cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n"; }
-		if (!all_output) { cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n"; }
-		if (!all_output) { cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n"; }
-		if (!all_output) { cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n"; }
-		if (!all_output) { cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n"; }
-		if (!all_output) { cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n"; }
-		if (!all_output) { cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n"; }
-		if (!all_output) { cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n"; }
-		if (!all_output) { cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n"; }
-		if (!all_output) { cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n"; }
+		//if (!all_output) { cout << "17 - CALCULATING EDGES/GRADIENT PER COMPONENT USING: Sobel" << "\n"; }
+		//if (!all_output) { cout << "18 -  -- STORING CALCULATED EDGES RESULTS: 'grad_x' AND 'grad_y'" << "\n"; }
+		//if (!all_output) { cout << "19 -  -- CALCULATING MAGNITUDE AND ANGLE MATRICES : 'Mag' AND 'Angle'" << "\n"; }
+		//if (!all_output) { cout << "20 -  -- WRITING CALCULATED ANGLE RESULTS TO FILE: 'Angle_DataFile_i.csv'" << "\n"; }
+		//if (!all_output) { cout << "21 -  -- CALCULATING CANNY EDGE: 'cannyEdge'" << "\n"; }
+		//if (!all_output) { cout << "22 -  -- WRITING CALCULATED CANNY EDGE RESULTS TO FILE: 'cannyEdge_DataFile_I.csv'" << "\n"; }
+		//if (!all_output) { cout << "23 -  -- -- FOR EACH CANNY EDGE PIXEL" << "\n"; }
+		//if (!all_output) { cout << "24 -  -- -- FIND EACH NON-ZERO CANNY EDGE PIXEL" << "\n"; }
+		//if (!all_output) { cout << "25 -  -- -- -- STORE EACH PIXEL IN NEW MATRIX: 'newAngle'" << "\n"; }
+		//if (!all_output) { cout << "26 -  -- -- -- STORE BIN #, COORDINATES, ANGLE VALUE AND PIXEL VALUE IN: 'Container'" << "\n"; }
 
-		if (!all_output) { cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n"; }
+		//if (!all_output) { cout << "27 -  -- SORT 'Container' DATA AND WRITE RESULTS TO FILE: 'KeepingTrackOfContainers_DataFile_i.csv' AND 'ContainerFile_i.csv'" << "\n"; }
 
-		if (!all_output) { cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n"; }
+		//if (!all_output) { cout << "28 -  -- STORE SORTED DATA IN: 'maxCountContainer'" << "\n"; }
 
-		if (!all_output) { cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n"; }
+		//if (!all_output) { cout << "29 -  -- BIN'S WITH THEIR FREQUENCY ON UNIQUE ELEMENTS STORED IN: 'maxCountContainer_DataFile_i.csv'" << "\n"; }
 
-		if (!all_output) { cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n"; }
+		//if (!all_output) { cout << "30 -  -- BIN (BIN-VALUE) WITH HIGHEST FREQUENCY (WITH ITS CORRESPONDING ANGLE-VALUE AND BIN-SIZE) CALCULATED AND STORED IN: 'mes'" << "\n"; }
 
-		if (!all_output) { cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n"; }
+		//if (!all_output) { cout << "31 -  -- CALCULATING BOUNDING BOX" << "\n"; }
 
-		if (!all_output) { cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n"; }
-		if (!all_output) { cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n"; }
-		if (!all_output) { cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n"; }
+		//if (!all_output) { cout << "32 -  -- CALCULATING VECTOR IN DIRECTION OF PREVIOUSLY CALCULATED ANGLE (mes.angle): 'v'" << "\n"; }
+		//if (!all_output) { cout << "33 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'w1-one_side of cetroid point AND w2-otherside of cetroid point'" << "\n"; }
+		//if (!all_output) { cout << "34 -  -- -- PLOTTING CALCULATING VECTOR ON: 'tempSrc2'" << "\n"; }
 
 
-		if (!all_output) { cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n"; }
-		if (!all_output) { cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n"; }
-		if (!all_output) { cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n"; }
+		//if (!all_output) { cout << "35 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n"; }
+		//if (!all_output) { cout << "36 -  -- -- CALCULATED VECTOR POINTS STORED IN: 'ww1-one_side of cetroid point AND ww2-otherside of cetroid point'" << "\n"; }
+		//if (!all_output) { cout << "37 -  -- -- PLOTTING CALCULATED VECTOR ON: 'tempSrc2'" << "\n"; }
 
-		if (!all_output) { cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n"; }
-		if (!all_output) { cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n"; }
-		if (!all_output) { cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n"; }
-		if (!all_output) { cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n"; }
+		//if (!all_output) { cout << "38 -  -- CALCULATING VECTOR IN DIRECTION PERPENDICULAR TO 'v': 'vv'" << "\n"; }
+		//if (!all_output) { cout << "39 -  -- -- CALCULATED END-POINTS STORED IN: Point on one side (x,y)-'ep11, ep12' AND Point on otherside (x,y)-'ep21, ep22'" << "\n"; }
+		//if (!all_output) { cout << "40 -  -- -- DRAWING LINES BETWEEN POINTS (ep11,ep12) AND (ep21,ep22)" << "\n"; }
+		//if (!all_output) { cout << "41 -  -- -- PLOTTING CALCULATING LINES ON: 'tempSrc2'" << "\n"; }
 
-		if (!all_output) { cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n"; }
-		if (!all_output) { cout << "43 -  -- -- XXX" << "\n"; }
-		if (!all_output) { cout << "44 -  -- -- YYY" << "\n"; }
-		if (!all_output) { cout << "45 -  -- -- ZZZ" << "\n"; }
+		//if (!all_output) { cout << "42 -  -- CALCULATING PIXEL PIXEL VALUES UNDER LINES" << "\n"; }
+		//if (!all_output) { cout << "43 -  -- -- XXX" << "\n"; }
+		//if (!all_output) { cout << "44 -  -- -- YYY" << "\n"; }
+		//if (!all_output) { cout << "45 -  -- -- ZZZ" << "\n"; }
 		//ComponentsLoop.close();
 		//ComponentAngle.close();
 		//if (all_output){ imshow("Plot Image", src);
