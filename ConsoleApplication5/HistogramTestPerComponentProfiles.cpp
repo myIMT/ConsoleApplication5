@@ -1332,6 +1332,10 @@ void Histogram(vector<int> myVector)
 	ofstream ComponentAnglesHistogramFile;
 	ComponentAnglesHistogramFile.open("ComponentAnglesHistogramFile.txt");
 
+	ofstream ComponentAnglesHistogramFile2;
+	ComponentAnglesHistogramFile2.open("ComponentAnglesHistogramFile2.txt");
+
+	//if statement = printing angles with non-zero count
 	ComponentAnglesHistogramFile << "\n....Histogram....\n\n";
 	for (int i = 0; i<fsize; i++) {
 		if (freq[i] !=0)
@@ -1348,6 +1352,24 @@ void Histogram(vector<int> myVector)
 		}
 	}
 	ComponentAnglesHistogramFile.close();
+
+	Mat freqG;
+	GaussianBlur(*freq, freqG, Size(5, 5), 5);
+	for (int i = 0; i<fsize; i++) {
+		if (freq[i] != 0)
+		{
+			ComponentAnglesHistogramFile2 << left;
+			ComponentAnglesHistogramFile2 << setw(5) << i;
+			ComponentAnglesHistogramFile2 << setw(5) << freq[i];
+			for (int j = 1; j <= freq[i]; j++) ComponentAnglesHistogramFile2 << "*";
+			ComponentAnglesHistogramFile2 << "\n";
+		}
+		else
+		{
+
+		}
+	}
+	ComponentAnglesHistogramFile2.close();
 }
 //Mat RemoveNadir(Mat GrayScaleSrcImg)
 //{
@@ -1681,7 +1703,7 @@ int main(int argc, char *argv[])
 			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's (per left and right image)
-			for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
+			for (size_t mi = 1; mi < 40/*MasksCount.at(LRimages)*/; mi++)
 			{
 				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
@@ -1882,16 +1904,16 @@ int main(int argc, char *argv[])
 					if (all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
 					
 					componentAngles.push_back(mes.angle);
-					if (LRimages == 0)
-					{
-						LcomponentAngles.push_back(mes.angle);
-						if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
-					}
-					else
-					{
-						RcomponentAngles.push_back(mes.angle);
-						if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
-					}
+					//if (LRimages == 0)
+					//{
+					//	LcomponentAngles.push_back(mes.angle);
+					//	if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
+					//}
+					//else
+					//{
+					//	RcomponentAngles.push_back(mes.angle);
+					//	if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
+					//}
 					//anglesComponent[LRimages]
 					//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
 					//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
