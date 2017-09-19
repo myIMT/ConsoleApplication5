@@ -1228,6 +1228,60 @@ void CalcHist(Mat histSrc)
 	waitKey(0);
 }
 
+void MyVHistogram(Mat MyHSrc, int r)
+{
+	//Mat gray;
+	//cvtColor(histSrc, gray, CV_BGR2GRAY);
+
+	//Mat gray = imread("image.jpg", 0);
+	//namedWindow("Gray", 1);
+	//if (all_output) { imshow("Gray", gray); };
+
+	// Initialize parameters
+	int histSize = r;    // bin size
+	cout << "histSize= " << histSize << "\n";
+	float range[] = { 0, r-1 };
+	cout << "range= " << range << "\n";
+	const float *ranges[] = { range };
+
+	// Calculate histogram
+	MatND hist;
+	calcHist(&MyHSrc, 1, 0, Mat(), hist, 1, &histSize, ranges, true, false);
+	cout << "histSize= " << histSize << "\n";
+
+	// Show the calculated histogram in command window
+	double total;
+	total = MyHSrc.rows * MyHSrc.cols;
+	for (int h = 0; h < histSize; h++)
+	{
+		float binVal = hist.at<float>(h);
+		cout << " " << binVal;
+	}
+
+	// Plot the histogram
+	int hist_w = 512; int hist_h = 400;
+	int bin_w = cvRound((double)hist_w / histSize);
+
+	Mat histImage(hist_h, hist_w, CV_8UC1, Scalar(0, 0, 0));
+	normalize(hist, hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+
+	for (int i = 1; i < histSize; i++)
+	{
+		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
+			Point(bin_w*(i), hist_h - cvRound(hist.at<float>(i))),
+			Scalar(255, 0, 0), 2, 8, 0);
+
+		//rectangle(histImage, Point(i*bin_w, histImage.rows),
+		//	Point((i + 1)*bin_w, histImage.rows - cvRound(hist.at<float>(i))),
+		//	Scalar::all(0), -1, 8, 0);
+	}
+
+	namedWindow("Result", 1);
+	if (all_output) { imshow("Result", histImage); };
+
+	waitKey(0);
+}
+
 void CalcHistEq()
 {
 	Mat dst;
@@ -1354,7 +1408,7 @@ void Histogram(vector<int> myVector)
 	ComponentAnglesHistogramFile.close();
 
 	Mat freqG;
-	GaussianBlur(*freq, freqG, Size(5, 5), 5);
+	//GaussianBlur(*freq, freqG, Size(5, 5), 5);
 	for (int i = 0; i<fsize; i++) {
 		if (freq[i] != 0)
 		{
@@ -1903,17 +1957,17 @@ int main(int argc, char *argv[])
 					if (all_output) { AngleTest_DataFile << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
 					if (all_output) { cout << "Component " << smi << " has angle " << mes.angle << " with centroid " << maskCentroid.at(mi) << "\n"; };
 					
-					componentAngles.push_back(mes.angle);
-					//if (LRimages == 0)
-					//{
-					//	LcomponentAngles.push_back(mes.angle);
-					//	if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
-					//}
-					//else
-					//{
-					//	RcomponentAngles.push_back(mes.angle);
-					//	if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
-					//}
+					//componentAngles.push_back(mes.angle);
+					if (LRimages == 0)
+					{
+						LcomponentAngles.push_back(mes.angle);
+						if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
+					}
+					else
+					{
+						RcomponentAngles.push_back(mes.angle);
+						if (!all_output) { ComponentAnglesFile << LRimages << "," << mes.angle << "\n"; };
+					}
 					//anglesComponent[LRimages]
 					//if (!all_output) { AngleTest_DataFile << "The biggest number is: " << mes.size << " at bin " << mes.bin << endl; }
 					//if (!all_output){ AngleTest_DataFile << "Angle (mes)- " << smi << "= " << mes.angle << "\n";}
@@ -2359,8 +2413,10 @@ int main(int argc, char *argv[])
 		}
 
 		//vector<int> tet = { 1,2,1,3,4,2,5,2,5,26 };
-		Histogram(componentAngles);
-
+		//Histogram(componentAngles);
+		Histogram(LcomponentAngles);
+		Histogram(RcomponentAngles);
+		//MyVHistogram(LcomponentAngles, 180);
 		ComponentTouchImageEdgeFile.close();
 		ComponentAnglesFile.close();
 #pragma endregion
