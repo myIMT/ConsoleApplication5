@@ -1076,7 +1076,7 @@ void ColumnsAnalysis(Mat SourceImage)
 	//starting at the centre - walk left
 	for (int h1 = c; h1 < columnSum.size(); h1--)
 	{
-		//if the pixel-intensity sum per column equals zero - record that column number 
+		//if the pixel-intensity sum per column <= zero - record that column number 
 		if (columnSum[h1].value <= zeroThreshold)
 		{
 			leftNadir.push_back(h1);
@@ -1351,7 +1351,7 @@ int findmax(int vals[], int n) {
 	return max;
 }
 
-void Histogram(vector<int> myVector)
+void Histogram(int lr, vector<int> myVector)
 {
 	int* vals = myVector.data();
 
@@ -1380,14 +1380,22 @@ void Histogram(vector<int> myVector)
 
 	//compute frequencies
 	for (int i = 0; i < n; i++)
-		freq[vals[i]]++;
-
-	//print histogram
+		freq[vals[i]]++;	
+	
+	//print histogram		
 	ofstream ComponentAnglesHistogramFile;
-	ComponentAnglesHistogramFile.open("ComponentAnglesHistogramFile.txt");
+	if (lr == 0)
+	{
 
-	ofstream ComponentAnglesHistogramFile2;
-	ComponentAnglesHistogramFile2.open("ComponentAnglesHistogramFile2.txt");
+		ComponentAnglesHistogramFile.open("ComponentAnglesHistogramFile0.txt");
+	}
+	else
+	{
+		ComponentAnglesHistogramFile.open("ComponentAnglesHistogramFile1.txt");
+	}
+
+
+
 
 	//if statement = printing angles with non-zero count
 	ComponentAnglesHistogramFile << "\n....Histogram....\n\n";
@@ -1395,6 +1403,7 @@ void Histogram(vector<int> myVector)
 		if (freq[i] !=0)
 		{
 			ComponentAnglesHistogramFile << left;
+			ComponentAnglesHistogramFile << setw(5) << lr;
 			ComponentAnglesHistogramFile << setw(5) << i;
 			ComponentAnglesHistogramFile << setw(5) << freq[i];
 			for (int j = 1; j <= freq[i]; j++) ComponentAnglesHistogramFile << "*";
@@ -1407,23 +1416,24 @@ void Histogram(vector<int> myVector)
 	}
 	ComponentAnglesHistogramFile.close();
 
-	Mat freqG;
+	//Mat freqG;
 	//GaussianBlur(*freq, freqG, Size(5, 5), 5);
-	for (int i = 0; i<fsize; i++) {
-		if (freq[i] != 0)
-		{
-			ComponentAnglesHistogramFile2 << left;
-			ComponentAnglesHistogramFile2 << setw(5) << i;
-			ComponentAnglesHistogramFile2 << setw(5) << freq[i];
-			for (int j = 1; j <= freq[i]; j++) ComponentAnglesHistogramFile2 << "*";
-			ComponentAnglesHistogramFile2 << "\n";
-		}
-		else
-		{
+	//ComponentAnglesHistogramFile << "\n....Histogram....\n\n";
+	//for (int i = 0; i<fsize; i++) {
+	//	if (freq[i] != 0)
+	//	{
+	//		ComponentAnglesHistogramFile2 << left;
+	//		ComponentAnglesHistogramFile2 << setw(5) << i;
+	//		ComponentAnglesHistogramFile2 << setw(5) << freq[i];
+	//		for (int j = 1; j <= freq[i]; j++) ComponentAnglesHistogramFile2 << "*";
+	//		ComponentAnglesHistogramFile2 << "\n";
+	//	}
+	//	else
+	//	{
 
-		}
-	}
-	ComponentAnglesHistogramFile2.close();
+	//	}
+	//}
+	//ComponentAnglesHistogramFile2.close();
 }
 //Mat RemoveNadir(Mat GrayScaleSrcImg)
 //{
@@ -1757,7 +1767,7 @@ int main(int argc, char *argv[])
 			if (!all_output) { imshow(sLRimages + "-left and right image", LeftAndRightImages.at(LRimages)); }
 
 			// Loop through all component's (per left and right image)
-			for (size_t mi = 1; mi < 40/*MasksCount.at(LRimages)*/; mi++)
+			for (size_t mi = 1; mi < MasksCount.at(LRimages); mi++)
 			{
 				std::string smi = std::to_string(mi);
 				Mat tempComponent = imread("mask_" + sLRimages + "_" + smi + ".bmp", CV_LOAD_IMAGE_UNCHANGED);
@@ -2414,8 +2424,8 @@ int main(int argc, char *argv[])
 
 		//vector<int> tet = { 1,2,1,3,4,2,5,2,5,26 };
 		//Histogram(componentAngles);
-		Histogram(LcomponentAngles);
-		Histogram(RcomponentAngles);
+		Histogram(0,LcomponentAngles);
+		Histogram(1,RcomponentAngles);
 		//MyVHistogram(LcomponentAngles, 180);
 		ComponentTouchImageEdgeFile.close();
 		ComponentAnglesFile.close();
